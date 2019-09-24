@@ -126,9 +126,15 @@ end)
 
 RegisterServerEvent('es:firstJoinProper')
 AddEventHandler('es:firstJoinProper', function()
-	registerUser(GetPlayerIdentifiers(source)[1], tonumber(source))
+	local identifiers = GetPlayerIdentifiers(source)
+	for i = #identifiers, 1, -1 do
+		local ident = identifiers[i]
+		if not ident:find("license:") and not ident:find("steam:") then
+			table.remove(identifiers, i)
+		end
+	end
+	registerUser(identifiers, tonumber(source))
 	justJoined[source] = true
-
 	if(settings.defaultSettings.pvpEnabled)then
 		TriggerClientEvent("es:enablePvp", source)
 	end

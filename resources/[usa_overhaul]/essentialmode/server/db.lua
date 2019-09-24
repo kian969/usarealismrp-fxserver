@@ -1,8 +1,3 @@
--- NO TOUCHY BEYOND THIS, IF SOMETHING IS WRONG CONTACT KANERSPS! --
--- NO TOUCHY BEYOND THIS, IF SOMETHING IS WRONG CONTACT KANERSPS! --
--- NO TOUCHY BEYOND THIS, IF SOMETHING IS WRONG CONTACT KANERSPS! --
--- NO TOUCHY BEYOND THIS, IF SOMETHING IS WRONG CONTACT KANERSPS! --
-
 local bs = { [0] =
 	'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
 	'Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f',
@@ -161,9 +156,9 @@ function db.updateUser(identifier, new, callback)
 	end)
 end
 
-function db.createUser(identifier, callback)
-	if type(identifier) == "string" and identifier ~= nil then
-		createDocument({ identifier = identifier, group = "user", permission_level = 0, policeCharacter = {}, emsCharacter = {}}, function(returned, document)
+function db.createUser(identifiers, callback)
+	if identifiers and #identifiers > 0 then
+		createDocument({ identifiers = identifiers, group = "user", permission_level = 0, policeCharacter = {}, emsCharacter = {}}, function(returned, document)
 			if callback then
 				callback(returned, document)
 			end
@@ -192,11 +187,13 @@ end
 function db.retrieveUser(identifier, callback)
 	if identifier ~= nil and type(identifier) == "string" then
 		requestDB('POST', 'essentialmode/_find', {selector = {["identifier"] = identifier}}, {["Content-Type"] = 'application/json'}, function(err, rText, headers)
-			--if err ~= 200 or err ~= "200" then print("error inside of db.retrieveUser: " .. err) end
-			--if not rText then print("rText value was nil inside of db.retrieveUser") return end
 			local doc =  json.decode(rText).docs[1]
 			if callback then
-				if doc then callback(doc) else callback(false) end
+				if doc then
+					callback(doc)
+				else
+					callback(false)
+				end
 			end
 		end)
 	else

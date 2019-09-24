@@ -1,12 +1,6 @@
--- NO TOUCHY, IF SOMETHING IS WRONG CONTACT KANERSPS! --
--- NO TOUCHY, IF SOMETHING IS WRONG CONTACT KANERSPS! --
--- NO TOUCHY, IF SOMETHING IS WRONG CONTACT KANERSPS! --
--- NO TOUCHY, IF SOMETHING IS WRONG CONTACT KANERSPS! --
-
-function LoadUser(identifier, source, new)
-	db.retrieveUser(identifier, function(user)
-		Users[source] = CreatePlayer(source, user.permission_level, user.identifier, user.group, user.policeCharacter, user.emsCharacter)
-		--print("loaded user " .. GetPlayerName(tonumber(source)) .. "from db...")
+function LoadUser(identifiers, source, new)
+	db.retrieveUser(identifiers, function(user)
+		Users[source] = CreatePlayer(source, user.permission_level, user.identifiers, user.group, user.policeCharacter, user.emsCharacter)
 
 		TriggerEvent('es:playerLoaded', source, Users[source])
 
@@ -41,13 +35,13 @@ AddEventHandler('es:getPlayers', function(cb)
 	cb(Users)
 end)
 
-function registerUser(identifier, source)
-	db.doesUserExist(identifier, function(exists)
+function registerUser(identifiers, source)
+	db.doesUserExist(identifiers, function(exists)
 		if exists then
-			LoadUser(identifier, source, false)
+			LoadUser(identifiers, source, false)
 		else
-			db.createUser(identifier, function(r, user)
-				LoadUser(identifier, source, true)
+			db.createUser(identifiers, function(r, user)
+				LoadUser(identifiers, source, true)
 			end)
 		end
 	end)
