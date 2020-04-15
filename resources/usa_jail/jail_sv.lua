@@ -88,19 +88,27 @@ function jailPlayer(src, data, officerName, gender)
 	inmate.set("job", "civ")
 
 	local property = inmate.get("property")
+	local type = nil
 
-	if inmate.get("bank") > 0 or not property then
+	if inmate.get("bank") >= fine or not property then
 		inmate.removeBank(fine)
+		type = "bank"
 	else
-		if property["money"] > 0 then
+		if property["money"] >= fine then
 			property["money"] = property["money"] - fine
 			inmate.set("property", property)
+			type = "Stashed property cash"
 		else 
 			TriggerClientEvent("usa:notify", src, "Person is not able to pay their fine!", "^3INFO: ^0The person you jailed now owes $" .. fine .. " to the state. Consider seizing assets worth that amount if they cannot pay it back.")
 		end
 	end
 
-	TriggerClientEvent("usa:notify", targetPlayer, "You have been fined: $" .. fine)
+	if type ~= nil then
+		TriggerClientEvent("usa:notify", targetPlayer, "You have been fined: $" .. fine .. ". This has been paid via your " .. type)
+	else
+		TriggerClientEvent("usa:notify", targetPlayer, "You have been fined: $" .. fine)
+	end
+
 	-- add to criminal history --
 	local playerCriminalHistory = inmate.get("criminalHistory")
 	local record = {
