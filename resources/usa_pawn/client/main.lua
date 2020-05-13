@@ -6,8 +6,10 @@ local NPC_COORDS = {448.4, -803.37, 27.8}
 local createdMenus = {}
 local KEY_E = 38
 
+local openingHour = math.random(8, 10)
+
 _menuPool = NativeUI.CreatePool()
-pawnMenu = NativeUI.CreateMenu("Pawn Menu", "~b~Please select an item you would like to sell!", 0, 320)
+pawnMenu = NativeUI.CreateMenu("Stolen Goods Menu", "~b~Please select an item you would like to sell!", 0, 320)
 table.insert(createdMenus, { menu = pawnMenu, category = "Stolen Goods"})
 
 for i = 1, #createdMenus do
@@ -103,6 +105,9 @@ function CreateMenu(menu, category)
     for i = 1, #ITEMS[category] do
         local stolenItem = ITEMS[category][i]
         local item = NativeUI.CreateItem(stolenItem.name, "Sell For $" .. exports["globals"]:comma_value(stolenItem.value))
+        item.Activated = function(parentmenu, selected)
+            TriggerServerEvent('pawn:sellItem', stolenItem)
+        end
         menu:AddItem(item)
     end
 end
