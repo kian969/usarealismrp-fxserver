@@ -1,9 +1,9 @@
 local bankRobbable = true
 local bankClosed = false
-local COPS_NEEDED_TO_ROB = 4
+local COPS_NEEDED_TO_ROB = 0
 local sourceRobbing = -1
 
-local BANK_ROBBERY_TIMEOUT = math.random(3600000, 10800000)
+local BANK_ROBBERY_TIMEOUT = math.random(0, 1)
 
 RegisterServerEvent("bank:beginRobbery")
 AddEventHandler("bank:beginRobbery", function(bank)

@@ -45,7 +45,7 @@ end
 RegisterNetEvent("burgerjob:loadItems")
 AddEventHandler("burgerjob:loadItems", function(items)
     ITEMS = items
-    for i = 1, #createdMenus do
+    for i = 1, #createdMenus doe
         CreateMenu(createdMenus[i].menu, createdMenus[i].category)
     end
     _menuPool:RefreshIndex()

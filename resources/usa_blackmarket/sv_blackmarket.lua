@@ -20,6 +20,7 @@ local markets = {
     ['coords'] = {1380.87, 2172.51, 97.81}, -- sandy shores
     ['items'] = {
       {name = 'Lockpick', type = 'misc', price = 135, legality = 'illegal', quantity = 1, weight = 5, stock = math.random(1, 5)},
+      {name = 'Advanced Pick', type = 'misc', price = 135, legality = 'illegal', quantity = 1, weight = 5, stock = math.random(1, 5)},
       {name = 'Hotwiring Kit', type = 'misc', price = 250, legality = 'illegal', quantity = 1, weight = 10, stock = math.random(0, 6)},
       {name = 'Heavy Shotgun', type = 'weapon', hash = 984333226, price = 20000, legality = 'illegal', quantity = 1, weight = 35, stock = math.random(0, 2), objectModel = "w_sg_heavyshotgun"},
       {name = 'SNS Pistol', type = 'weapon', hash = -1076751822, price = 3500, legality = 'illegal', quantity = 1, weight = 8, stock = math.random(0, 3), objectModel = "w_pi_sns_pistol"},
