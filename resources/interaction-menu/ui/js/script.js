@@ -198,7 +198,11 @@ var itemImages = {
   "Dr Pepper": "https://imgur.com/JNCWDcR.png",
   "Veggie Gasm Burger" : "https://imgur.com/pzwQmmQ.png",
   "Torpedo Sandwich" : "https://imgur.com/fqnd3wJ.png",
-  "Fishing Pole": "https://i.imgur.com/FPgsx97.png"
+  "Fishing Pole": "https://i.imgur.com/FPgsx97.png",
+  "Laptop": "https://i.imgur.com/uWkUDDe.png",
+  "Diamond Ring": "https://i.imgur.com/3eFBZ5l.png",
+  "Graphics Card": "https://i.imgur.com/oLTwjMB.png",
+  "Television": "https://i.imgur.com/ZD7OZw7.png",
 }
 
 var menuItems = [

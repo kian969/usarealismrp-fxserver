@@ -451,7 +451,16 @@ local burglarySearchItems = {
 	{name = "Fluffy Handcuffs", type = "misc", quantity = 1, legality = "legal", weight = 1, objectModel = "p_cs_cuffs_02_s"},
 	{name = "Vibrator", type = "misc", quantity = 1, legality = "legal", weight = 1, objectModel = "prop_cs_marker_01"},
 	{name = "French Dip Au Jus", price = 55, type = "food", substance = 60.0, quantity = 1, legality = "legal", weight = 10},
-	{name = "Back Porch Strawberry Lemonade", price = 60, type = "alcohol", substance = 15.0, quantity = 4, legality = "legal", weight = 1, strength = 0.28}
+	{name = "Back Porch Strawberry Lemonade", price = 60, type = "alcohol", substance = 15.0, quantity = 4, legality = "legal", weight = 1, strength = 0.28},
+	{name = "Machete", type = "weapon", hash = -581044007, price = 250, legality = "illegal", quantity = 1, weight = 15, objectModel = "prop_ld_w_me_machette" },
+	{name = "Heavy Pistol", type = "weapon", hash = -771403250, price = 1500, legality = "illegal", quantity = 1, weight = 20, objectModel = "w_pi_heavypistol" },
+	{name = "MK2", type = "weapon", hash = 3219281620, price = 1250, legality = "illegal", quantity = 1, weight = 15 },
+	{name = "Musket", type = "weapon", hash = -1466123874, price = 1500, legality = "illegal", quantity = 1, weight = 35, objectModel = "w_ar_musket" },
+	{name = "Flashlight", type = "weapon", hash = -1951375401, price = 200, legality = "illegal", quantity = 1, weight = 9, objectModel = "p_cs_police_torch_s" },
+	{name = "Laptop", type = "misc", quantity = 1, legality = "illegal", weight = 10, price = 250},
+	{name = "Diamond Ring", type = "misc", quantity = 1, legality = "illegal", weight = 5, price = 950},
+	{name = "Graphics Card", type = "misc", quantity = 1, legality = "illegal", weight = 7, price = 300},
+	{name = "Television", type = "misc", quantity = 1, legality = "illegal", weight = 7, price = 400},
 }
 
 local interiors = {
