@@ -1,5 +1,4 @@
 local ITEMS = {}
-TriggerServerEvent('pawn:loadItems')
 
 local NPC = 'a_m_m_ktown_01'
 local NPC_COORDS = {448.4, -803.37, 27.8}
@@ -20,7 +19,7 @@ RegisterNetEvent('pawn:loadItems')
 AddEventHandler('pawn:loadItems', function(items)
     ITEMS = items
     for i = 1, #createdMenus do
-        CreateMenu(createdMenus[i].menu, createdMenus[i].category)
+        CreateMenu(createdMenus[i].menu)
     end
     _menuPool:RefreshIndex()
 end)
@@ -65,6 +64,7 @@ Citizen.CreateThread(function()
         if nearMarker(x,y,z) then
             DrawText3D(x,y,z, 8, '[E] - Sell Goods')
             if IsControlJustPressed(0, KEY_E) then
+                TriggerServerEvent('pawn:loadItems')
                 if _menuPool:IsAnyMenuOpen() then
                     _menuPool:CloseAllMenus()
                 end
@@ -101,10 +101,11 @@ function DrawText3D(x, y, z, distance, text)
     end
 end
 
-function CreateMenu(menu, category)
-    for i = 1, #ITEMS[category] do
-        local stolenItem = ITEMS[category][i]
-        local item = NativeUI.CreateItem(stolenItem.name, "Sell For $" .. exports["globals"]:comma_value(stolenItem.value))
+function CreateMenu(menu)
+    for i = 1, #ITEMS do
+        local stolenItem = ITEMS[i]
+        print(stolenItem.value)
+        local item = NativeUI.CreateItem(stolenItem.name, "Sell For $")
         item.Activated = function(parentmenu, selected)
             TriggerServerEvent('pawn:sellItem', stolenItem)
         end

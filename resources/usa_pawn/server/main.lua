@@ -1,28 +1,17 @@
-local ITEMS = {
-    ['Stolen Goods'] = {
-        {name = 'Hotwiring Kit', value = 125},
-        {name = 'LSD Vial', value = 500},
-        {name = 'Everclear Vodka (90%)', value = 18},
-        {name = 'Lockpick', value = 65},
-        {name = 'First Aid Kit', value = 40},
-        {name = 'Pistol', value = 300},
-        {name = 'Razor Blade', value = 30},
-        {name = 'Switchblade', value = 1500},
-        {name = 'Condoms', value = 5},
-        {name = 'KY Intense Gel', value = 10},
-        {name = 'Viagra', value = 15},
-        {name = 'Sturdy Rope', value = 50},
-        {name = 'Bag', value = 50},
-        {name = 'Ludde\'s Lube', value = 10},
-        {name = 'Fluffy Handcuffs', value = 20},
-        {name = 'Vibrator', value = 50},
-        {name = 'Sam Smith\'s Strapon', value = 80},
-    }
-}
-
 RegisterServerEvent('pawn:loadItems')
 AddEventHandler('pawn:loadItems', function()
-    TriggerClientEvent('pawn:loadItems', source, ITEMS)
+    local char = exports["usa-characters"]:GetCharacter(source)
+    local user_items = {}
+    local inventory = char.get("inventory")
+    for i = 0, (inventory.MAX_CAPACITY - 1) do
+        if inventory.items[tostring(i)] then
+            local item = inventory.items[tostring(i)]
+            if item.type ~= "license" and item.type ~= "key" and item.name ~= "Cell Phone" then
+                table.insert(user_items, inventory.items[tostring(i)])
+            end
+        end
+    end
+    TriggerClientEvent('pawn:loadItems', source, user_items)
 end)
 
 RegisterServerEvent('pawn:sellItem')
