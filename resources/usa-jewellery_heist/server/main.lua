@@ -1,4 +1,4 @@
-local COPS_NEEDED_TO_ROB = 4 
+local COPS_NEEDED_TO_ROB = 0
 local STORE_ROBBERY_TIMEOUT = 2 * 60 * 60 * 1000 -- 2 hour cooldown
 local hasDoorBeenThermited = false -- prevent people from stealing Jewellery by emoting through the door and skipping thermite stage
 
