@@ -1,5 +1,5 @@
 local menuPool = NativeUI.CreatePool()
-local garageMenu = NativeUI.CreateMenu('SASP Garage', 'VEHICLE MANAGEMENT', 0, 320)
+local garageMenu = NativeUI.CreateMenu('Garage', 'VEHICLE MANAGEMENT', 0, 320)
 local customizationMenu = NativeUI.CreateMenu('SASP Workshop', 'PIMP MY RIDE', 0, 320)
 local permittedVehicles = {}
 local awaitChanges = false
@@ -35,7 +35,8 @@ local policeGarages = {
 	{x = -1123.47, y = -848.411, z = 13.45, _x = -1126.32, _y = -864.89, _z = 13.55, _heading = 34.54}, -- Vespucci 
 	{x = 378.16, y = -1613.96, z = 29.29, _x = 394.39, _y = -1625.57, _z = 29.29, _heading = 51.66}, -- Davis
 	{x = 560.04, y = -60.305, z = 71.186, _x = 534.24, _y = -26.13, _z = 70.62, _heading = 210.88}, -- Vinewood
-	{x = -85.21, y = -807.60, z = 36.49, _x = -73.97, _y = -818.25, _z = 36.05, _heading = 295.0} -- DA Office
+	{x = -85.21, y = -807.60, z = 36.49, _x = -73.97, _y = -818.25, _z = 36.05, _heading = 295.0}, -- DA Office
+	{x = 1853.46, y = 2596.32, z = 45.67, _x = 1855.23, _y = 2574.98, _z = 45.67, _heading = 273.05}, -- Prison
 
 }
 

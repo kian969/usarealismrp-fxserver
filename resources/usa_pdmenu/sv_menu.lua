@@ -26,6 +26,20 @@ local VEHICLE_RANKS = {
 	["doctor"] = {
 		["paraexp"] = 1,
 		--["sheriff2"] = 1
+	},
+	["corrections"] = {
+		["pdcvpi"] = 1,
+		["blazer"] = 3,
+		["pdchrg"] = 4,
+		["pdtau"] = 3,
+		["pdexp"] = 3,
+		["sheriff2"] = 3,
+		["riot"] = 5,
+		["policeb"] = 3,
+		["1200RT"] = 3,
+		["caddy"] = 1,
+		["pbus"] = 1,
+		["policet"] = 1
 	}
 }
 
@@ -69,7 +83,12 @@ RegisterServerEvent('pdmenu:returnAllowedVehicles')
 AddEventHandler('pdmenu:returnAllowedVehicles', function()
 	local char = exports["usa-characters"]:GetCharacter(source)
 	local user_job = char.get("job")
-	local myRank = char.get("policeRank")
+	local myRank = nil
+	if char.get('policeRank') > 0 then
+		myRank = char.get('policeRank')
+	elseif char.get('bcsoRank') > 0 then
+		myRank = char.get('bcsoRank')
+	end
     local vehs = GetAllowedVehicles(user_job, myRank)
 	TriggerClientEvent('pdmenu:sendAllowedVehicles', source, vehs)
 end)

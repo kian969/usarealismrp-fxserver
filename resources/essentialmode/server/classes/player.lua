@@ -11,6 +11,11 @@ function CreatePlayer(source, permission_level, identifier, group, policeCharact
 	else
 		self.policeCharacter = policeCharacter
 	end
+	if bcsoCharacter == nil then
+		self.bcsoCharacter = {}
+	else
+		self.bcsoCharacter = bcsoCharacter
+	end
 	if emsCharacter == nil then
 		self.emsCharacter = {}
 	else
@@ -40,6 +45,16 @@ function CreatePlayer(source, permission_level, identifier, group, policeCharact
 	rTable.getEmsCharacter = function()
 		if not self.emsCharacter then print("self.emsCharacter did not exist when loading!") end
 		return self.emsCharacter
+	end
+
+	rTable.setBcsoCharacter = function(character)
+		if not self.bcsoCharacter then self.bcsoCharacter = {} end
+		self.bcsoCharacter = character
+	end
+
+	rTable.getBcsoCharacter = function()
+		if not self.bcsoCharacter then print('self.bcsoCharacter did not exist when loading!') end
+		return self.bcsoCharacter
 	end
 
 	rTable.getCoords = function()

@@ -99,40 +99,17 @@ AddEventHandler('rconCommand', function(commandName, args)
                 char.set("job", "civ")
                 RconPrint("DEBUG: " .. playerId .. " un-whitelisted as realtor.")
             end
-        elseif wl_type == "corrections" then
-            if not GetPlayerName(playerId) or not tonumber(rank) then
-                RconPrint("Error: bad format!")
-                return
+        elseif wl_type == "bcso" then
+            local char = exports["usa-characters"]:GetCharacter(playerId)
+            if rank > 0 then
+                char.set("bcsoRank", rank)
+                RconPrint("DEBUG: " .. playerId .. "'s BCSO rank has been set to: " .. rank .. "!")
+                TriggerClientEvent('chatMessage', tonumber(playerId), "CONSOLE", {255, 255, 255}, "You have been whitelisted for BCSO, rank: " .. rank)
+            else
+                char.set('bcsoRank', 0)
+                char.set("job", "civ")
+                RconPrint("DEBUG: " .. playerId .. " un-whitelisted as BCSO.")
             end
-            local target_ident = GetPlayerIdentifiers(playerId)[1]
-            TriggerEvent('es:exposeDBFunctions', function(GetDoc)
-                GetDoc.getDocumentByRow("correctionaldepartment", "identifier" , target_ident, function(result)
-
-                    local char = exports["usa-characters"]:GetCharacter(playerId)
-                    local employee = {
-                        identifier = target_ident,
-                        name = char.getFullName(),
-                        rank = tonumber(rank)
-                    }
-
-                    if type(result) ~= "boolean" then -- exists (table)
-                        GetDoc.updateDocument("correctionaldepartment", result._id, {rank = employee.rank}, function()
-                            RconPrint("Rank updated to: " .. employee.rank)
-                            RconPrint("\nEmployee " .. employee.name .. "updated, rank: " .. employee.rank .. "!")
-                            --loadDOCEmployees()
-                            TriggerEvent("doc:refreshEmployees") -- TODO: CREATE HANDLER FOR THIS EVENT in prisonfive/server.lua
-                        end)
-                    else -- did not exist already, create doc
-                        GetDoc.createDocument("correctionaldepartment", employee, function()
-                            -- notify:
-                            RconPrint("Employee " .. employee.name .. "created, rank: " .. employee.rank .. "!")
-                            -- refresh employees:
-                            --loadDOCEmployees()
-                            TriggerEvent("doc:refreshEmployees")
-                        end)
-                    end
-                end)
-            end)
         end
         CancelEvent()
     end
@@ -150,6 +127,8 @@ TriggerEvent('es:addCommand', 'whitelist', function(source, args, char)
         user_rank = tonumber(char.get("emsRank"))
     elseif type == "police" then
         user_rank = tonumber(char.get("policeRank"))
+    elseif type == "corrections" then
+        user_rank = tonumber(char.get("bcsoRank"))
     elseif type == "da" then
         user_rank = char.get("daRank")
         if user_rank then
@@ -189,6 +168,8 @@ TriggerEvent('es:addCommand', 'whitelist', function(source, args, char)
             target.set("policeRank", rank)
         elseif type == "ems" then
             target.set("emsRank", rank)
+        elseif type == "corrections" then
+            target.set("bcsoRank", rank)
         elseif type == "da" then
             target.set("daRank", rank)
         end
@@ -198,6 +179,8 @@ TriggerEvent('es:addCommand', 'whitelist', function(source, args, char)
             target.set("policeRank", 0)
         elseif type == "ems" then
             target.set("emsRank", 0)
+        elseif type == "corrections" then
+            target.set("bcsoRank", rank)
         elseif type == "da" then
             target.set("daRank", 0)
         end
@@ -216,13 +199,35 @@ end, {
     }
 })
 
+-- Check inmates remaining jail time --
+TriggerEvent('es:addJobCommand', 'roster', {"corrections"}, function(source, args, char)
+    local hasInmates = false
+    TriggerClientEvent('chatMessage', source, "", {255, 255, 255}, "^1^*[BOLINGBROKE PENITENTIARY]")
+    exports["usa-characters"]:GetCharacters(function(characters)
+        for id, char in pairs(characters) do
+            local time = char.get("jailTime")
+            if time then
+                if time > 0 then
+                    hasInmates = true
+                    TriggerClientEvent('chatMessage', source, "", {255, 255, 255}, "^1 - ^0" .. char.getFullName() .. " ^1^*|^r^0 " .. time .. " month(s)")
+                end
+            end
+        end
+        if not hasInmates then
+            TriggerClientEvent('chatMessage', source, "", {255, 255, 255}, "^1 - ^0There are no inmates at this time")
+        end
+    end)
+end, {
+    help = "See who is booked into the prison."
+})
+
 RegisterServerEvent("policestation2:checkWhitelistForLockerRoom")
 AddEventHandler("policestation2:checkWhitelistForLockerRoom", function()
     local playerIdentifiers = GetPlayerIdentifiers(source)
     local playerGameLicense = ""
     local char = exports["usa-characters"]:GetCharacter(source)
     local job = char.get("job")
-    if char.get("policeRank") > 0 then
+    if char.get("policeRank") > 0 or char.get("bcsoRank") > 0 then
         TriggerClientEvent("policestation2:isWhitelisted", source)
     else
         TriggerClientEvent("usa:notify", source, "~y~You are not whitelisted for POLICE. Apply at https://www.usarrp.net.")
@@ -247,7 +252,15 @@ AddEventHandler("policestation2:requestPurchase", function(index)
     local usource = source
     local weapon = armoryItems[index]
     local char = exports["usa-characters"]:GetCharacter(usource)
-    local rank = char.get("policeRank")
+    local rank = nil
+    if char.get('policeRank') > 0 then
+        rank = char.get('policeRank')
+    elseif char.get('bcsoRank') > 0 then
+        rank = char.get('bcsoRank')
+    end
+
+    print(rank)
+
     if weapon.minRank then
         if rank < weapon.minRank then
             TriggerClientEvent("usa:notify", usource, "Not high enough rank, need to be: " .. weapon.minRank)
@@ -322,6 +335,13 @@ AddEventHandler("policestation2:loadOutfit", function(slot)
         end
         TriggerClientEvent('interaction:setPlayersJob', source, 'sheriff')
         TriggerEvent("eblips:add", {name = char.getName(), src = source, color = 3})
+    elseif char.get("bcsoRank") > 0 then
+        --local policeChar = user.getPoliceCharacter()
+        TriggerClientEvent("doc:loadUniform", 1, source)
+        if job ~= 'corrections' then
+            char.set("job", "corrections")
+            TriggerEvent('job:sendNewLog', source, 'BCSO', false)
+        end
     else
         DropPlayer(source, "Exploiting. Your information has been logged and staff has been notified. If you feel this was by mistake, let a staff member know.")
     end

@@ -98,6 +98,7 @@ function CreateNewCharacter(src, data, cb)
     emsRank = 0,
     securityRank = 0,
     realtorRank = 0,
+    bcsoRank = 0,
     ingameTime = 0,
     spawn = nil,
     pets = {},

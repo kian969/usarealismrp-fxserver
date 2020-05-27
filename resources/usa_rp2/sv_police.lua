@@ -346,12 +346,11 @@ TriggerEvent('es:addJobCommand', 'showbadge', { "corrections", "sheriff" }, func
 	elseif cjob == "corrections" then
 		local ident = GetPlayerIdentifiers(source)[1]
 		TriggerEvent("es:exposeDBFunctions", function(db)
-			db.getDocumentByRow("correctionaldepartment", "identifier", ident, function(doc)
-				if doc then
-					local msg = "^*[ID]^r ^2Name: ^0" .. char_name .. " - ^2SSN: ^0" .. source .. " - ^2BCSO Rank: ^0" .. GetRankName(doc.rank, "BCSO")
-					exports["globals"]:sendLocalActionMessageChat(msg, location)
-				end
-			end)
+			local bcso_rank = char.get("bcsoRank")
+			if bcso_rank > 0 then
+				local msg = "^*[ID]^r ^2Name: ^0" .. char_name .. " - ^2SSN: ^0" .. source .. " - ^2SASP Rank: ^0" .. GetRankName(bcso_rank, "SASP")
+				exports["globals"]:sendLocalActionMessageChat(msg, location)
+			end
 		end)
 	end
 end, { help = "Present your official police or EMS identification." })

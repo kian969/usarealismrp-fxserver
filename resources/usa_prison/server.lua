@@ -1,51 +1,4 @@
-local WEAPONS = {
-	{ hash = "WEAPON_NIGHTSTICK", name = "Nightstick", rank = 1, weight = "10", price = 50},
-    { hash = "WEAPON_FLASHLIGHT", name = "Flashlight", rank = 1, weight = "10", price = 50},
-    { hash = "WEAPON_STUNGUN", name = "Stun Gun", rank = 1, weight = "9", price = 200},
-    { hash = 1593441988, name = "Combat Pistol", rank = 1, weight = "15", price = 200},
-	{ hash = -1600701090, name = "Tear Gas", rank = 2, weight = "10", price = 150},
-	{ name = "SMG", hash = 736523883, rank = 2, price = 500, weight = "30" },
-	{ name = "MK2 Pump Shotgun", hash = 1432025498, rank = 2, price = 500, weight = "30" },
-	{ name = "MK2 Carbine Rifle", hash = 4208062921, rank = 2, price = 500, weight = "30"},
-	{ hash = 100416529, name = "Marksman Rifle", rank = 2, weight = "40", price = 1000}
-}
-
-for i = 1, #WEAPONS do
-    WEAPONS[i].serviceWeapon = true
-    WEAPONS[i].notStackable = true
-    WEAPONS[i].quantity = 1
-    WEAPONS[i].legality = "legal"
-    WEAPONS[i].type = "weapon"
-end
-
-RegisterServerEvent("doc:getWeapons")
-AddEventHandler("doc:getWeapons", function()
-	TriggerClientEvent("doc:getWeapons", source, WEAPONS)
-end)
-
--- Check inmates remaining jail time --
-TriggerEvent('es:addJobCommand', 'roster', {"corrections"}, function(source, args, char)
-	local hasInmates = false
-	TriggerClientEvent('chatMessage', source, "", {255, 255, 255}, "^1^*[BOLINGBROKE PENITENTIARY]")
-	exports["usa-characters"]:GetCharacters(function(characters)
-		for id, char in pairs(characters) do
-			local time = char.get("jailTime")
-			if time then
-				if time > 0 then
-					hasInmates = true
-					TriggerClientEvent('chatMessage', source, "", {255, 255, 255}, "^1 - ^0" .. char.getFullName() .. " ^1^*|^r^0 " .. time .. " month(s)")
-				end
-			end
-		end
-		if not hasInmates then
-			TriggerClientEvent('chatMessage', source, "", {255, 255, 255}, "^1 - ^0There are no inmates at this time")
-		end
-	end)
-end, {
-	help = "See who is booked into the prison."
-})
-
-----------------
+---------------
 -- the prison --
 ----------------
 local cellblockOpen = false
@@ -70,50 +23,14 @@ end)
 ------------------------------
 -- correctional officer job --
 ------------------------------
-local DOC_EMPLOYEES = {}
-
-function loadDOCEmployees()
-	print("Fetching all DOC employees.")
-	PerformHttpRequest("http://127.0.0.1:5984/correctionaldepartment/_all_docs?include_docs=true" --[[ string ]], function(err, text, headers)
-		print("Finished getting DOC employees.")
-		print("error code: " .. err)
-		local response = json.decode(text)
-		if response.rows then
-			DOC_EMPLOYEES = {} -- reset table
-			print("#(response.rows) = " .. #(response.rows))
-			-- insert all warrants from 'warrants' db into lua table
-			for i = 1, #(response.rows) do
-				table.insert(DOC_EMPLOYEES, response.rows[i].doc)
-			end
-			print("Finished loading DOC employees.")
-			print("# of DOC employees: " .. #DOC_EMPLOYEES)
-		end
-	end, "GET", "", { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })
-end
-
--- PERFORM FIRST TIME DB CHECK--
-exports["globals"]:PerformDBCheck("correctionaldepartment", "correctionaldepartment", loadDOCEmployees)
-
-RegisterServerEvent("doc:refreshEmployees")
-AddEventHandler("doc:refreshEmployees", function()
-	loadDOCEmployees()
-end)
-
 RegisterServerEvent("doc:checkWhitelist")
 AddEventHandler("doc:checkWhitelist", function(loc)
-	for i = 1, #DOC_EMPLOYEES do
-		if DOC_EMPLOYEES[i].identifier == GetPlayerIdentifiers(source)[1] then
-			if tonumber(DOC_EMPLOYEES[i].rank) <= 0 then
-				print("DOC EMPLOYEE DID NOT EXIST")
-				TriggerClientEvent("usa:notify", source, "You don't work here!")
-			else
-				print("DOC EMPLOYEE EXISTED")
-				TriggerClientEvent("doc:open", source)
-			end
-			return
-		end
+	local char = exports["usa-characters"]:GetCharacter(source)
+	if char.get('bcsoRank') > 0 then
+		TriggerClientEvent("doc:open", source)
+	else
+		TriggerClientEvent("usa:notify", source, "You don't work here!")
 	end
-	TriggerClientEvent("usa:notify", source, "You don't work here!")
 end)
 
 RegisterServerEvent("doc:offduty")
@@ -126,7 +43,6 @@ AddEventHandler("doc:offduty", function()
 	if job == "corrections" then
 		TriggerEvent('job:sendNewLog', source, 'BCSO', false)
 	end
-	--exports["usa_ems"]:RemoveServiceWeapons(char)
 	char.set("job", "civ")
 	TriggerClientEvent("usa:notify", source, "You have clocked out!")
 	TriggerEvent("eblips:remove", source)

@@ -6,7 +6,9 @@ local policeLockerRooms = {
 	{x=454.475 , y=-990.79 , z=30.689},
  	{x = 1840.2006835938,y = 3691.2150878906, z = 34.286651611328}, -- sandy
  	--{x=-447.256 , y=6000.667 , z=30.686} -- paleto
- 	{x = -449.471, y = 6010.7, z = 31.85}
+ 	{x = -449.471, y = 6010.7, z = 31.85},
+	{x = 1779.0, y = 2548.55, z = 45.8}, -- Prison armory
+	{x = 1848.81, y = 2599.38, z = 45.65}
 }
 
 local policeArmourys = {
@@ -17,7 +19,9 @@ local policeArmourys = {
 	{x=452.964 , y=-980.095 , z=30.8896},
 	{x = 1840.1060791016,y = 3689.3395996094, z = 34.286647796631}, -- sandy
 	--{x=-452.361 , y=6006.11 , z=30.8409} -- paleto
-	{x = -437.98727416992,y = 5988.4482421875, z = 31.716186523438}
+	{x = -437.98727416992,y = 5988.4482421875, z = 31.716186523438},
+	{x = 1829.76, y =  2602.61, z = 45.89}, -- prison
+	{x = 1779.36, y = 2543.36, z = 45.8}, -- Prison armory
 }
 
 local weapons = {} -- armory items
@@ -163,7 +167,7 @@ end)
 -- Set up menu --
 -----------------
 _menuPool = NativeUI.CreatePool()
-mainMenu = NativeUI.CreateMenu("SASP", "~b~San Andreas State Police", 0 --[[X COORD]], 320 --[[Y COORD]])
+mainMenu = NativeUI.CreateMenu("Locker Room", "", 0 --[[X COORD]], 320 --[[Y COORD]])
 _menuPool:Add(mainMenu)
 
 function CreateUniformMenu(menu)
