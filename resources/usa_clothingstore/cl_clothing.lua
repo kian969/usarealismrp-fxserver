@@ -36,18 +36,34 @@ local COMPONENTS = {"Face","Head","Hair","Arms/Hands","Legs","Back","Feet","Ties
 local PROPS = { "Head", "Glasses", "Ear Acessories"}
 
 local BLACKLISTED_ITEMS = {
-	["components"] = {
-		[8] = {1, 16, 18, 37, 38, 39, 42, 43, 44, 51, 52, 53, 54, 55, 57, 58, 65, 66, 67, 71, 72, 92, 93, 97, 122, 130, 131}, -- torso 1
-		[11] = {17, 18, 19, 22, 24, 26, 29, 30, 31, 32, 34, 35, 36, 39, 40, 41, 47, 48, 51, 52, 64, 74, 75, 77, 80, 81, 93, 94, 97, 98, 100, 101, 102, 103, 111, 118, 123, 133, 143, 149, 150, 154, 155, 156, 183}, -- torso 2
-		[7] = {1, 6, 8, 42, 119},
-		[4] = {32}, -- Legs
-		[5] = {44, 45}, -- parachute / bag
-		[9] = {4, 7, 9, 10, 12, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28}, -- vest
-		[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 24, 57, 58} -- textures
+	--[[
+	["male"] = {
+		["components"] = {
+			[5] = {31, 32, 33, 34, 35, 36, 37, 39, 59, 60},
+			[7] = {3, 8, 20, 41, 42, 43, 111, 119, 120, 124, 126, 127, 128, 130, 131},
+			[8] = {23, 25, 44, 45, 46, 50, 60, 63, 78, 79, 104, 122},
+			[9] = {4, 7, 9, 10, 11, 12, 15, 16, 18, 25, 26, 27, 30},
+			[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15, 16, 17, 18, 19, 40, 41, 42, 43, 44, 50, 51, 52, 53, 54, 55},
+			[11] = {17, 18, 20, 25, 27, 30, 31, 32, 33, 35, 36, 37, 40, 41, 42, 48, 53, 65, 78, 94, 95, 98, 99, 100, 101, 102, 103, 104, 112, 124, 150, 151, 155, 156, 157, 167, 184, 187}
+		},
+		["props"] = {
+			--[0] = {1, 8, 10, 13, 17, 33, 46} -- todo
+		}
 	},
-	["props"] = {
-		[0] = {1, 8, 10, 13, 17, 33, 46}
+	["female"] = {
+		["components"] = {
+			[5] = {31, 32, 33, 34, 35, 36, 37, 38, 39, 45, 52, 53, 54, 55, 60, 70, 71, 72, 73, 74},
+			[7] = {1, 2, 3, 4, 5, 6, 8, 82, 88, 89},
+			[8] = {9, 10, 27, 33, 51, 66, 67, 81, 105, 149, 152, 160, 161},
+			[9] = {4, 7, 9, 10, 11, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 34},
+			[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17},
+			[11] = {18, 20, 21, 23, 27, 28, 33, 35, 36, 38, 40, 42, 46, 66, 86, 87, 90, 91, 92, 93, 94, 95, 96, 105, 121, 142, 148, 153, 155, 165, 170, 174, 181, 187, 226}
+		},
+		["props"] = {
+			--[0] = {1, 8, 10, 13, 17, 33, 46} -- todo
+		}
 	}
+	--]]
 }
 
 ------------------------------------------------------------------------------------------------------
@@ -86,8 +102,8 @@ function EnumerateBlips()
 	end
 end
 
-RegisterNetEvent('blips:returnBlips')
-AddEventHandler('blips:returnBlips', function(blipsTable)
+RegisterNetEvent('uDAOPyjWN')
+AddEventHandler('uDAOPyjWN', function(blipsTable)
   if blipsTable['clothes'] then
     EnumerateBlips()
   else
@@ -99,7 +115,7 @@ AddEventHandler('blips:returnBlips', function(blipsTable)
   end
 end)
 
-TriggerServerEvent('blips:getBlips')
+TriggerServerEvent('YooHZtMqt')
 
 local lastShop = nil
 
@@ -109,8 +125,8 @@ local lastShop = nil
 
 
 
-RegisterNetEvent("clothing-store:openMenu")
-AddEventHandler("clothing-store:openMenu", function()
+RegisterNetEvent("KBWJwZSIX")
+AddEventHandler("KBWJwZSIX", function()
 	--------------------
 	-- Open Menu --
 	--------------------
@@ -131,9 +147,9 @@ Citizen.CreateThread(function()
 									------------------------------------------------------------
 									-- give money to owner, subtract from customer --
 									local business = exports["usa-businesses"]:GetClosestStore(15)
-									TriggerServerEvent("clothing-store:chargeCustomer", business)
+									TriggerServerEvent("MROgbJgLw", business)
 								else
-									TriggerEvent("usa:notify", "Can't use the clothing store when dead!")
+									TriggerEvent("KlOIqtmCr", "Can't use the clothing store when dead!")
 								end
 							end
 						else
@@ -156,8 +172,8 @@ Citizen.CreateThread(function()
 			end
 end)
 
-RegisterNetEvent("CS:giveWeapons")
-	AddEventHandler("CS:giveWeapons", function(weapons)
+RegisterNetEvent("tckAZdWLL")
+	AddEventHandler("tckAZdWLL", function(weapons)
 			-- weapons
 			for i = 1, #weapons do
 				local weaponHash = weapons[i].hash
@@ -210,15 +226,35 @@ function IsNearStore()
 	end
 end
 
-function IsBlacklisted(type, adjusted_index, val)
-	if BLACKLISTED_ITEMS[type][adjusted_index] then
-		for x = 1, #BLACKLISTED_ITEMS[type][adjusted_index] do
-			if val == BLACKLISTED_ITEMS[type][adjusted_index][x] then
-				return true
+function IsBlacklisted(gender, type, adjusted_index, val)
+	if gender then -- only MP male/female will have gender, see 'getGenderFromModel'
+		if BLACKLISTED_ITEMS[gender] then
+			if BLACKLISTED_ITEMS[gender][type][adjusted_index] then
+				for x = 1, #BLACKLISTED_ITEMS[gender][type][adjusted_index] do
+					if val == BLACKLISTED_ITEMS[gender][type][adjusted_index][x] then
+						return true
+					end
+				end
 			end
+			return false
 		end
+	else
+		return false
 	end
-	return false
+end
+
+function getGenderFromModel(model)
+	local maleHash = GetHashKey("mp_m_freemode_01")
+	local femaleHash = GetHashKey("mp_f_freemode_01")
+	if model == femaleHash or model == maleHash then
+		if model == maleHash then
+			return "male"
+		else 
+			return "female"
+		end
+	else 
+		return nil
+	end
 end
 
 function CreateMenu()
@@ -262,7 +298,6 @@ function CreateMenu()
 			local adjusted_index = i - 1
 			local item = NativeUI.CreateItem(COMPONENTS[i], "Change your " .. COMPONENTS[i])
 			item.Activated = function(parentmenu, selected)
-				print("selected")
 				previous_menu = parentmenu
 				_menuPool:CloseAllMenus()
 				ComponentValuesMenu:Clear()
@@ -277,7 +312,7 @@ function CreateMenu()
 				ComponentValuesMenu.OnListChange = function(sender, item, index)
  					if item == component_changer then
 						 local val = item:IndexToItem(index)
-						 if (not IsBlacklisted("components", adjusted_index, val) or CLOTHING_STORE_LOCATIONS[lastShop].blacklistExempt) then
+						 if (not IsBlacklisted(getGenderFromModel(GetEntityModel(PlayerPedId())), "components", adjusted_index, val) or CLOTHING_STORE_LOCATIONS[lastShop].blacklistExempt) then
 							 --print("setting adjusted index " .. adjusted_index .. " to val " .. val)
 							 SetPedComponentVariation(me, adjusted_index, val, 0, 0)
 							 UpdateValueChangerMenu(me, adjusted_index, val, false)
@@ -320,7 +355,7 @@ function CreateMenu()
 						 local val = item:IndexToItem(index)
 						 ClearPedProp(me, adjusted_index)
 						 if val then
-							 if (not IsBlacklisted("props", adjusted_index, val) or CLOTHING_STORE_LOCATIONS[lastShop].blacklistExempt) then
+							 if (not IsBlacklisted(getGenderFromModel(GetEntityModel(PlayerPedId())), "props", adjusted_index, val) or CLOTHING_STORE_LOCATIONS[lastShop].blacklistExempt) then
 								 --print("adjusted index: " .. adjusted_index .. ", val: " .. val)
 								 SetPedPropIndex(me, adjusted_index, val, 0, true)
 								 UpdateValueChangerMenu(me, adjusted_index, val, true)
@@ -375,8 +410,8 @@ function CreateMenu()
 				character.componentstexture[i] = GetPedTextureVariation(ply, i)
 				--debugstr = debugstr .. character.components[i] .. "->" .. character.componentstexture[i] .. ","
 			end
-			TriggerServerEvent("mini:save", character)
-			TriggerServerEvent("mini:giveMeMyWeaponsPlease")
+			TriggerServerEvent("MNhbtilzj", character)
+			TriggerServerEvent("mslHLbkpE")
 			MainMenu:Visible(false)
 		end
 		MainMenu:AddItem(item)
@@ -403,7 +438,7 @@ function UpdateValueChangerMenu(me, adjusted_index, oldval, isProp)
 		ComponentValuesMenu.OnListChange = function(sender, item, index)
 			if item == component_changer then
 				 local val2 = item:IndexToItem(index)
-				 if not IsBlacklisted("components", adjusted_index, val2) or CLOTHING_STORE_LOCATIONS[lastShop].blacklistExempt then
+				 if not IsBlacklisted(getGenderFromModel(GetEntityModel(PlayerPedId())), "components", adjusted_index, val2) or CLOTHING_STORE_LOCATIONS[lastShop].blacklistExempt then
 					 --print("setting adjusted index " .. adjusted_index .. " to val2 " .. val2)
 					 SetPedComponentVariation(me, adjusted_index, val2, 0, 0)
 					 UpdateValueChangerMenu(me, adjusted_index, val2)
@@ -432,7 +467,7 @@ function UpdateValueChangerMenu(me, adjusted_index, oldval, isProp)
 				 local val2 = item:IndexToItem(index)
 				 ClearPedProp(me, adjusted_index)
 				 if val2 then
-					 if not IsBlacklisted("props", adjusted_index, val2) or CLOTHING_STORE_LOCATIONS[lastShop].blacklistExempt then
+					 if not IsBlacklisted(getGenderFromModel(GetEntityModel(PlayerPedId())), "props", adjusted_index, val2) or CLOTHING_STORE_LOCATIONS[lastShop].blacklistExempt then
 						 --print("adjusted index: " .. adjusted_index .. ", val2: " .. val2)
 						 SetPedPropIndex(me, adjusted_index, val2, 0, true)
 						 UpdateValueChangerMenu(me, adjusted_index, val2, true)
