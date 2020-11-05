@@ -314,8 +314,11 @@ local function DriveInGarage()
 			end
 		end
 
-		local vehicle_mods_blacklist = {
-			hash = 5320, --Revolter
+		local ped = PlayerPedId()
+		local veh = GetVehiclePedIsIn(ped, false)
+		local model = GetEntityModel(veh)
+		local blacklist = {
+			name = 'REVOLTER',
 		}
 
 		AddMod(0,LSCMenu.categories,"SPOILER", "Spoiler", "Increase downforce.",true)
@@ -324,10 +327,9 @@ local function DriveInGarage()
 		AddMod(6,LSCMenu.categories,"GRILLE", "Grille", "Improved engine cooling.",true)
 		AddMod(7,LSCMenu.categories,"HOOD", "Hood", "Enhance car engine cooling.",true)
 		AddMod(8,LSCMenu.categories,"FENDERS", "Fenders", "Enhance body paneling with custom fenders.",true)
-		for i=1, #vehicle_mods_blacklist do
-			if not i.hash then
+		for k,v in pairs(blacklist) do
+			if v ~= GetDisplayNameFromVehicleModel(model) then
 				AddMod(10,LSCMenu.categories,"ROOF", "Roof", "Lower your center of gravity with lightweight roof panels.",true)
-
 			end
 		end
 		AddMod(12,LSCMenu.categories,"BRAKES", "Brakes", "Increase stopping power and eliminate brake fade.",true)
