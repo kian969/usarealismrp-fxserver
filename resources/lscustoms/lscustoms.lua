@@ -319,6 +319,9 @@ local function DriveInGarage()
 		local model = GetEntityModel(veh)
 		local blacklist = {
 			name = 'REVOLTER',
+			name = 'COMET4',
+			name = 'SAVESTRA',
+			name = 'VISERIS',
 		}
 
 		AddMod(0,LSCMenu.categories,"SPOILER", "Spoiler", "Increase downforce.",true)
