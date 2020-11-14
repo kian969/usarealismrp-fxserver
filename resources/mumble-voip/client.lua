@@ -752,6 +752,12 @@ AddEventHandler("mumble:RemoveVoiceData", function(player)
 	end
 end)
 
+AddEventHandler("usa:toggleImmersion", function(blackBarsEnabled)
+	SendNUIMessage({
+		type = "toggleHUD"
+	})
+end)
+
 -- Simulate PTT when radio is active
 Citizen.CreateThread(function()
 	while true do
@@ -1107,6 +1113,33 @@ Citizen.CreateThread(function()
 		else
 			Citizen.Wait(0)
 		end
+	end
+end)
+
+-- Adjust HUD text when in / out of a vehicle --
+local wasInVehicle = false
+local numberAsBool = { [1] = true, [0] = false }
+Citizen.CreateThread(function()
+	while true do
+		local me = PlayerPedId()
+		local nowIsInVeh = IsPedInAnyVehicle(me)
+		if type(nowIsInVeh) == "number" then
+			nowIsInVeh = numberAsBool[nowIsInVeh]
+		end
+		local vehPedIsIn = GetVehiclePedIsIn(me)
+		local notInFrontSeats = GetPedInVehicleSeat(vehPedIsIn, -1) ~= me and GetPedInVehicleSeat(vehPedIsIn, 0) ~= me
+		if nowIsInVeh and (GetVehicleClass(vehPedIsIn) == 13 or notInFrontSeats) then -- don't update HUD for cycles and passengers
+			goto continue
+		end
+		if wasInVehicle ~= nowIsInVeh then 
+			wasInVehicle = not wasInVehicle
+			SendNUIMessage({
+				type = "updateHUD",
+				isInVeh = wasInVehicle
+			})
+		end
+		::continue::
+		Wait(10)
 	end
 end)
 

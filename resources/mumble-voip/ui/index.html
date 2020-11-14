@@ -5,6 +5,7 @@
 		
 		<style>
 			.info-container {
+				display: block;
 				position: absolute;
 				padding: 5px;
 				/* font-family: "Comic Sans MS", cursive, sans-serif; */
@@ -50,6 +51,12 @@
 				color: rgb(1, 176, 240);
 				font-size: 0.5vw;
 				text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+			}
+
+			@media screen and (max-width: 1500px) {
+				.info-container {
+					font-size: 14px;
+				}
 			}
 		</style>
 		<script type="text/javascript">
@@ -168,6 +175,24 @@
 
 					while (radioListElem.firstChild) {
 						radioListElem.removeChild(radioListElem.firstChild);
+					}
+				}
+
+				if (item.type == 'updateHUD') {	
+					let isInVeh = event.data.isInVeh	
+					let el = document.querySelector(".info-container")	
+					if (isInVeh) {
+						el.style.bottom = "7.3%"
+					} else {
+						el.style.bottom = "1.5%"	
+					}	
+				} else if (item.type == 'toggleHUD') {	
+					let el = document.querySelector(".info-container")
+					console.log("el.style.display: " + el.style.display)
+					if (el.style.display == "block") {
+						el.style.display = "none"
+					} else {
+						el.style.display = "block"
 					}
 				}
 			});
