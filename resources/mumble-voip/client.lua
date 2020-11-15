@@ -752,9 +752,10 @@ AddEventHandler("mumble:RemoveVoiceData", function(player)
 	end
 end)
 
-AddEventHandler("usa:toggleImmersion", function(blackBarsEnabled)
+AddEventHandler("usa:toggleImmersion", function(isRegularHUDEnabled)
 	SendNUIMessage({
-		type = "toggleHUD"
+		type = "toggleHUD",
+		enabled = isRegularHUDEnabled
 	})
 end)
 
