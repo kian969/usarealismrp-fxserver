@@ -373,6 +373,16 @@ function RemovePlayerAccessToFrequency(value)
     end 
 end
 
+-- Remove access to any frequencies that we have access to
+function ClearAllAccessToFrequencies()
+    for freq, hasAccess in pairs(radioConfig.Frequency.Access) do
+        if hasAccess then
+            radioConfig.Frequency.Access[freq] = nil
+        end
+    end
+    GenerateFrequencyList()
+end
+
 -- Give access to multiple frequencies
 function GivePlayerAccessToFrequencies(...)
     local frequencies = { ... }
@@ -463,8 +473,9 @@ Citizen.CreateThread(function()
         local isPlayingBroadcastAnim = IsEntityPlayingAnim(playerPed, broadcastDictionary, broadcastAnimation, 3)
 
         -- Open radio settings
-        if isActivatorPressed and isSecondaryPressed and not isFalling and Radio.Enabled and Radio.Has and not isDead then
-            Radio:Toggle(not Radio.Open)
+        if isActivatorPressed and isSecondaryPressed and not isFalling and not isDead then
+            --Radio:Toggle(not Radio.Open)
+            TriggerServerEvent("rp-radio:checkForRadioItem")
         elseif (Radio.Open or Radio.On) and ((not Radio.Enabled) or (not Radio.Has) or isDead) then
             Radio:Remove()
             exports["mumble-voip"]:SetMumbleProperty("radioEnabled", false)
@@ -675,21 +686,33 @@ end)
 
 RegisterNetEvent("Radio.Set")
 AddEventHandler("Radio.Set", function(value, allowedFrequencies)
-    print("setting radio frequeincies and access!")
     if type(value) == "string" then
         value = value == "true"
     elseif type(value) == "number" then
         value = value == 1
     end
 
+    if value then
+        Radio.Enabled = true
+    else
+        Radio.Enabled = false
+    end
+
     Radio.Has = value and true or false
 
-    GivePlayerAccessToFrequencies(allowedFrequencies)
+    ClearAllAccessToFrequencies()
+    for i = 1, #allowedFrequencies do
+        GivePlayerAccessToFrequency(allowedFrequencies[i])
+    end
+
+    Radio:Toggle(not Radio.Open)
 end)
 
+--[[
 Citizen.CreateThread(function()
 	while true do
 		Wait(1000)
         TriggerEvent("Radio.Set", true, {})
     end
 end)
+--]]
