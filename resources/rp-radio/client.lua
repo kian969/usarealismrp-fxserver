@@ -1,3 +1,5 @@
+local HAS_EARPIECE = false
+
 local Radio = {
     Has = false,
     Open = false,
@@ -124,7 +126,7 @@ function Radio:Toggle(toggle)
 
     self.Open = toggle
 
-    if self.On and not radioConfig.AllowRadioWhenClosed then
+    if self.On and not radioConfig.AllowRadioWhenClosed and not HAS_EARPIECE then
         exports["mumble-voip"]:SetMumbleProperty("radioEnabled", toggle)
     end
 
@@ -466,7 +468,7 @@ Citizen.CreateThread(function()
         local isFalling = IsPedFalling(playerPed)
         local isDead = IsEntityDead(playerPed)
         local minFrequency = radioConfig.Frequency.List[1]
-        local broadcastType = 3 + (radioConfig.AllowRadioWhenClosed and 1 or 0) + ((Radio.Open and radioConfig.AllowRadioWhenClosed) and -1 or 0)
+        local broadcastType = 3 + (HAS_EARPIECE and 1 or 0) + (radioConfig.AllowRadioWhenClosed and 1 or 0) + ((Radio.Open and radioConfig.AllowRadioWhenClosed) and -1 or 0)
         local broadcastDictionary = Radio.Dictionary[broadcastType]
         local broadcastAnimation = Radio.Animation[broadcastType]
         local isBroadcasting = IsControlPressed(0, radioConfig.Controls.Broadcast.Key)
@@ -645,7 +647,7 @@ Citizen.CreateThread(function()
             end
         else
             -- Play emergency services radio animation
-            if radioConfig.AllowRadioWhenClosed then
+            if radioConfig.AllowRadioWhenClosed or HAS_EARPIECE then
                 if Radio.Has and Radio.On and isBroadcasting and not isPlayingBroadcastAnim then
                     RequestAnimDict(broadcastDictionary)
     
@@ -696,6 +698,7 @@ AddEventHandler("Radio.Set", function(value, allowedFrequencies)
         Radio.Enabled = true
     else
         Radio.Enabled = false
+        HAS_EARPIECE = false
     end
 
     Radio.Has = value and true or false
@@ -708,11 +711,7 @@ AddEventHandler("Radio.Set", function(value, allowedFrequencies)
     Radio:Toggle(not Radio.Open)
 end)
 
---[[
-Citizen.CreateThread(function()
-	while true do
-		Wait(1000)
-        TriggerEvent("Radio.Set", true, {})
-    end
+RegisterNetEvent("rp-radio:toggleEarpiece")
+AddEventHandler("rp-radio:toggleEarpiece", function(hasEarpiece)
+    HAS_EARPIECE = hasEarpiece
 end)
---]]

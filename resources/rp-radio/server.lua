@@ -9,6 +9,7 @@ AddEventHandler("rp-radio:checkForRadioItem", function()
     local policeRadio = char.hasItem("Police Radio")
     if policeRadio then
         TriggerClientEvent("Radio.Set", source, true, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
+        TriggerClientEvent("rp-radio:toggleEarpiece", source, true)
     elseif civRadio then
         TriggerClientEvent("Radio.Set", source, true, {})
     else
