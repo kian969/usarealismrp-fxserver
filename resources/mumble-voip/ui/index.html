@@ -81,7 +81,7 @@
 				if (item.mode) {					
 					let modeElem = document.getElementById("voip-mode");
 
-					modeElem.textContent = item.mode + (item.radioActive ? " on radio" : "");
+					modeElem.textContent = (item.radioActive ? "(R) " : "") + item.mode // + (item.radioActive ? " on radio" : "");
 
 					if (item.talking != null) {
 						if (item.talking) {
@@ -92,7 +92,9 @@
 					}					
 				}
 
+				/*
 				if (item.radio != null) {
+					
 					let radioElem = document.getElementById("voip-radio");
 
 					if (item.radio > 0 || isNaN(item.radio)) {
@@ -101,6 +103,7 @@
 						radioElem.textContent = "";
 					}
 				}
+				*/
 
 				if (item.call != null) {
 					let callElem = document.getElementById("voip-call");
@@ -207,7 +210,7 @@
 		<!-- <div class="radio-list-container" id="voip-radio-list"></div> -->
 		<div class="info-container">
 			<div><span id="voip-mode">Initialising</span></div>
-			<div id="voip-radio"></div>
+			<!-- <div id="voip-radio"></div> --> 
 			<div id="voip-call"></div>
 			<div id="voip-warning"></div>
 		</div>
