@@ -10,6 +10,7 @@ local WEAPONS = {
 	{ name = "SMG MK2", hash = 0x78A97CD0, price = 750, rank = 2, weight = "20" },
 	{ hash = 100416529, name = "Marksman Rifle", rank = 2, weight = "40", price = 1000},
 	{ name = "Spike Strips", rank = 3 },
+    { name = "Police Radio", rank = 1, price = 300, type = "misc" }
 }
 
 for i = 1, #WEAPONS do
@@ -17,7 +18,7 @@ for i = 1, #WEAPONS do
     WEAPONS[i].notStackable = true
     WEAPONS[i].quantity = 1
 	WEAPONS[i].legality = "legal"
-	if WEAPONS[i].name ~= "Spike Strips" then
+	if WEAPONS[i].name ~= "Spike Strips" and WEAPONS[i].name ~= "Police Radio" then
 		WEAPONS[i].type = "weapon"
 	end
 end
