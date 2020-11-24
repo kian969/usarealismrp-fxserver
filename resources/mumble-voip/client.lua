@@ -784,7 +784,7 @@ Citizen.CreateThread(function()
 				SetControlNormal(2, 249, 1.0)
 			end
 
-			if IsControlJustPressed(0, mumbleConfig.controls.proximity.key) then
+			if IsControlJustPressed(0, mumbleConfig.controls.proximity.key) and not IsControlPressed(0, mumbleConfig.controls.speaker.secondary) then
 				local secondaryPressed = true
 
 				if mumbleConfig.controls.speaker.key ~= mumbleConfig.controls.proximity.key or mumbleConfig.controls.speaker.secondary == nil then
