@@ -81,52 +81,27 @@ end
 ----------------------
 ---- Set up blips ----
 ----------------------
-
-local BLIPS = {}
-function EnumerateBlips()
-	if #BLIPS == 0 then
-		for i = 1, #CLOTHING_STORE_LOCATIONS do
-			if not CLOTHING_STORE_LOCATIONS[i].noblip then
-		      	local blip = AddBlipForCoord(CLOTHING_STORE_LOCATIONS[i].x, CLOTHING_STORE_LOCATIONS[i].y, CLOTHING_STORE_LOCATIONS[i].z)
-				SetBlipSprite(blip, 73)
-				SetBlipDisplay(blip, 4)
-				SetBlipScale(blip, 0.8)
-				SetBlipColour(blip, 43)
-				SetBlipAsShortRange(blip, true)
-				BeginTextCommandSetBlipName("STRING")
-				AddTextComponentString('Clothes Store')
-				EndTextCommandSetBlipName(blip)
-				table.insert(BLIPS, blip)
-		    end
-		end
+for i = 1, #CLOTHING_STORE_LOCATIONS do
+	if not CLOTHING_STORE_LOCATIONS[i].noblip then
+		local blip = AddBlipForCoord(CLOTHING_STORE_LOCATIONS[i].x, CLOTHING_STORE_LOCATIONS[i].y, CLOTHING_STORE_LOCATIONS[i].z)
+		SetBlipSprite(blip, 73)
+		SetBlipDisplay(blip, 4)
+		SetBlipScale(blip, 0.8)
+		SetBlipColour(blip, 43)
+		SetBlipAsShortRange(blip, true)
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString('Clothes Store')
+		EndTextCommandSetBlipName(blip)
 	end
 end
-
-RegisterNetEvent('uDAOPyjWN')
-AddEventHandler('uDAOPyjWN', function(blipsTable)
-  if blipsTable['clothes'] then
-    EnumerateBlips()
-  else
-    for _, k in pairs(BLIPS) do
-      print(k)
-      RemoveBlip(k)
-    end
-    BLIPS = {}
-  end
-end)
-
-TriggerServerEvent('YooHZtMqt')
+-----------------
+-----------------
+-----------------
 
 local lastShop = nil
 
------------------
------------------
------------------
-
-
-
-RegisterNetEvent("KBWJwZSIX")
-AddEventHandler("KBWJwZSIX", function()
+RegisterNetEvent("clothing-store:openMenu")
+AddEventHandler("clothing-store:openMenu", function()
 	--------------------
 	-- Open Menu --
 	--------------------
@@ -144,12 +119,13 @@ Citizen.CreateThread(function()
 						if not previous_menu then
 							if IsControlJustPressed(1, MENU_KEY)  then
 								if not IsEntityDead(me) then
+
 									------------------------------------------------------------
 									-- give money to owner, subtract from customer --
 									local business = exports["usa-businesses"]:GetClosestStore(15)
-									TriggerServerEvent("MROgbJgLw", business)
+									TriggerServerEvent("clothing-store:chargeCustomer", business)
 								else
-									TriggerEvent("KlOIqtmCr", "Can't use the clothing store when dead!")
+									TriggerEvent("usa:notify", "Can't use the clothing store when dead!")
 								end
 							end
 						else
@@ -172,13 +148,15 @@ Citizen.CreateThread(function()
 			end
 end)
 
-RegisterNetEvent("tckAZdWLL")
-	AddEventHandler("tckAZdWLL", function(weapons)
-			-- weapons
-			for i = 1, #weapons do
-				local weaponHash = weapons[i].hash
-				GiveWeaponToPed(GetPlayerPed(-1), weaponHash, 1000, 0, false) -- name already is the hash
-			end
+RegisterNetEvent("CS:giveWeapons")
+AddEventHandler("CS:giveWeapons", function(weapons)
+	-- weapons
+	for i = 1, #weapons do
+		local weaponHash = weapons[i].hash
+		GiveWeaponToPed(GetPlayerPed(-1), weaponHash, 1000, 0, false) -- name already is the hash
+
+		-- todo: need to apply give components / tints here ...
+	end
 end)
 
 function ChangeIntoMPModel(skin, isMale)
@@ -410,8 +388,8 @@ function CreateMenu()
 				character.componentstexture[i] = GetPedTextureVariation(ply, i)
 				--debugstr = debugstr .. character.components[i] .. "->" .. character.componentstexture[i] .. ","
 			end
-			TriggerServerEvent("MNhbtilzj", character)
-			TriggerServerEvent("mslHLbkpE")
+			TriggerServerEvent("mini:save", character)
+			TriggerServerEvent("mini:giveMeMyWeaponsPlease")
 			MainMenu:Visible(false)
 		end
 		MainMenu:AddItem(item)
