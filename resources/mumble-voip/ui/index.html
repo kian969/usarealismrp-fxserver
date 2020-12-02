@@ -81,7 +81,22 @@
 				if (item.mode) {					
 					let modeElem = document.getElementById("voip-mode");
 
-					modeElem.textContent = (item.radioActive ? "(R) " : "") + item.mode // + (item.radioActive ? " on radio" : "");
+					//modeElem.textContent = (item.radioActive ? "(R) " : "") + item.mode
+
+					if (item.radioActive) {
+						modeElem.textContent = "(R) " + item.mode
+					} else if (item.call && item.call > 0) {
+						/*
+						if (speakerEnabled) {
+							modeElem.textContent = "(C 🔊) " + item.mode 
+						} else {
+							modeElem.textContent = "(C) " + item.mode 
+						}
+						*/
+						modeElem.textContent = "(C) " + item.mode
+					} else {
+						modeElem.textContent = item.mode
+					}
 
 					if (item.talking != null) {
 						if (item.talking) {
@@ -105,19 +120,24 @@
 				}
 				*/
 
+				/*
 				if (item.call != null) {
-					let callElem = document.getElementById("voip-call");
+					let modeElem = document.getElementById("voip-mode");
 					
 					if (item.call > 0) {
+						//console.log("speakerEnabled: " + speakerEnabled)
 						if (speakerEnabled) {
-							callElem.textContent = "[Call] [" + (item.speaker ? "\uD83D\uDD0A" : "\uD83D\uDD08") + "] " + item.call;
+							//callElem.textContent = "[Call] [" + (item.speaker ? "\uD83D\uDD0A" : "\uD83D\uDD08") + "] " + item.call;
+							modeElem.textContent = "(C 🔊) " + modeElem.textContent
 						} else {
-							callElem.textContent = "[Call] " + item.call;
+							//callElem.textContent = "[Call] " + item.call;
+							modeElem.textContent = "(C) " + modeElem.textContent
 						}
-					} else {
-						callElem.textContent = "";
-					}
+					} //else {
+						//callElem.textContent = "";
+					//}
 				}
+				*/
 
 				if (item.warningId != null) {
 					let warningElem = document.getElementById("voip-warning");

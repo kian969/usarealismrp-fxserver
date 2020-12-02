@@ -861,6 +861,11 @@ Citizen.CreateThread(function()
 					if playerData.call > 0 then
 						SetVoiceData("callSpeaker", not playerData.callSpeaker)
 						playerData.callSpeaker = not playerData.callSpeaker
+						if playerData.callSpeaker then
+							exports.globals:notify("Speaker mode: ~g~ON~w~!")
+						else
+							exports.globals:notify("Speaker mode: ~y~OFF~w~!")
+						end
 					end
 				end
 			end
