@@ -39,11 +39,10 @@ Radio.Commands = {
         Handler = function(src, args, raw)
             local playerPed = PlayerPedId()
             local isFalling = IsPedFalling(playerPed)
-            local isDead = IsEntityDead(playerPed)
 
-            if not isFalling and Radio.Enabled and Radio.Has and not isDead then
+            if not isFalling and Radio.Enabled and Radio.Has then
                 Radio:Toggle(not Radio.Open)
-            elseif (Radio.Open or Radio.On) and ((not Radio.Enabled) or (not Radio.Has) or isDead) then
+            elseif (Radio.Open or Radio.On) and (not Radio.Enabled or not Radio.Has) then
                 Radio:Toggle(false)
                 Radio.On = false
                 Radio:Remove()
@@ -111,7 +110,7 @@ function Radio:Toggle(toggle)
     local playerPed = PlayerPedId()
     local count = 0
 
-    if not self.Has or IsEntityDead(playerPed) then
+    if not self.Has then
         self.Open = false
         
         DetachEntity(self.Handle, true, false)
@@ -464,9 +463,8 @@ Citizen.CreateThread(function()
         -- Init local vars
         local playerPed = PlayerPedId()
         local isActivatorPressed = IsControlJustPressed(0, radioConfig.Controls.Activator.Key)
-        local isSecondaryPressed = (radioConfig.Controls.Secondary.Enabled == false and true or IsControlPressed(0, radioConfig.Controls.Secondary.Key))
+        local isSecondaryPressed = (radioConfig.Controls.Secondary.Enabled == false and true or (IsControlPressed(0, radioConfig.Controls.Secondary.Key) or IsDisabledControlPressed(0, radioConfig.Controls.Secondary.Key)))
         local isFalling = IsPedFalling(playerPed)
-        local isDead = IsEntityDead(playerPed)
         local minFrequency = radioConfig.Frequency.List[1]
         local broadcastType = 3 + (HAS_EARPIECE and 1 or 0) + (radioConfig.AllowRadioWhenClosed and 1 or 0) + ((Radio.Open and radioConfig.AllowRadioWhenClosed) and -1 or 0)
         local broadcastDictionary = Radio.Dictionary[broadcastType]
@@ -475,10 +473,10 @@ Citizen.CreateThread(function()
         local isPlayingBroadcastAnim = IsEntityPlayingAnim(playerPed, broadcastDictionary, broadcastAnimation, 3)
 
         -- Open radio settings
-        if isActivatorPressed and isSecondaryPressed and not isFalling and not isDead then
+        if isActivatorPressed and isSecondaryPressed and not isFalling then
             --Radio:Toggle(not Radio.Open)
             TriggerServerEvent("rp-radio:checkForRadioItem")
-        elseif (Radio.Open or Radio.On) and ((not Radio.Enabled) or (not Radio.Has) or isDead) then
+        elseif (Radio.Open or Radio.On) and (not Radio.Enabled or not Radio.Has) then
             Radio:Remove()
             exports["mumble-voip"]:SetMumbleProperty("radioEnabled", false)
             Radio:Toggle(false)
@@ -679,9 +677,8 @@ RegisterNetEvent("Radio.Toggle")
 AddEventHandler("Radio.Toggle", function()
     local playerPed = PlayerPedId()
     local isFalling = IsPedFalling(playerPed)
-    local isDead = IsEntityDead(playerPed)
     
-    if not isFalling and not isDead and Radio.Enabled and Radio.Has then
+    if not isFalling and Radio.Enabled and Radio.Has then
         Radio:Toggle(not Radio.Open)
     end
 end)
