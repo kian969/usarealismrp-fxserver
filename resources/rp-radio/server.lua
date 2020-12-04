@@ -14,7 +14,8 @@ AddEventHandler("rp-radio:checkForRadioItem", function()
     local charJob = char.get("job")
     local civRadio = char.hasItem("Radio")
     local policeRadio = char.hasItem("Police Radio")
-    if policeRadio then
+    local emsRadio = char.hasItem("EMS Radio")
+    if policeRadio or emsRadio then
         TriggerClientEvent("Radio.Set", source, true, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
         if canJobUseEarpiece(charJob) then
             TriggerClientEvent("rp-radio:toggleEarpiece", source, true)

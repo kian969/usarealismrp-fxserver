@@ -221,7 +221,8 @@ var itemImages = {
   "Heavy Shotgun": "https://i.imgur.com/JRP4gPv.png",
   "SMG MK2": "https://i.imgur.com/sN9udjW.png",
   "Radio": "https://i.imgur.com/FUreKPT.png",
-  "Police Radio": "https://i.imgur.com/0ve01NN.png"
+  "Police Radio": "https://i.imgur.com/0ve01NN.png",
+  "EMS Radio": "https://i.imgur.com/0ve01NN.png"
 }
 
 var menuItems = [
