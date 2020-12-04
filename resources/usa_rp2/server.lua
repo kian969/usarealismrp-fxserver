@@ -284,31 +284,57 @@ AddEventHandler("impound:impoundVehicle", function(vehicle, plate)
 	end
 end)
 
-local jobsToLog = {
-	'sheriff',
-	'ems',
-	'doctor',
-	'police',
-	'corrections'
+local JOBS_TO_LOG = {
+	sheriff = {
+		DISPLAY_NAME = "SASP",
+		WEBHOOK_URL = "https://discordapp.com/api/webhooks/777640062560239636/8cri7MtQA9Qm12hQgxgwb-xYFqzlLZMbizAZ7tLvA8xeXRPq4q6xGAg_rT_2_9PL26xk"
+	},
+	corrections = {
+		DISPLAY_NAME = "BCSO/Corrections",
+		WEBHOOK_URL = "https://discordapp.com/api/webhooks/777640307814432799/EQjQ9DIE7rR5Iy4ipo-yjNpKazlXuYIMTKicFW8ejr089L9XRuPkvcfDaJHt2gP5ILwA"
+	},
+	ems = {
+		DISPLAY_NAME = "EMS",
+		WEBHOOK_URL = "https://discordapp.com/api/webhooks/777640434398396417/xcOjuF1EwF82x3lMVGc5SbRcPPNDkHI9vFD2TWsVsMw91jEYt8DNhNSuAOrpchKYbuVw"
+	},
+	doctor = {
+		DISPLAY_NAME = "Pillbox Medical",
+		WEBHOOK_URL = "https://discordapp.com/api/webhooks/777640434398396417/xcOjuF1EwF82x3lMVGc5SbRcPPNDkHI9vFD2TWsVsMw91jEYt8DNhNSuAOrpchKYbuVw"
+	},
+	realtor = {
+		DISPLAY_NAME = "REA",
+		WEBHOOK_URL = "https://discordapp.com/api/webhooks/777652520013004850/7qTAZLylrFIZB24to7fZ0qJi8RZzjBKB5FaL-iAUtZNEXdHGi_mhpnJMtB_6TdHoAadx"
+	},
+	judge = {
+		DISPLAY_NAME = "Judge",
+		WEBHOOK_URL = "https://discordapp.com/api/webhooks/777652709905661972/MduQ6-uICtA2Fv5y6JmEBqTMUYOZ6bF6u_4U6C98ZyGDSNkUJTc2OgfyTQeXkqP6zgu8"
+	},
+	lawyer = {
+		DISPLAY_NAME = "Attorney",
+		WEBHOOK_URL = "https://discordapp.com/api/webhooks/777652709905661972/MduQ6-uICtA2Fv5y6JmEBqTMUYOZ6bF6u_4U6C98ZyGDSNkUJTc2OgfyTQeXkqP6zgu8"
+	},
+	da = {
+		DISPLAY_NAME = "District Attorney",
+		WEBHOOK_URL = "https://discordapp.com/api/webhooks/777652709905661972/MduQ6-uICtA2Fv5y6JmEBqTMUYOZ6bF6u_4U6C98ZyGDSNkUJTc2OgfyTQeXkqP6zgu8"
+	}
 }
-
 
 RegisterServerEvent('job:sendNewLog')
 AddEventHandler('job:sendNewLog', function(source, job, isOnDuty)
 	local char = exports["usa-characters"]:GetCharacter(source)
 	local userName = char.getFullName()
+	local steamName = GetPlayerName(source)
+	local steamIdent = GetPlayerIdentifier(source)
 
-	local reason = 'User signed on-duty'
+	local reason = 'Clocked in'
 	local color = 47156
-	local author = 'User is On-Duty'
+	local author = "Timesheet"
 	if not isOnDuty then
-		reason = 'User signed off-duty'
+		reason = 'Clocked out'
 		color = 13565952
-		author = 'User is Off-Duty'
 	end
 
-	local url = 'https://discordapp.com/api/webhooks/618096197156208660/KmZtxRfaZmtuWW3BwIxWrxq5Meq0uXZzPJxBrDOridMh-NSX1OFHVbnGnX9Gpd9l1Ctw'
-	PerformHttpRequest(url, function(err, text, headers)
+	PerformHttpRequest(JOBS_TO_LOG[job].WEBHOOK_URL, function(err, text, headers)
 		if text then
 			print(text)
 		end
@@ -320,101 +346,95 @@ AddEventHandler('job:sendNewLog', function(source, job, isOnDuty)
 				author = {
 					name = author
 				},
-
 				fields = {
-			        {
-			          name = "Identifier 1",
-			          value = GetPlayerIdentifier(source),
-			          inline = true
-			        },
-			        {
-			          name = "Identifier 2",
-			          value = userName,
-			          inline = true
-			        },
-			        {
-			          name = "Identifier 3",
-			          value = GetPlayerName(source),
-			          inline = true
-			        },
-			        {
-			          name = "Job",
-			          value = job,
-			          inline = true
-			        },
-			        {
-			          name = "Reason",
-			          value = reason,
-			          inline = true
-			        },
-		      	},
-
-		      	footer = {
-			        text = os.date('%m-%d-%Y %H:%M:%S', os.time()) .. ' PDT'
-			    }
+					{
+						name = "Identifier 1",
+						value = steamIdent,
+						inline = true
+					},
+					{
+						name = "Identifier 2",
+						value = userName,
+						inline = true
+					},
+					{
+						name = "Identifier 3",
+						value = steamName,
+						inline = true
+					},
+					{
+						name = "Job",
+						value = JOBS_TO_LOG[job].DISPLAY_NAME,
+						inline = true
+					},
+					{
+						name = "Reason",
+						value = reason,
+						inline = true
+					},
+				},
+				footer = {
+					text = os.date('%m-%d-%Y %H:%M:%S', os.time()) .. ' PST'
+				}
 			}
 		},
 	}), { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })
 end)
 
-RegisterServerEvent('playerDropped')
-AddEventHandler('playerDropped', function()
-	local char = exports["usa-characters"]:GetCharacter(source)
+function handlePlayerDropDutyLog(char, steamName, steamIdent)
 	if char then
 		local userJob = char.get('job')
 		local userName = char.getFullName()
-		for i = 1, #jobsToLog do
-			if jobsToLog[i] == userJob then
-				local url = "https://discordapp.com/api/webhooks/618096197156208660/KmZtxRfaZmtuWW3BwIxWrxq5Meq0uXZzPJxBrDOridMh-NSX1OFHVbnGnX9Gpd9l1Ctw"
-				PerformHttpRequest(url, function(err, text, headers)
-					if text then
-						print(text)
-					end
-				end, "POST", json.encode({
-					embeds = {
-						{
-							author = {
-								name = 'User is Off-Duty'
+		if JOBS_TO_LOG[userJob] then
+			local jobDisplayName = JOBS_TO_LOG[userJob].DISPLAY_NAME
+			PerformHttpRequest(JOBS_TO_LOG[userJob].WEBHOOK_URL, function(err, text, headers)
+				if text then
+					print(text)
+				end
+			end, "POST", json.encode({
+				embeds = {
+					{
+						author = {
+							name = 'Clocked out'
+						},
+
+						fields = {
+							{
+								name = "Identifier 1",
+								value = steamIdent,
+								inline = true
 							},
+							{
+								name = "Identifier 2",
+								value = userName,
+								inline = true
+							},
+							{
+								name = "Identifier 3",
+								value = steamName,
+								inline = true
+							},
+							{
+								name = "Department",
+								value = jobDisplayName,
+								inline = true
+							},
+							{
+								name = "Reason",
+								value = 'Went to sleep',
+								inline = true
+							},
+						},
 
-							fields = {
-						        {
-						          name = "Identifier 1",
-						          value = GetPlayerIdentifier(source),
-						          inline = true
-						        },
-						        {
-						          name = "Identifier 2",
-						          value = userName,
-						          inline = true
-						        },
-						        {
-						          name = "Identifier 3",
-						          value = GetPlayerName(source),
-						          inline = true
-						        },
-						        {
-						          name = "Job",
-						          value = userJob,
-						          inline = true
-						        },
-						        {
-						          name = "Reason",
-						          value = 'User left the server',
-						          inline = true
-						        },
-					      	},
-
-					      	footer = {
-						        text = os.date('%m-%d-%Y %H:%M:%S', os.time()) .. ' PDT'
-						    }
+						footer = {
+							text = os.date('%m-%d-%Y %H:%M:%S', os.time()) .. ' PST'
 						}
-					},
-				}), { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })
-			end
+					}
+				},
+			}), { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })
 		end
 	end
-end)
+end
 
 -- end util functions / start commands
 
