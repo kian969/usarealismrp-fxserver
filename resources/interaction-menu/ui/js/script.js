@@ -2,7 +2,7 @@ var emoteOptions = ["Cancel", "Cop", "Sit", "Cross Arms", "Kneel", "CPR", "Notep
 "Flex", "Sit up", "Push up", "Peace", "Mechanic", "Smoke 1", "Smoke 2", "Drink", "Gang 1", "Gang 2", "Prone", "Weld", "Bum 1", "Bum 2", "Bum 3", "Drill", "Blower", "Chillin'", "Mobile Film", "Planting", "Golf", "Hammer", "Clean", "Musician", "Party", "Prostitute", "High Five", "Wave", "Hug", "Fist bump", "Salute", "Dance 1", "Dance 2", "Dance 3", "Dance 4", "Dance 5", "Shag 1", "Shag 2", "Shag 3",
 "Whatup", "Kiss", "Handshake", "Surrender", "Aim", "Fail", "No", "Palm", "Finger"];
 
-const DEFAULT_ITEM_IMAGE = "https://banner2.kisspng.com/20180131/fvw/kisspng-question-mark-icon-question-mark-5a7214f2980a92.2259030715174259066228.jpg";
+const DEFAULT_ITEM_IMAGE = "https://i.imgur.com/JlvKMeQ.png";
 
 var itemImages = {
   "Driver's License": "https://i.imgur.com/dy0SpFh.png",
@@ -221,7 +221,8 @@ var itemImages = {
   "Heavy Shotgun": "https://i.imgur.com/JRP4gPv.png",
   "SMG MK2": "https://i.imgur.com/sN9udjW.png",
   "Radio": "https://i.imgur.com/FUreKPT.png",
-  "Police Radio": "https://i.imgur.com/0ve01NN.png"
+  "Police Radio": "https://i.imgur.com/0ve01NN.png",
+  "Compact Rifle": "https://i.imgur.com/38RjuhX.png"
 }
 
 var menuItems = [

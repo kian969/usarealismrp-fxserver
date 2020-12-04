@@ -6,8 +6,8 @@ local UPDATE_TIME_INTERVAL_MINUTES = 30
 local CHARACTERS = {} -- table of all playing characters for fast look up
 
 local SETTINGS = {
-  DEFAULT_BANK = 0,
-  DEFAULT_MONEY = 5000
+  DEFAULT_BANK = 5000,
+  DEFAULT_MONEY = 1500
 }
 
 AddEventHandler("playerDropped", function(reason)
@@ -46,6 +46,8 @@ AddEventHandler("playerDropped", function(reason)
     end
     -- add to recent DC list --
     TriggerEvent("playerlist:addDC", char)
+    -- send duty log if on duty for one of a few designated jobs --
+    exports["usa_rp2"]:handlePlayerDropDutyLog(char, GetPlayerName(usource), accountIdentifier)
     -- destroy player object --
     print("[usa-characters] Destroying character object for src: " .. usource)
     CHARACTERS[usource] = nil
