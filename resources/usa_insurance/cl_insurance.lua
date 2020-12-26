@@ -31,7 +31,7 @@ function CreateMenu(menu)
 		-- Make a claim --
 		claim_submenu = _menuPool:AddSubMenu(menu, "Make a Claim", "Issue a claim for a damaged or lost vehicle.", true)
 		-- Purchase --
-		local purchaseItem = NativeUI.CreateItem("Purchase or Renew", "If not insured, purchase or renew now for $500.")
+		local purchaseItem = NativeUI.CreateItem("Purchase or Renew", "If not insured, purchase or renew now for $5,000.")
 		purchaseItem.Activated = function(parentmenu, selected)
 			TriggerServerEvent("insurance:checkPlayerInsurance")
 		end
@@ -60,13 +60,15 @@ function CreateMenu(menu)
 									vehName = vehicle.model
 								end
 								if vehicle.stored == false then
-									local item = NativeUI.CreateItem(vehicle.make .. " " .. vehicle.model, "Claim this vehicle for a small base fee + $" .. comma_value(.03 * vehicle.price))
-									item.Activated = function(parentmenu, selected)
-										local business = exports["usa-businesses"]:GetClosestStore(15)
-										TriggerServerEvent("insurance:fileClaim", vehicle, business)
-										_menuPool:CloseAllMenus()
+									if vehicle.price then
+										local item = NativeUI.CreateItem(vehicle.make .. " " .. vehicle.model, "Claim this vehicle for a small base fee + $" .. comma_value(.03 * vehicle.price))
+										item.Activated = function(parentmenu, selected)
+											local business = exports["usa-businesses"]:GetClosestStore(15)
+											TriggerServerEvent("insurance:fileClaim", vehicle, business)
+											_menuPool:CloseAllMenus()
+										end
+										claim_submenu.SubMenu:AddItem(item)
 									end
-									claim_submenu.SubMenu:AddItem(item)
 								end
 							end
 						end

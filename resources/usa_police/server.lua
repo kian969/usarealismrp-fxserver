@@ -1,15 +1,20 @@
+local JOB_NAME = "sheriff"
+
 local armoryItems = {
     { name = "First Aid Kit", hash = 101631238, price = 25, weight = 10 },
-    { name = "Fire Extinguisher", hash = 101631238, price = 25, weight = 20 },
-    { name = "Flare", hash = 1233104067, price = 25, weight = 5 },
-    { name = "Tear Gas", hash = -1600701090, price = 25, weight = 5 },
+    { name = "Fire Extinguisher", hash = 101631238, price = 100, weight = 20 },
+    { name = "Flare", hash = 1233104067, price = 200, weight = 5 },
+    { name = "Tear Gas", hash = -1600701090, price = 300, weight = 5 },
     { name = "Flashlight", hash = -1951375401, price = 25, weight = 4 },
-    { name = "Nightstick", hash = 1737195953, price = 25, weight = 4 },
-    { name = "Combat Pistol", hash = 1593441988, price = 100, weight = 5 },
-    { name = "Stun Gun", hash = 911657153, price = 250, weight = 5 },
-    { name = "SMG", hash = 736523883, price = 500, weight = 10 },
-    { name = "MK2 Pump Shotgun", hash = 1432025498, price = 500, weight = 15 },
-    { name = "MK2 Carbine Rifle", hash = 4208062921, price = 500, weight = 15, minRank = 2 }
+    { name = "Nightstick", hash = 1737195953, price = 100, weight = 4 },
+    { name = "Combat Pistol", hash = 1593441988, price = 300, weight = 5 },
+    { name = "Stun Gun", hash = 911657153, price = 400, weight = 5 },
+    { name = "SMG", hash = 736523883, price = 750, weight = 25 },
+    { name = "SMG MK2", hash = 0x78A97CD0, price = 750, weight = 20 },
+    { name = "MK2 Pump Shotgun", hash = 1432025498, price = 700, weight = 25 },
+    { name = "MK2 Carbine Rifle", hash = 4208062921, price = 700, weight = 25, minRank = 2 },
+    { name = "Spike Strips", price = 700 },
+    { name = "Police Radio", price = 300, type = "misc", weight = 5 }
 }
 
 for i = 1, #armoryItems do
@@ -17,7 +22,9 @@ for i = 1, #armoryItems do
     armoryItems[i].notStackable = true
     armoryItems[i].quantity = 1
     armoryItems[i].legality = "legal"
-    armoryItems[i].type = "weapon"
+    if armoryItems[i].name ~= "Spike Strips" and armoryItems[i].name ~= "Police Radio" then
+        armoryItems[i].type = "weapon"
+    end
 end
 
 RegisterServerEvent("police:loadArmoryItems")
@@ -68,6 +75,7 @@ AddEventHandler('rconCommand', function(commandName, args)
                 RconPrint("DEBUG: " .. playerId .. " un-whitelisted as EMS.")
             end
         elseif wl_type == "da" then
+            local char = exports["usa-characters"]:GetCharacter(playerId)
             if rank > 0 then
                 char.set("daRank", rank)
                 RconPrint("DEBUG: " .. playerId .. "'s DA rank has been set to: " .. rank .. "!")
@@ -246,51 +254,55 @@ RegisterServerEvent("policestation2:requestPurchase")
 AddEventHandler("policestation2:requestPurchase", function(index)
     local usource = source
     local weapon = armoryItems[index]
-    local char = exports["usa-characters"]:GetCharacter(usource)
-    local rank = char.get("policeRank")
-    if weapon.minRank then
-        if rank < weapon.minRank then
-            TriggerClientEvent("usa:notify", usource, "Not high enough rank, need to be: " .. weapon.minRank)
-            return
-        end
-    end
-    if char.canHoldItem(weapon) then
-        local user_money = char.get("money")
-        if user_money - armoryItems[index].price >= 0 then
-            local timestamp = os.date("*t", os.time())
-            local letters = {}
-            for i = 65,  90 do table.insert(letters, string.char(i)) end -- add capital letters
-            local serialEnding = math.random(100000000, 999999999)
-            local serialLetter = letters[math.random(#letters)]
-            weapon.serialNumber = serialLetter .. serialEnding
-            weapon.uuid = weapon.serialNumber
-            local weaponDB = {}
-            weaponDB.name = weapon.name
-            weaponDB.serialNumber = serialLetter .. serialEnding
-            weaponDB.ownerName = char.getFullName()
-            weaponDB.ownerDOB = char.get('dateOfBirth')
-            weaponDB.issueDate = timestamp.month .. "/" .. timestamp.day .. "/" .. timestamp.year
-            local attachments = GetWeaponAttachments(weapon.name)
-            weaponDB.components = attachments
-            weapon.components = attachments
-            char.giveItem(weapon, 1)
-            char.removeMoney(armoryItems[index].price)
-            TriggerClientEvent("mini:equipWeapon", usource, armoryItems[index].hash, attachments) -- equip
-            TriggerClientEvent('usa:notify', usource, 'Purchased: ~y~'..weapon.name..'\n~s~Serial Number: ~y~'..weapon.serialNumber..'\n~s~Price: ~y~$'..armoryItems[index].price)
-            TriggerEvent('es:exposeDBFunctions', function(couchdb)
-                couchdb.createDocumentWithId("legalweapons", weaponDB, weaponDB.serialNumber, function(success)
-                    if success then
-                        print("* Weapon created serial["..weaponDB.serialNumber.."] name["..weaponDB.name.."] owner["..weaponDB.ownerName.."] *")
-                    else
-                        print("* Error: Weapon failed to be created!! *")
-                    end
-                end)
-            end)
-        else
-            TriggerClientEvent("usa:notify", usource, "Not enough money!")
-        end
+    if weapon.name == "Spike Strips" then
+        TriggerEvent("spikestrips:equip", true, usource) -- true = pay required
     else
-        TriggerClientEvent("usa:notify", usource, "Inventory is full!")
+        local char = exports["usa-characters"]:GetCharacter(usource)
+        local rank = char.get("policeRank")
+        if weapon.minRank then
+            if rank < weapon.minRank then
+                TriggerClientEvent("usa:notify", usource, "Not high enough rank, need to be: " .. weapon.minRank)
+                return
+            end
+        end
+        if char.canHoldItem(weapon) then
+            local user_money = char.get("money")
+            if user_money - armoryItems[index].price >= 0 then
+                local timestamp = os.date("*t", os.time())
+                local letters = {}
+                for i = 65,  90 do table.insert(letters, string.char(i)) end -- add capital letters
+                local serialEnding = math.random(100000000, 999999999)
+                local serialLetter = letters[math.random(#letters)]
+                weapon.serialNumber = serialLetter .. serialEnding
+                weapon.uuid = weapon.serialNumber
+                local weaponDB = {}
+                weaponDB.name = weapon.name
+                weaponDB.serialNumber = serialLetter .. serialEnding
+                weaponDB.ownerName = char.getFullName()
+                weaponDB.ownerDOB = char.get('dateOfBirth')
+                weaponDB.issueDate = timestamp.month .. "/" .. timestamp.day .. "/" .. timestamp.year
+                local attachments = GetWeaponAttachments(weapon.name)
+                weaponDB.components = attachments
+                weapon.components = attachments
+                char.giveItem(weapon, 1)
+                char.removeMoney(armoryItems[index].price)
+                TriggerClientEvent("mini:equipWeapon", usource, armoryItems[index].hash, attachments) -- equip
+                TriggerClientEvent('usa:notify', usource, 'Purchased: ~y~'..weapon.name..'\n~s~Serial Number: ~y~'..weapon.serialNumber..'\n~s~Price: ~y~$'..armoryItems[index].price)
+                TriggerEvent('es:exposeDBFunctions', function(couchdb)
+                    couchdb.createDocumentWithId("legalweapons", weaponDB, weaponDB.serialNumber, function(success)
+                        if success then
+                            print("* Weapon created serial["..weaponDB.serialNumber.."] name["..weaponDB.name.."] owner["..weaponDB.ownerName.."] *")
+                        else
+                            print("* Error: Weapon failed to be created!! *")
+                        end
+                    end)
+                end)
+            else
+                TriggerClientEvent("usa:notify", usource, "Not enough money!")
+            end
+        else
+            TriggerClientEvent("usa:notify", usource, "Inventory is full!")
+        end
     end
 end)
 
@@ -318,7 +330,7 @@ AddEventHandler("policestation2:loadOutfit", function(slot)
         TriggerClientEvent("policestation2:setCharacter", source, policeChar[tostring(slot)])
         if job ~= 'sheriff' then
             char.set("job", "sheriff")
-            TriggerEvent('job:sendNewLog', source, 'sheriff', true)
+            TriggerEvent('job:sendNewLog', source, JOB_NAME, true)
         end
         TriggerClientEvent('interaction:setPlayersJob', source, 'sheriff')
         TriggerEvent("eblips:add", {name = char.getName(), src = source, color = 3})
@@ -335,7 +347,7 @@ AddEventHandler("policestation2:offduty", function()
     TriggerClientEvent('interaction:setPlayersJob', source, 'civ')
     TriggerClientEvent("policestation2:setciv", source, char.get("appearance"), playerWeapons)
     char.set("job", "civ")
-    TriggerEvent('job:sendNewLog', source, 'sheriff', false)
+    TriggerEvent('job:sendNewLog', source, JOB_NAME, false)
     TriggerEvent("eblips:remove", source)
     TriggerClientEvent("radio:unsubscribe", source)
 end)
@@ -380,6 +392,9 @@ function GetWeaponAttachments(name)
         --table.insert(attachments, 'COMPONENT_PUMPSHOTGUN_MK2_CLIP_HOLLOWPOINT')
     elseif name == "Combat Pistol" then
         table.insert(attachments, 0x359B7AAE)
+    elseif name == "SMG MK2" then
+        table.insert(attachments, "COMPONENT_AT_AR_FLSH")
+        table.insert(attachments, "COMPONENT_AT_SIGHTS_SMG")
     end
     return attachments
 end

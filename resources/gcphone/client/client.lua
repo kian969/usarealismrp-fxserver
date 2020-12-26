@@ -126,6 +126,7 @@ end)
 --  Gestion des appels fixe
 --====================================================================================
 function startFixeCall (fixeNumber)
+  TriggerEvent("hotkeys:enable", false)
   local number = ''
   DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", "", "", "", "", 10)
   while (UpdateOnscreenKeyboard() == 0) do
@@ -141,6 +142,7 @@ function startFixeCall (fixeNumber)
     })
     PhonePlayCall(true)
   end
+  TriggerEvent("hotkeys:enable", true)
 end
 
 function TakeAppel (infoCall)
@@ -396,7 +398,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
     inCall = true
     --NetworkSetVoiceChannel(infoCall.id + 1)
     --NetworkSetTalkerProximity(0.0)
-    exports.tokovoip_script:addPlayerToRadio(infoCall.id + 300) -- +300 just to avoid conflicting with dispatch radio channels
+    exports["mumble-voip"]:addPlayerToCall(infoCall.id + 300) -- +300 just to avoid conflicting with dispatch radio channels
   end
   if menuIsOpen == false then 
     TooglePhone()
@@ -411,7 +413,7 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
     inCall = false
     --Citizen.InvokeNative(0xE036A705F989E049)
     --NetworkSetTalkerProximity(2.5)
-    exports.tokovoip_script:removePlayerFromRadio(infoCall.id + 300)
+    exports["mumble-voip"]:removePlayerFromCall(infoCall.id + 300)
   end
   PhonePlayText()
   SendNUIMessage({event = 'rejectCall', infoCall = infoCall})
@@ -606,9 +608,9 @@ RegisterNUICallback('blur', function(data, cb)
   cb()
 end)
 RegisterNUICallback('reponseText', function(data, cb)
+  TriggerEvent("hotkeys:enable", false)
   local limit = data.limit or 255
   local text = data.text or ''
-  
   DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", text, "", "", "", limit)
   while (UpdateOnscreenKeyboard() == 0) do
       DisableAllControlActions(0);
@@ -617,6 +619,7 @@ RegisterNUICallback('reponseText', function(data, cb)
   if (GetOnscreenKeyboardResult()) then
       text = GetOnscreenKeyboardResult()
   end
+  TriggerEvent("hotkeys:enable", true)
   cb(json.encode({text = text}))
 end)
 --====================================================================================
@@ -673,11 +676,11 @@ end)
 RegisterNUICallback('callEvent', function(data, cb)
   local eventName = data.eventName or ''
   if string.match(eventName, 'gcphone') then
-    if eventName == "gcphone:send911Message" then
+    if eventName:find("gcphone:send911Mess") then -- purposely incomplete event name, otherwise the new scrambler breaks this by scrambling it
       TriggerEvent("gcphone:send911Message", (data.data or nil))
-    elseif eventName == "gcphone:sendMechanicMessage" then
+    elseif eventName:find("gcphone:sendMechanicMess") then -- purposely incomplete event name, otherwise the new scrambler breaks this by scrambling it
       TriggerEvent("gcphone:sendMechanicMessage", (data.data or nil))
-    elseif eventName == "gcphone:sendTaxiMessage" then 
+    elseif eventName:find("gcphone:sendTaxiMess") then -- purposely incomplete event name, otherwise the new scrambler breaks this by scrambling it
       TriggerEvent("gcphone:sendTaxiMessage", (data.data or nil))
     end
   else

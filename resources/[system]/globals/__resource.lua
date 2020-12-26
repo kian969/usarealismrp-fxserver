@@ -21,7 +21,8 @@ exports {
   "DrawTimerBar",
   "dump",
   "loadAnimDict",
-  'DrawText3D'
+  'DrawText3D',
+  "GetKeys"
 }
 
 -- global server functions/tables
@@ -43,5 +44,6 @@ server_exports {
   "round",
   "hash256",
   "currentTimestamp",
-  "getJavaScriptDateString"
+  "getJavaScriptDateString",
+  "hasFelonyOnRecord"
 }

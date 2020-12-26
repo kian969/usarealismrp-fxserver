@@ -11,46 +11,17 @@ local BARBER_SHOPS = {
   {x = -815.59008789063, y = -182.16806030273, z = 37.568920135498}
 }
 
-----------------------
----- Set up blips ----
-----------------------
-
-local BLIPS = {}
-function EnumerateBlips()
-  if #BLIPS == 0 then
-    for i = 1, #BARBER_SHOPS do
-      local blip = AddBlipForCoord(BARBER_SHOPS[i].x, BARBER_SHOPS[i].y, BARBER_SHOPS[i].z)
-      SetBlipSprite(blip, 71  )
-      SetBlipDisplay(blip, 4)
-      SetBlipScale(blip, 0.8)
-      SetBlipColour(blip, 13)
-      SetBlipAsShortRange(blip, true)
-      BeginTextCommandSetBlipName("STRING")
-      AddTextComponentString('Barber Shop')
-      EndTextCommandSetBlipName(blip)
-      table.insert(BLIPS, blip)
-    end
-  end
+for i = 1, #BARBER_SHOPS do -- place map blips
+  local blip = AddBlipForCoord(BARBER_SHOPS[i].x, BARBER_SHOPS[i].y, BARBER_SHOPS[i].z)
+  SetBlipSprite(blip, 71  )
+  SetBlipDisplay(blip, 4)
+  SetBlipScale(blip, 0.8)
+  SetBlipColour(blip, 13)
+  SetBlipAsShortRange(blip, true)
+  BeginTextCommandSetBlipName("STRING")
+  AddTextComponentString('Barber Shop')
+  EndTextCommandSetBlipName(blip)
 end
-
-TriggerServerEvent('blips:getBlips')
-
-RegisterNetEvent('blips:returnBlips')
-AddEventHandler('blips:returnBlips', function(blipsTable)
-  if blipsTable['barber'] then
-    EnumerateBlips()
-  else
-    for _, k in pairs(BLIPS) do
-      print(k)
-      RemoveBlip(k)
-    end
-    BLIPS = {}
-  end
-end)
-
------------------
------------------
------------------
 
 local purchases = {}
 
@@ -84,11 +55,13 @@ local old_head = {
     {"Body Blemishes", 255, 11},
     {"Add Body Blemishes", 255, 1},
     {"Hair", 0, 100, 0, 0} -- change max ?
-  }
+  },
+  eyeColor = nil
 }
 
 local MENU_OPEN_KEY = 38
 
+local MAX_EYE_COLORS = 31
 local MAX_PARENT_OPTIONS = 45
 local MAX_COLOR_OPTIONS = 85
 
@@ -127,6 +100,10 @@ function UpdateHead(ped, head)
         SetPedHairColor(ped, head.other[i][4], head.other[i][5] or 0)
       end
     end
+  end
+  -- eye color --
+  if head.eyeColor then
+    SetPedEyeColor(ped, head.eyeColor)
   end
 end
 
@@ -186,7 +163,7 @@ function CreateBarberShopMenu(menu)
     -- exit button
 
     ---------------------------------------
-    -- Parent / Skin Color Buttons --
+    -- Parent / Skin Color / Eye Color Buttons --
     ---------------------------------------
     local parentValuesArr = {}
     for j = 1, MAX_PARENT_OPTIONS do parentValuesArr[j] = j end
@@ -218,6 +195,17 @@ function CreateBarberShopMenu(menu)
         UpdateHead(GetPlayerPed(-1), old_head)
     end
     menu:AddItem(skin_item_2)
+
+    local eyeColorSelections = {}
+    for i = 0, MAX_EYE_COLORS do
+      table.insert(eyeColorSelections, i)
+    end
+    local eyeColorSlider = UIMenuSliderItem.New("Eye Color", eyeColorSelections, 0, "Customize Eye Color")
+    eyeColorSlider.OnSliderChanged = function(menu, item, index)
+        old_head.eyeColor = index
+        UpdateHead(GetPlayerPed(-1), old_head)
+    end
+    menu:AddItem(eyeColorSlider)
 
     ---------------------------------
     -- Customization Buttons --

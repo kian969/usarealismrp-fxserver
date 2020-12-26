@@ -99,9 +99,12 @@ currentWeatherData = {
 	["windHeading"] = 0
 }
 
-function getRandomWeatherDuration()
-	math.randomseed(GetGameTimer())
-	return math.random(DURATION_LOWER_BOUND_IN_MINUTES, DURATION_UPPER_BOUND_IN_MINUTES) * 60000
+function getRandomWeatherDuration(weatherName)
+	if weatherName == "RAIN" or weatherName == "THUNDER" then
+		return math.random(5, 30) * 60000
+	else
+		return math.random(DURATION_LOWER_BOUND_IN_MINUTES, DURATION_UPPER_BOUND_IN_MINUTES) * 60000
+	end
 end
 
 function isStaffMember(src)
@@ -321,7 +324,8 @@ end,
 )
 
 -- kickoff weather auto update
-SetTimeout(getRandomWeatherDuration(), function()
+SetTimeout(getRandomWeatherDuration(currentWeatherData["weatherString"]), function()
+	math.randomseed(GetGameTimer())
 	updateWeatherFlag = true
 end)
 
@@ -331,7 +335,7 @@ Citizen.CreateThread(function()
 		if updateWeatherFlag then
 			updateWeatherFlag = false
 			updateWeather()
-			SetTimeout(getRandomWeatherDuration(), function()
+			SetTimeout(getRandomWeatherDuration(currentWeatherData["weatherString"]), function()
 				updateWeatherFlag = true
 			end)
 		end

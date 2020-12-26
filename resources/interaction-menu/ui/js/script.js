@@ -2,7 +2,7 @@ var emoteOptions = ["Cancel", "Cop", "Sit", "Cross Arms", "Kneel", "CPR", "Notep
 "Flex", "Sit up", "Push up", "Peace", "Mechanic", "Smoke 1", "Smoke 2", "Drink", "Gang 1", "Gang 2", "Prone", "Weld", "Bum 1", "Bum 2", "Bum 3", "Drill", "Blower", "Chillin'", "Mobile Film", "Planting", "Golf", "Hammer", "Clean", "Musician", "Party", "Prostitute", "High Five", "Wave", "Hug", "Fist bump", "Salute", "Dance 1", "Dance 2", "Dance 3", "Dance 4", "Dance 5", "Shag 1", "Shag 2", "Shag 3",
 "Whatup", "Kiss", "Handshake", "Surrender", "Aim", "Fail", "No", "Palm", "Finger"];
 
-const DEFAULT_ITEM_IMAGE = "https://banner2.kisspng.com/20180131/fvw/kisspng-question-mark-icon-question-mark-5a7214f2980a92.2259030715174259066228.jpg";
+const DEFAULT_ITEM_IMAGE = "https://i.imgur.com/JlvKMeQ.png";
 
 var itemImages = {
   "Driver's License": "https://i.imgur.com/dy0SpFh.png",
@@ -17,7 +17,7 @@ var itemImages = {
   "Donut": "http://25.media.tumblr.com/92c54f13df54b2440f7f5782c4504e99/tumblr_mg3rni4xx81qhy9dqo1_400.png",
   "Taco": "http://www.stickpng.com/assets/thumbs/58727fb4f3a71010b5e8ef08.png",
   "Nachos": "https://newvitruvian.com/images/nachos-transparent-big-1.png",
-  "Sea Salt & Vinegar Chips": "https://www.fritolay.com/images/default-source/blue-bag-image/lays-salt-vinegar.png?sfvrsn=411e563a_2",
+  "Sea Salt & Vinegar Chips": "https://i.imgur.com/Wk2tecx.png",
   "Cheetos": "https://imgur.com/nJxPlfa.png",
   "Doritos": "https://ui-ex.com/images/doritos-transparent-3.png",
   "Water": "https://www.freepngimg.com/thumb/water_bottle/5-2-water-bottle-transparent.png",
@@ -52,9 +52,9 @@ var itemImages = {
   "Knife": "https://www.pngarts.com/files/3/Kitchen-Knife-Transparent-Background-PNG.png",
   "Bat": "https://www.pngarts.com/files/3/Baseball-Bat-Download-Transparent-PNG-Image.png",
   "Crowbar": "http://assets.stickpng.com/thumbs/58b8364015d8273a5cab2f7b.png",
-  "Hatchet": "https://cdn11.bigcommerce.com/s-w3u6iwh84c/images/stencil/500x659/products/40987/2198/FR-19inch-Axe-0836__84668.1526531213.png?c=2",
+  "Hatchet": "https://i.ibb.co/7R0MYwX/hatchet.png",
   "Wrench": "https://imgur.com/C0pRAo5.png",
-  "Machete": "https://www.bellota.com/var/site/storage/images/_aliases/large/7/7/3/5/35377-1-esl-EU/31B20.png",
+  "Machete": "https://i.imgur.com/bMxYq8T.png",
   "Pistol": "https://steamuserimages-a.akamaihd.net/ugc/29613457985625199/0D5453A0ADC32EDBADEACF8D5CBE1EF129FCA5DC/",
   "Heavy Pistol": "https://vignette.wikia.nocookie.net/saintsrow/images/9/9c/SRIV_Pistols_-_Heavy_Pistol_-_.45_Fletcher_-_Default.png/revision/latest/scale-to-width-down/350?cb=20131028193410",
   ".50 Caliber": "https://i.imgur.com/W9sFoxi.png",
@@ -75,7 +75,6 @@ var itemImages = {
   "Halibut": "https://i.dlpng.com/static/png/332762_thumb.png",
   "Yellowfin Tuna" : "https://imgur.com/JQmcQLV.png",
   "Swordfish" : "https://imgur.com/7718g2G.png",
-
   "Weed Bud": "https://66.media.tumblr.com/30ff99a59894fdd9abd04712189708af/tumblr_mvyvwdxNVi1t04rb2o1_r1_400.png",
   "Packaged Weed": "https://imgur.com/QnjBptr.png",
   "Processed Sand": "https://imgur.com/GQ8TPYU.png",
@@ -215,7 +214,16 @@ var itemImages = {
   "Ceramic Tubing": "https://i.imgur.com/Fg1pZNH.png",
   "Aluminum Powder": "https://i.imgur.com/FcoUYM4.png",
   "Iron Oxide": "https://i.imgur.com/pBhnwQl.png",
-  "Vape": "https://i.imgur.com/d8BS61Q.png"
+  "Vape": "https://i.imgur.com/d8BS61Q.png",
+  "Black Powder": "https://i.imgur.com/Zct2dcM.png",
+  "Large Firework": "https://i.imgur.com/XHhxRmG.png",
+  "Spike Strips": "https://i.imgur.com/0iPbmxW.png",
+  "Heavy Shotgun": "https://i.imgur.com/JRP4gPv.png",
+  "SMG MK2": "https://i.imgur.com/sN9udjW.png",
+  "Radio": "https://i.imgur.com/FUreKPT.png",
+  "Police Radio": "https://i.imgur.com/0ve01NN.png",
+  "EMS Radio": "https://i.imgur.com/0ve01NN.png",
+  "Compact Rifle": "https://i.imgur.com/38RjuhX.png"
 }
 
 var menuItems = [
@@ -445,6 +453,7 @@ var interactionMenu = new Vue({
         }));
       } else {
         $.post('http://interaction-menu/inventoryActionItemClicked', JSON.stringify({
+          index: index,
           wholeItem: item,
           itemName: item.name,
           actionName: action.toLowerCase(),

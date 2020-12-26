@@ -35,6 +35,13 @@ local KEYS = {
 
 local EVIDENCE_DESTROY_TIME = 15000
 
+local POLL_INTERVAL_SECONDS = 5
+
+local PICK_UP_ANIMATION = {
+	DICT = "amb@prop_human_bum_bin@idle_b",
+	NAME = "idle_d"
+}
+
 RegisterNetEvent('evidence:updateData')
 AddEventHandler('evidence:updateData', function(key, value)
 	playerData[key] = value
@@ -315,14 +322,15 @@ Citizen.CreateThread(function()
 			for i = 1, #droppedEvidence do
 				local item = droppedEvidence[i]
 				if Vdist(playerCoords, item.coords) < 1.0 then
+					exports.globals:loadAnimDict(PICK_UP_ANIMATION.DICT)
 					if onDuty then
-						RequestAnimDict("amb@prop_human_bum_bin@idle_b")
-						while not HasAnimDictLoaded("amb@prop_human_bum_bin@idle_b") do Citizen.Wait(100) end
-						TaskPlayAnim(playerPed,"amb@prop_human_bum_bin@idle_b","idle_d", 100.0, 200.0, 0.3, 120, 0.2, 0, 0, 0)
 						local beginTime = GetGameTimer()
 						while GetGameTimer() - beginTime < 3000 do
 							DrawTimer(beginTime, 3000, 1.42, 1.475, 'COLLECTING')
-							Citizen.Wait(0)
+							if not IsEntityPlayingAnim(playerPed, PICK_UP_ANIMATION.DICT, PICK_UP_ANIMATION.NAME, 3) and not IsPedInAnyVehicle(playerPed, true) then
+								TaskPlayAnim(playerPed,PICK_UP_ANIMATION.DICT, PICK_UP_ANIMATION.NAME, 100.0, 200.0, 0.3, 120, 0.2, 0, 0, 0)
+							end
+							Wait(0)
 						end
 						ClearPedTasks(playerPed)
 						local street = string.upper(string.sub(GetStreetNameFromHashKey(GetStreetNameAtCoord(table.unpack(item.coords))), 1, 3))
@@ -332,30 +340,30 @@ Citizen.CreateThread(function()
 							break
 						else
 							if item.name == '' or not item.name then
-								TriggerServerEvent('evidence:discardEvidence', i)
+								TriggerServerEvent('evidence:discardEvidence', item.coords)
 								TriggerEvent('usa:notify', 'Evidence has been ~y~discarded~s~.')
 								break
 							else
 								TriggerEvent('chatMessage', '^3^*[EVIDENCE]^r ^7You have picked up ^3'..item.string..'^7, tagged as ^3'..item.name..'^7!')
 								item.processed = false
 								table.insert(collectedEvidence, item)
-								TriggerServerEvent('evidence:discardEvidence', i)
+								TriggerServerEvent('evidence:discardEvidence', item.coords)
 								break
 							end
 						end
 					else
-						RequestAnimDict("amb@prop_human_bum_bin@idle_b")
-						while not HasAnimDictLoaded("amb@prop_human_bum_bin@idle_b") do Citizen.Wait(100) end
-						TaskPlayAnim(playerPed,"amb@prop_human_bum_bin@idle_b","idle_d", 100.0, 200.0, 0.3, 120, 0.2, 0, 0, 0)
 						local beginTime = GetGameTimer()
 						discardingEvidence = true
 						while GetGameTimer() - beginTime < EVIDENCE_DESTROY_TIME do
 							DrawTimer(beginTime, EVIDENCE_DESTROY_TIME, 1.42, 1.475, 'DESTROYING')
-							Citizen.Wait(0)
+							if not IsEntityPlayingAnim(playerPed, PICK_UP_ANIMATION.DICT, PICK_UP_ANIMATION.NAME, 3) and not IsPedInAnyVehicle(playerPed, true) then
+								TaskPlayAnim(playerPed, PICK_UP_ANIMATION.DICT, PICK_UP_ANIMATION.NAME, 100.0, 200.0, 0.3, 120, 0.2, 0, 0, 0)
+							end
+							Wait(0)
 						end
 						ClearPedTasks(playerPed)
 						TriggerEvent('usa:notify', 'Evidence has been destroyed.')
-						TriggerServerEvent('evidence:discardEvidence', i)
+						TriggerServerEvent('evidence:discardEvidence', item.coords)
 						discardingEvidence = false
 						break
 					end
@@ -379,7 +387,6 @@ end)
 
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(0)
 		for i = 1, #droppedEvidence do
 			local item = droppedEvidence[i]
 			local text = '[U] - Discard Evidence'
@@ -388,26 +395,39 @@ Citizen.CreateThread(function()
 			end
 			local x, y, z = table.unpack(item.coords)
 			DrawText3D(x, y, z - 1.0, 5, text)
-			if Vdist(item.coords, GetEntityCoords(PlayerPedId())) < 50.0 then
-				DrawMarker(23, x, y, z - 0.98, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.2, 0.2, 41, 48, 114, 150, false, false, 2, 0.0)
-			end
 		end
+		
 		for i = 1, #evidenceMenus do
 			local location = evidenceMenus[i]
 			DrawText3D(location.x, location.y, location.z, 2, '[E] - Evidence')
 		end
+
+		Wait(1)
 	end
+end)
+
+-- poll the server for nearest evidence every POLL_INTERVAL_SECONDS seconds --
+Citizen.CreateThread(function()
+    local lastCheck = 0
+    while true do
+        if GetGameTimer() - lastCheck > POLL_INTERVAL_SECONDS * 1000 then
+            local mycoords = GetEntityCoords(PlayerPedId())
+            TriggerServerEvent("evidence:loadNearbyEvidence", mycoords)
+            lastCheck = GetGameTimer()
+        end
+        Wait(1)
+    end
+end)
+
+RegisterNetEvent("evidence:loadNearbyEvidence")
+AddEventHandler("evidence:loadNearbyEvidence", function(nearbyEvidence)
+	droppedEvidence = nearbyEvidence
 end)
 
 RegisterNetEvent('evidence:openEvidenceMenu')
 AddEventHandler('evidence:openEvidenceMenu', function()
 	RefreshEvidenceMenu()
 	evidenceMenu:Visible(true)
-end)
-
-RegisterNetEvent('evidence:updateEvidenceDropped')
-AddEventHandler('evidence:updateEvidenceDropped', function(table)
-	droppedEvidence = table
 end)
 
 RegisterNetEvent('interaction:setPlayersJob')
@@ -572,6 +592,7 @@ function DrawText3D(x, y, z, distance, text)
 end
 
 function KeyboardInput(textEntry, inputText, maxLength) -- Thanks to Flatracer for the function.
+	TriggerEvent("hotkeys:enable", false)
     AddTextEntry('FMMC_KEY_TIP1', textEntry)
     DisplayOnscreenKeyboard(1, "FMMC_KEY_TIP1", "", inputText, "", "", "", maxLength)
     while UpdateOnscreenKeyboard() ~= 1 and UpdateOnscreenKeyboard() ~= 2 do
@@ -579,10 +600,12 @@ function KeyboardInput(textEntry, inputText, maxLength) -- Thanks to Flatracer f
     end
     if UpdateOnscreenKeyboard() ~= 2 then
         local result = GetOnscreenKeyboardResult()
-        Citizen.Wait(500)
+		Citizen.Wait(500)
+		TriggerEvent("hotkeys:enable", true)
         return result
     else
-        Citizen.Wait(500)
+		Citizen.Wait(500)
+		TriggerEvent("hotkeys:enable", true)
         return nil
     end
 end

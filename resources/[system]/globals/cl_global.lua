@@ -1,3 +1,14 @@
+local KEYS = {
+  TAB = 37,
+  SCROLL_UP = 241,
+  SCROLL_DOWN = 242,
+  ONE = 157,
+  TWO = 158,
+  THREE = 160,
+  FOUR = 164,
+  E = 46
+}
+
 local MAX_ITEM_TRADE_DISTANCE = 1.5
 local MAX_TACKLE_DISTANCE = 1.5
 local ACTION_MESSAGE_TIME_SECONDS = 6.5
@@ -8,6 +19,10 @@ end
 
 function MaxTackleDistance()
 	return MAX_TACKLE_DISTANCE
+end
+
+function GetKeys()
+  return KEYS
 end
 
 --------------------------------------------------------------
@@ -126,12 +141,14 @@ end
 function GetUserInput(placeholder, charLimit)
   -- get withdraw amount from user input --
   --DisplayOnscreenKeyboard( false, "", "", "", "", "", "", 15 )
+  TriggerEvent("hotkeys:enable", false)
   DisplayOnscreenKeyboard(1, "", "", (placeholder or ""), "", "", "", (charLimit or 15))
   while true do
       if ( UpdateOnscreenKeyboard() == 1 ) then
           local input = GetOnscreenKeyboardResult()
           if ( string.len( input ) > 0 ) then
               -- do something with the input var
+              TriggerEvent("hotkeys:enable", true)
               return input
           else
               DisplayOnscreenKeyboard( false, "", "", "", "", "", "", 15 )
@@ -141,6 +158,7 @@ function GetUserInput(placeholder, charLimit)
       end
       Wait( 0 )
   end
+  TriggerEvent("hotkeys:enable", true)
 end
 
 function comma_value(amount)

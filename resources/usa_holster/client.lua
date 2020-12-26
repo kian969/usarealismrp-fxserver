@@ -1,13 +1,9 @@
 local onDuty = false
-local unholsteredWeapon = nil
 local smallHolstered = true
 local largeHolstered = true
 local meleeHolsted = true
 local playingAnim = false
 local togive
-local control = nil
-
-TriggerServerEvent('ptt:getHotkey')
 
 RegisterNetEvent("interaction:setPlayersJob")
 AddEventHandler("interaction:setPlayersJob", function(job)
@@ -16,11 +12,6 @@ AddEventHandler("interaction:setPlayersJob", function(job)
 	else
 		onDuty = false
 	end
-end)
-
-RegisterNetEvent("ptt:returnHotkey")
-AddEventHandler("ptt:returnHotkey", function(key)
-	control = key
 end)
 
 local meleeWeapons = {
@@ -53,15 +44,18 @@ local smallWeapons = {
 	"WEAPON_REVOLVER",
 	"WEAPON_BOTTLE",
 	"WEAPON_DAGGER",
-	"WEAPON_MARKSMANPISTOL"
+	"WEAPON_MARKSMANPISTOL",
+	"WEAPON_SAWNOFFSHOTGUN"
 }
 
 local largeWeapons = {
 	"WEAPON_GUSENBERG",
 	'WEAPON_ASSAULTRIFLE',
+	'WEAPON_COMPACTRIFLE',
 	'WEAPON_CARBINERIFLE',
 	'WEAPON_CARBINERIFLE_MK2',
 	'WEAPON_SMG',
+	'WEAPON_SMG_MK2',
 	'WEAPON_PUMPSHOTGUN',
 	'WEAPON_HEAVYSHOTGUN',
 	'WEAPON_PUMPSHOTGUN_MK2',
@@ -71,7 +65,8 @@ local largeWeapons = {
 	'WEAPON_MARKSMANRIFLE',
 	'WEAPON_BAT',
 	'WEAPON_MUSKET',
-	"WEAPON_PETROLCAN"
+	"WEAPON_PETROLCAN",
+	"WEAPON_MICROSMG"
 }
 
 -- HOLD WEAPON HOLSTER ANIMATION --
@@ -100,113 +95,10 @@ Citizen.CreateThread( function()
 			end
 		end
 	end
-end )
-
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(50)
-		local ped = GetPlayerPed(-1)
-		if GetPedParachuteState(ped) == -1 then
-			if DoesEntityExist( ped ) and not IsEntityDead( ped ) and not IsPedInAnyVehicle(PlayerPedId(), true) then
-				loadAnimDict( "reaction@intimidation@1h" )
-				loadAnimDict( "rcmjosh4" )
-				loadAnimDict( "timetable@jimmy@ig_2@ig_2_p2" )
-				if CheckSmallWeapon(ped) then
-					if smallHolstered and not IsPedInMeleeCombat(ped) and not IsPlayerTargettingAnything(ped) and not IsPedInCombat(ped) then
-						if not onDuty and GetPedDrawableVariation(ped, 7) ~= 8 and GetPedDrawableVariation(ped, 7) ~= 6 and GetPedDrawableVariation(ped, 7) ~= 1 then
-							local togive = GetSelectedPedWeapon(ped) -- to prevent gun from coming out too early for animation, remove the gun when it starts and only give at right time
-							SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
-							playingAnim = true
-							TaskPlayAnim(ped, "reaction@intimidation@1h", "intro", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
-							Wait(1400)
-			                SetCurrentPedWeapon(ped, togive, true)
-			                Wait(1500)
-							ClearPedTasks(ped)
-				            SetCurrentPedWeapon(ped, togive, true)
-				            playingAnim = false
-				            UNHOLSTERED_WEAPON = togive
-						else
-			                playingAnim = true
-			                TaskPlayAnim(ped, "rcmjosh4", "josh_leadout_cop2", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
-			                Citizen.Wait(600)
-			                ClearPedTasks(ped)
-			                playingAnim = false
-			            end
-			            smallHolstered = false
-			        end
-				elseif not CheckSmallWeapon(ped) and not smallHolstered and not playingAnim then
-					if not onDuty and GetPedDrawableVariation(ped, 7) ~= 8 and GetPedDrawableVariation(ped, 7) ~= 6 and GetPedDrawableVariation(ped, 7) ~= 1 then
-						playingAnim = true
-						SetCurrentPedWeapon(ped, UNHOLSTERED_WEAPON, true)
-						TaskPlayAnim(ped, "reaction@intimidation@1h", "outro", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
-						Citizen.Wait(1350)
-	            		ClearPedTasks(ped)
-						SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
-	            		playingAnim = false
-					else
-						playingAnim = true
-		                TaskPlayAnim(ped, "weapons@pistol@", "aim_2_holster", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
-		                Citizen.Wait(500)
-		                ClearPedTasks(ped)
-		                playingAnim = false
-		            end
-		            smallHolstered = true
-
-
-				elseif CheckLargeWeapon(ped) then
-					if largeHolstered and not IsPedInMeleeCombat(ped) and not IsPlayerTargettingAnything(ped) and not IsPedInCombat(ped) then
-						local togive = GetSelectedPedWeapon(ped) -- to prevent gun from coming out too early for animation, remove the gun when it starts and only give at right time
-						SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
-						playingAnim = true
-						TaskPlayAnim(ped, "timetable@jimmy@ig_2@ig_2_p2", "ig_2_exit", 8.0, 1.0, -1, 48, 0.0, 0, 0, 0 )
-						Wait(1400)
-		                SetCurrentPedWeapon(ped, togive, true)
-						ClearPedTasks(ped)
-			            playingAnim = false
-			            UNHOLSTERED_WEAPON = togive
-			            largeHolstered = false
-			        end
-			    elseif not CheckLargeWeapon(ped) and not largeHolstered and not playingAnim then
-			    	playingAnim = true
-					SetCurrentPedWeapon(ped, UNHOLSTERED_WEAPON, true)
-					TaskPlayAnim(ped, "timetable@jimmy@ig_2@ig_2_p2", "ig_2_exit", 8.0, 1.0, -1, 48, 0.0, 0, 0, 0 )
-					Citizen.Wait(1350)
-	        		ClearPedTasks(ped)
-					SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
-	        		playingAnim = false
-	        		largeHolstered = true
-
-				elseif CheckMeleeWeapon(ped) then
-					if meleeHolsted and not IsPedInMeleeCombat(ped) and not IsPlayerTargettingAnything(ped) and not IsPedInCombat(ped) then
-						local togive = GetSelectedPedWeapon(ped) -- to prevent gun from coming out too early for animation, remove the gun when it starts and only give at right time
-						SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
-						playingAnim = true
-						TaskPlayAnim(ped, "reaction@intimidation@1h", "outro", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
-						Wait(750)
-						SetCurrentPedWeapon(ped, togive, true)
-						ClearPedTasks(ped)
-						playingAnim = false
-						UNHOLSTERED_WEAPON = togive
-						meleeHolsted = false
-					end
-				elseif not CheckMeleeWeapon(ped) and not meleeHolsted and not playingAnim then
-					playingAnim = true
-					SetCurrentPedWeapon(ped, UNHOLSTERED_WEAPON, true)
-					TaskPlayAnim(ped, "weapons@pistol@", "aim_2_holster", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
-					Citizen.Wait(700)
-					ClearPedTasks(ped)
-					SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
-					playingAnim = false
-					meleeHolsted = true
-	        	end
-			end
-		end
-	end
 end)
 
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(0)
 		local ped = PlayerPedId()
 		if GetPedParachuteState(ped) == -1 then
 			if playingAnim then
@@ -225,47 +117,127 @@ Citizen.CreateThread(function()
 			end
 			if (not largeHolstered or not smallHolstered) or playingAnim then
 				DisableControlAction(24, 37, true)
-				if IsDisabledControlJustPressed(24, 37) and not playingAnim and not IsPedShooting(ped) and not IsAimCamActive(ped) then
-					RemoveWeaponFromPed(ped, -1569615261)
-					GiveWeaponToPed(ped, -1569615261, 0, false, true)
-				end
 			end
 		end
+		Wait(0)
 	end
 end)
 
--- RADIO ANIMATIONS --
-
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait( 0 )
-		local ped = PlayerPedId()
-		if control ~= nil and GetPedParachuteState(ped) == -1 and onDuty then
-			if DoesEntityExist( ped ) and not IsEntityDead( ped ) then
-				if not IsPauseMenuActive() then
-					loadAnimDict( "random@arrests" )
-					if IsControlJustReleased( 0, control ) then
-						--TriggerServerEvent('InteractSound_SV:PlayOnSource', 'off', 0.1)
-						ClearPedTasks(ped)
-					else
-						if IsControlJustPressed( 0, control ) and not IsPlayerFreeAiming(PlayerId()) then
-							--TriggerServerEvent('InteractSound_SV:PlayOnSource', 'on', 0.1)
-							TaskPlayAnim(ped, "random@arrests", "generic_radio_enter", 8.0, 2.0, -1, 50, 2.0, 0, 0, 0 )
-						elseif IsControlJustPressed( 0, control ) and IsPlayerFreeAiming(PlayerId()) then
-							--TriggerServerEvent('InteractSound_SV:PlayOnSource', 'on', 0.1)
-							TaskPlayAnim(ped, "random@arrests", "radio_chatter", 8.0, 2.0, -1, 50, 2.0, 0, 0, 0 )
-						end
-						if IsEntityPlayingAnim(GetPlayerPed(PlayerId()), "random@arrests", "generic_radio_enter", 3) then
-							DisableActions(ped)
-						elseif IsEntityPlayingAnim(GetPlayerPed(PlayerId()), "random@arrests", "radio_chatter", 3) then
-							DisableActions(ped)
-						end
+function handleHolsterAnim()
+	local ped = GetPlayerPed(-1)
+	if GetPedParachuteState(ped) == -1 then
+		if DoesEntityExist(ped) and not IsEntityDead(ped) and not IsPedInAnyVehicle(ped, true) then
+			loadAnimDict("reaction@intimidation@1h")
+			loadAnimDict("rcmjosh4")
+			loadAnimDict("timetable@jimmy@ig_2@ig_2_p2")
+			if CheckSmallWeapon(ped) and smallHolstered and not IsPedInMeleeCombat(ped) and not IsPlayerTargettingAnything(ped) and not IsPedInCombat(ped) then -- unholstering
+				local togive = GetSelectedPedWeapon(ped) -- to prevent gun from coming out too early for animation, remove the gun when it starts and only give at right time
+				if not onDuty and GetPedDrawableVariation(ped, 7) ~= 8 and GetPedDrawableVariation(ped, 7) ~= 6 and GetPedDrawableVariation(ped, 7) ~= 1 then
+					SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
+					playingAnim = true
+					TaskPlayAnim(ped, "reaction@intimidation@1h", "intro", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
+					while not IsEntityPlayingAnim(ped, "reaction@intimidation@1h", "intro", 3) do -- make sure anim plays (avoid exploits like playing other anims while pulling weapons)
+						TaskPlayAnim(ped, "reaction@intimidation@1h", "intro", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
+						Wait(5)
 					end
+					Wait(1400)
+					SetCurrentPedWeapon(ped, togive, true)
+					Wait(600)
+					ClearPedTasks(ped)
+					SetCurrentPedWeapon(ped, togive, true)
+					playingAnim = false
+					UNHOLSTERED_WEAPON = togive
+				else
+					playingAnim = true
+					TaskPlayAnim(ped, "rcmjosh4", "josh_leadout_cop2", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
+					Citizen.Wait(600)
+					ClearPedTasks(ped)
+					playingAnim = false
 				end
+				UNHOLSTERED_WEAPON = togive
+				smallHolstered = false
+				largeHolstered = true
+				meleeHolsted = true
+			elseif not smallHolstered and not playingAnim then -- holstering
+				if not onDuty and GetPedDrawableVariation(ped, 7) ~= 8 and GetPedDrawableVariation(ped, 7) ~= 6 and GetPedDrawableVariation(ped, 7) ~= 1 then
+					playingAnim = true
+					SetCurrentPedWeapon(ped, UNHOLSTERED_WEAPON, true)
+					TaskPlayAnim(ped, "reaction@intimidation@1h", "outro", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
+					Citizen.Wait(1350)
+					ClearPedTasks(ped)
+					SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
+					playingAnim = false
+				else
+					playingAnim = true
+					TaskPlayAnim(ped, "weapons@pistol@", "aim_2_holster", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
+					Citizen.Wait(500)
+					ClearPedTasks(ped)
+					playingAnim = false
+				end
+				smallHolstered = true
+			elseif CheckLargeWeapon(ped) and largeHolstered and not IsPedInMeleeCombat(ped) and not IsPlayerTargettingAnything(ped) and not IsPedInCombat(ped) then
+				local togive = GetSelectedPedWeapon(ped) -- to prevent gun from coming out too early for animation, remove the gun when it starts and only give at right time
+				SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
+				playingAnim = true
+				TaskPlayAnim(ped, "timetable@jimmy@ig_2@ig_2_p2", "ig_2_exit", 8.0, 1.0, -1, 48, 0.0, 0, 0, 0 )
+				while not IsEntityPlayingAnim(ped, "timetable@jimmy@ig_2@ig_2_p2", "ig_2_exit", 3) do -- make sure anim plays (avoid exploits like playing other anims while pulling weapons)
+					TaskPlayAnim(ped, "timetable@jimmy@ig_2@ig_2_p2", "ig_2_exit", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
+					Wait(5)
+				end
+				Wait(1400)
+				SetCurrentPedWeapon(ped, togive, true)
+				ClearPedTasks(ped)
+				playingAnim = false
+				UNHOLSTERED_WEAPON = togive
+				largeHolstered = false
+				smallHolstered = true
+				meleeHolsted = true
+			elseif not largeHolstered and not playingAnim then
+				playingAnim = true
+				SetCurrentPedWeapon(ped, UNHOLSTERED_WEAPON, true)
+				TaskPlayAnim(ped, "timetable@jimmy@ig_2@ig_2_p2", "ig_2_exit", 8.0, 1.0, -1, 48, 0.0, 0, 0, 0 )
+				Citizen.Wait(1350)
+				ClearPedTasks(ped)
+				SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
+				playingAnim = false
+				largeHolstered = true
+			elseif CheckMeleeWeapon(ped) and meleeHolsted and not IsPedInMeleeCombat(ped) and not IsPlayerTargettingAnything(ped) and not IsPedInCombat(ped) then
+				local togive = GetSelectedPedWeapon(ped) -- to prevent gun from coming out too early for animation, remove the gun when it starts and only give at right time
+				SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
+				playingAnim = true
+				TaskPlayAnim(ped, "reaction@intimidation@1h", "outro", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
+				Wait(750)
+				SetCurrentPedWeapon(ped, togive, true)
+				ClearPedTasks(ped)
+				playingAnim = false
+				UNHOLSTERED_WEAPON = togive
+				meleeHolsted = false
+				smallHolstered = true
+				largeHolstered = true
+			elseif not meleeHolsted and not playingAnim then
+				playingAnim = true
+				SetCurrentPedWeapon(ped, UNHOLSTERED_WEAPON, true)
+				TaskPlayAnim(ped, "weapons@pistol@", "aim_2_holster", 8.0, 2.0, -1, 48, 10, 0, 0, 0 )
+				Citizen.Wait(700)
+				ClearPedTasks(ped)
+				SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
+				playingAnim = false
+				meleeHolsted = true
 			end
 		end
 	end
-end )
+end
+
+-- thread to disable caps lock while unholstering/holstering
+Citizen.CreateThread(function()
+	while true do
+		if playingAnim then
+			local CAPS_LOCK = 137
+			DisableControlAction(0, CAPS_LOCK, true)
+		end
+		Wait(1)
+	end
+end)
 
 function CheckSmallWeapon(ped)
 	for i = 1, #smallWeapons do

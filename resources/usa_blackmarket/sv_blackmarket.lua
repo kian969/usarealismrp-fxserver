@@ -1,3 +1,6 @@
+math.randomseed(os.time());
+math.random(); math.random(); -- prepare random price generator
+
 local markets = {
   ['marketA'] = {
     ['coords'] = {-607.15, -1634.53, 33.05}, -- los santos
@@ -28,7 +31,7 @@ local markets = {
       {name = 'Combat Pistol', type = 'weapon', hash = 1593441988, price = 5000, legality = 'illegal', quantity = 1, weight = 10, stock = math.random(0, 3), objectModel = "w_pi_combatpistol"},
       {name = 'Switchblade', type = 'weapon', hash = -538741184, price = 1500, legality = 'illegal', quantity = 1, weight = 5, stock = math.random(0, 3)},
       {name = 'Brass Knuckles', type = 'weapon', hash = -656458692, price = 1100, legality = 'illegal', quantity = 1, weight = 5, stock = math.random(0, 5)},
-      {name = "Machine Pistol", type = "weapon", hash = -619010992, price = 25000, legality = "illegal", quantity = 1, weight = 20, stock = math.random(0, 2) },
+      {name = "Machine Pistol", type = "weapon", hash = -619010992, price = tonumber(tostring(math.random(22, 30)) .. "000"), legality = "illegal", quantity = 1, weight = 20, stock = math.random(0, 2) }
     },
     ["pedHash"] = -1773333796
   },
@@ -37,15 +40,28 @@ local markets = {
     ['items'] = {
         { name = "Molotov", type = "weapon", hash = 615608432, price = 500, legality = "illegal", quantity = 1, weight = 20, stock = math.random(0, 3), objectModel = "w_ex_molotov"},
         { name = "Tommy Gun", type = "weapon", hash = 1627465347, price = 110000, legality = "illegal", quantity = 1, weight = 45, stock = math.random(0, 2), objectModel = "w_sb_gusenberg" },
-        { name = "AK47", type = "weapon", hash = -1074790547, price = 100000, legality = "illegal", quantity = 1, weight = 45, stock = math.random(0, 2), objectModel = "w_ar_assaultrifle" },
-        { name = "Carbine", type = "weapon", hash = -2084633992, price = 100000, legality = "illegal", quantity = 1, weight = 45, stock = math.random(0, 2), objectModel = "w_ar_carbinerifle" }
+        { name = "AK47", type = "weapon", hash = -1074790547, price = tonumber(tostring(math.random(80, 100)) .. "000"), legality = "illegal", quantity = 1, weight = 45, stock = math.random(0, 2), objectModel = "w_ar_assaultrifle" },
+        { name = "Carbine", type = "weapon", hash = -2084633992, price = tonumber(tostring(math.random(80, 100)) .. "000"), legality = "illegal", quantity = 1, weight = 45, stock = math.random(0, 2), objectModel = "w_ar_carbinerifle" },
+        { name = "Compact Rifle", type = "weapon", hash = 1649403952, price = tonumber(tostring(math.random(80, 100)) .. "000"), legality = "illegal", quantity = 1, weight = 45, stock = math.random(0, 2), objectModel = "w_ar_assaultrifle" },
     },
     ['pedHash'] = 'a_m_o_soucent_03'
+  },
+  ['marketD'] = {
+    ['coords'] = {113.24684906006, -1967.5310058594, 21.317762374878}, -- Grove St. house interior
+    ['items'] = {
+        { name = "Large Firework", type = "misc", price = 2000, legality = "illegal", quantity = 1, weight = 15, stock = math.random(0, 10), objectModel = "ind_prop_firework_03" },
+        { name = "Firework Gun", type = "weapon", hash = 2138347493, price = 10000, legality = "illegal", quantity = 1, weight = 50, stock = math.random(0, 2), objectModel = "w_lr_firework" }
+    },
+    ['pedHash'] = 'a_m_o_soucent_03',
+    ['3dTextDistance'] = 7,
+    ['pedScenario'] = "WORLD_HUMAN_SMOKING_POT"
   }
 }
 
-local openingHours = math.random(0, 3)
-local closingHours = math.random(4, 7)
+-- x = 113.21036529541, y = -1967.2863769531, z = 21.317756652832
+
+local openingHours = math.random(0, 4)
+local closingHours = math.random(5, 7)
 
 for store, info in pairs(markets) do
     for i = 1, #info["items"] do

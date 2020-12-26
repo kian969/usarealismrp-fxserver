@@ -25,8 +25,7 @@ local STORE_ITEMS = {
   ["Shotguns"] = {
     { name = "Pump Shotgun", type = "weapon", hash = 487013001, price = 4000, legality = "legal", quantity = 1, weight = 25, objectModel = "w_sg_pumpshotgun" },
     { name = "Bullpup Shotgun", type = "weapon", hash = -1654528753, price = 6000, legality = "legal", quantity = 1, weight = 30, objectModel = "w_sg_bullpupshotgun" },
-    { name = "Musket", type = "weapon", hash = -1466123874, price = 1500, legality = "legal", quantity = 1, weight = 35, objectModel = "w_ar_musket" },
-    { name = "Firework Gun", type = "weapon", hash = 2138347493, price = 10000, legality = "legal", quantity = 1, weight = 50, objectModel = "w_lr_firework" }
+    { name = "Musket", type = "weapon", hash = -1466123874, price = 1500, legality = "legal", quantity = 1, weight = 35, objectModel = "w_ar_musket" }
   },
   ["Extras"] = {
     { name = "Parachute", type = "weapon", hash = "GADGET_PARACHUTE", price = 500, legality = "legal", quantity = 1, weight = 15, objectModel = "prop_parachute" },
@@ -124,38 +123,43 @@ AddEventHandler("gunShop:purchaseLicense", function(business)
   local usource = source
   local timestamp = os.date("*t", os.time())
   local char = exports["usa-characters"]:GetCharacter(usource)
-  local m = char.get("money")
-  local NEW_GUN_LICENSE = {
-    name = 'Firearm Permit',
-    number = 'FP' .. tostring(math.random(1, 254367)),
-    quantity = 1,
-    ownerName = char.getFullName(),
-    issued_by = "Ammunation",
-    ownerDob = char.get("dateOfBirth"),
-    expire = timestamp.month .. "/" .. timestamp.day .. "/" .. timestamp.year + 1,
-    status = "valid",
-    type = "license",
-    notDroppable = true,
-    weight = 2.0
-  }
-  if char.hasItem(NEW_GUN_LICENSE) then
-    TriggerClientEvent("usa:notify", usource, "You already have a firearm permit!")
-    return
-  end
-  if char.canHoldItem(NEW_GUN_LICENSE) then
-    if m >= LICENSE_PURCHASE_PRICE then
-        char.giveItem(NEW_GUN_LICENSE)
-        char.removeMoney(LICENSE_PURCHASE_PRICE)
-        TriggerClientEvent("usa:notify", usource, "You have accepted the terms and conditions and have been issued a CCW")
-        TriggerClientEvent("gunShop:showCCWTerms", usource)
-        if business then
-            exports["usa-businesses"]:GiveBusinessCashPercent(business, LICENSE_PURCHASE_PRICE)
-        end
-    else
-        TriggerClientEvent("usa:notify", usource, "Not enough money!")
+  local permit_status = checkPermit(char)
+  if not exports.globals:hasFelonyOnRecord(usource) then
+    local m = char.get("money")
+    local NEW_GUN_LICENSE = {
+      name = 'Firearm Permit',
+      number = 'FP' .. tostring(math.random(1, 254367)),
+      quantity = 1,
+      ownerName = char.getFullName(),
+      issued_by = "Ammunation",
+      ownerDob = char.get("dateOfBirth"),
+      expire = timestamp.month .. "/" .. timestamp.day .. "/" .. timestamp.year + 1,
+      status = "valid",
+      type = "license",
+      notDroppable = true,
+      weight = 2.0
+    }
+    if char.hasItem(NEW_GUN_LICENSE) then
+      TriggerClientEvent("usa:notify", usource, "You already have a firearm permit!")
+      return
     end
-  else
-    TriggerClientEvent("usa:notify", usource, "Inventory full!")
+    if char.canHoldItem(NEW_GUN_LICENSE) then
+      if m >= LICENSE_PURCHASE_PRICE then
+          char.giveItem(NEW_GUN_LICENSE)
+          char.removeMoney(LICENSE_PURCHASE_PRICE)
+          TriggerClientEvent("usa:notify", usource, "You have accepted the terms and conditions and have been issued a CCW")
+          TriggerClientEvent("gunShop:showCCWTerms", usource)
+          if business then
+              exports["usa-businesses"]:GiveBusinessCashPercent(business, LICENSE_PURCHASE_PRICE)
+          end
+      else
+          TriggerClientEvent("usa:notify", usource, "Not enough money!")
+      end
+    else
+      TriggerClientEvent("usa:notify", usource, "Inventory full!")
+    end
+  else 
+    TriggerClientEvent("usa:notify", usource, "You have a felony on your record! We can't issue you a permit!")
   end
 end)
 

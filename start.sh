@@ -1,21 +1,11 @@
-# commands
-runScramblerCmd="
-cd /d C:\\fxserver-resource-scrambler-dist && index-win.exe
-"
-
-clearResourcesCmd="
-cd /d C:\\fxserver-resource-scrambler-dist && rd /s /q resources && rd /s /q scrambled_resources
-"
-
-# scrambler server details
-scramblerServerIP=68.4.39.135
-scramblerServerUser=joshy
-
 # close FXServer
 tmux kill-session -t fxserver
 
 # clear log file
 > CitizenFX.log
+
+# run any setup needed before checking out this file
+sh setup.sh
 
 # pull from GH repo
 git checkout .
@@ -23,16 +13,14 @@ git pull
 
 # remove maps / assets to avoid scrambling them to save time
 cd resources
-rm assets -f -r
+rm assets/stream -f -r
 rm eup-stream -f -r
 rm map_courthouse -f -r
 rm map_dealership -f -r
 rm map_hospital -f -r
 rm map_mrpd -f -r
 rm map_sandypdinterior -f -r
-rm gabz_pillbox_hospital -f -r
 rm map_burgershot -f -r
-rm map_customDesigns -f -r
 rm map_glory -f -r
 rm map_mosleys -f -r
 rm map_luxury-autos -f -r
@@ -60,19 +48,8 @@ cp -r resources/ws_server/node_modules .
 rm -f -r resources/[system]/[builders]
 rm -f -r resources/ws_server/node_modules
 
-# clear old copy of resources on scrambler server
-sshpass -f "scramblerServerPass.txt" ssh $scramblerServerUser@$scramblerServerIP $clearResourcesCmd
-
-# copy resources to scrambler server
-sshpass -f "scramblerServerPass.txt" scp -r resources $scramblerServerUser@$scramblerServerIP:C:/fxserver-resource-scrambler-dist
-
-# run scrambler on scrambler server
-sshpass -f "scramblerServerPass.txt" ssh $scramblerServerUser@$scramblerServerIP $runScramblerCmd
-
-# retrieve scrambled resources from scrambler server
-sshpass -f "scramblerServerPass.txt" scp -r $scramblerServerUser@$scramblerServerIP:C:/fxserver-resource-scrambler-dist/scrambled_resources .
-cp -r scrambled_resources/* resources
-rm -r scrambled_resources
+# scramble resources
+java -jar ResourceEventScrambler.jar
 
 # move node_modules back into place
 mv [builders] resources/[system]

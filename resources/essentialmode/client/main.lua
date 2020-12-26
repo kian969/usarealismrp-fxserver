@@ -170,17 +170,18 @@ end)
 
 RegisterNetEvent("es:enablePvp")
 AddEventHandler("es:enablePvp", function()
+	NetworkSetFriendlyFireOption(true)
 	Citizen.CreateThread(function()
+		local lastSavedPed = nil
 		while true do
-			Citizen.Wait(0)
-			for i = 0,255 do
-				if NetworkIsPlayerConnected(i) then
-					if NetworkIsPlayerConnected(i) and GetPlayerPed(i) ~= nil then
-						SetCanAttackFriendly(GetPlayerPed(i), true, true)
-						NetworkSetFriendlyFireOption(true)
-					end
+			local currentPed = PlayerPedId()
+			if lastSavedPed ~= currentPed then
+				lastSavedPed = currentPed
+				if DoesEntityExist(currentPed) then
+					SetCanAttackFriendly(currentPed, true, true)
 				end
 			end
+			Wait(1000)
 		end
 	end)
 end)

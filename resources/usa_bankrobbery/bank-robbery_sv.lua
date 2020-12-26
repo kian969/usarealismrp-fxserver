@@ -29,8 +29,7 @@ AddEventHandler("bank:beginRobbery", function(bank)
 				TriggerClientEvent('usa:notify', usource, 'You are now robbing the bank, hack into the system to get the money!')
 				TriggerClientEvent("bank:startHacking", usource, bank)
 				SetTimeout(BANK_ROBBERY_TIMEOUT, function()
-					TriggerClientEvent('bank:shutVaultDoor', usource)
-					resetBankHeist(usource)
+					resetBankHeist()
 				end)
 			else
 				TriggerClientEvent("usa:notify", usource, "You need a cell phone to hack into the vault!")
@@ -44,7 +43,7 @@ end)
 RegisterServerEvent('bank:vaultDoorHacked')
 AddEventHandler('bank:vaultDoorHacked', function()
 	if sourceRobbing == source then
-		TriggerClientEvent('bank:openVaultDoor', source)
+		TriggerClientEvent('bank:openVaultDoor', -1)
 	end
 end)
 
@@ -88,38 +87,30 @@ AddEventHandler('bank:doesUserHaveDrill', function(box)
 end)
 
 
-function attemptDrilling(depositBox, source)
-	if drilling_spots[depositBox].drilled then
+function attemptDrilling(depositBoxIndex, source)
+	if drilling_spots[depositBoxIndex].drilled then
 		TriggerClientEvent("usa:notify", source, "This box has already been drilled")
 	else
-		drilling_spots[depositBox].drilled =  true
-		TriggerClientEvent('bank:startDrilling', source)
+		drilling_spots[depositBoxIndex].drilled =  true
+		TriggerClientEvent('bank:startDrilling', source, depositBoxIndex)
 		--Wait(600000) -- Wait 10 mins and then set the timeout
 	end
 end
 
-function resetBankHeist(src)
+function resetBankHeist()
 	for i = 1, #drilling_spots do
 		if drilling_spots[i].drilled then
 			drilling_spots[i].drilled = false
 		end
 	end
 	bankRobbable = true
-	TriggerClientEvent('bank:resetVault', src)
+	TriggerClientEvent('bank:resetVault', -1)
 end
-
-RegisterServerEvent('bank:bustedDrill')
-AddEventHandler('bank:bustedDrill', function()
-	local char = exports["usa-characters"]:GetCharacter(source)
-	char.removeItem('Drill', 1)
-	TriggerClientEvent("usa:notify", source, "The drill broke!")
-end)
 
 RegisterServerEvent('bank:drilledGoods')
 AddEventHandler('bank:drilledGoods', function()
 	local char = exports["usa-characters"]:GetCharacter(source)
 	local cash = math.random(1750, 12350)
-
 	char.giveMoney(cash)
 	TriggerClientEvent("usa:notify", source, "You stole $".. cash .. ' from the deposit box!')
 end)

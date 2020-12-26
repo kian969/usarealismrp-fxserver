@@ -1,7 +1,10 @@
+local JOB_NAME = "ems"
+
 local LOADOUT_ITEMS = {
   { name = "Flashlight", hash = -1951375401, price = 15, weight = 4 },
   { name = "Flare", hash = 1233104067, price = 25, weight = 9 },
-  { name = "Fire Extinguisher", hash = 101631238, price = 25, weight = 20 }
+  { name = "Fire Extinguisher", hash = 101631238, price = 25, weight = 20 },
+  { name = "EMS Radio", price = 500, weight = 5, type = "misc" },
 }
 
 for i = 1, #LOADOUT_ITEMS do
@@ -9,7 +12,9 @@ for i = 1, #LOADOUT_ITEMS do
     LOADOUT_ITEMS[i].notStackable = true
     LOADOUT_ITEMS[i].quantity = 1
     LOADOUT_ITEMS[i].legality = "legal"
-    LOADOUT_ITEMS[i].type = "weapon"
+    if not LOADOUT_ITEMS[i].type then
+      LOADOUT_ITEMS[i].type = "weapon"
+    end
 end
 
 RegisterServerEvent("ems:getLoadout")
@@ -27,7 +32,9 @@ AddEventHandler("ems:getLoadout", function()
             if char.canHoldItem(item) then
                 char.removeMoney(item.price)
                 char.giveItem(item)
-                TriggerClientEvent("mini:equipWeapon", source, item.hash)
+                if item.hash then
+                  TriggerClientEvent("mini:equipWeapon", source, item.hash)
+                end
                 TriggerClientEvent("usa:notify", source, "Retrieved a " .. item.name)
             else
                 TriggerClientEvent("usa:notify", source, "Unable to get " .. item.name ..". Inventory full.")
@@ -42,11 +49,11 @@ AddEventHandler("emsstation2:loadOutfit", function(slot)
   local char = exports["usa-characters"]:GetCharacter(source)
   local character = user.getEmsCharacter()
   TriggerClientEvent("emsstation2:setCharacter", source, character[tostring(slot)])
-  if char.get('job') ~= 'ems' then
-    char.set("job", "ems")
-    TriggerEvent('job:sendNewLog', source, 'ems', true)
+  if char.get('job') ~= JOB_NAME then
+    char.set("job",JOB_NAME)
+    TriggerEvent('job:sendNewLog', source, JOB_NAME, true)
   end
-  TriggerClientEvent('interaction:setPlayersJob', source, 'ems')
+  TriggerClientEvent('interaction:setPlayersJob', source, JOB_NAME)
   TriggerEvent("eblips:add", {name = char.getName(), src = source, color = 1})
 end)
 
@@ -56,7 +63,7 @@ AddEventHandler("emsstation2:saveOutfit", function(character, slot)
   local job = exports["usa-characters"]:GetCharacterField(source, "job")
   local emsCharacter = user.getEmsCharacter()
   emsCharacter[tostring(slot)] = character
-  if job == "ems" then
+  if job == JOB_NAME then
     user.setEmsCharacter(emsCharacter)
     TriggerClientEvent("usa:notify", source, "Outfit in slot "..slot.." has been saved.")
   else
@@ -67,9 +74,9 @@ end)
 RegisterServerEvent("emsstation2:onduty")
 AddEventHandler("emsstation2:onduty", function()
 	local char = exports["usa-characters"]:GetCharacter(source)
-  if char.get("job") ~= "ems" then
-    char.set("job", "ems")
-    TriggerEvent('job:sendNewLog', source, 'ems', true)
+  if char.get("job") ~= JOB_NAME then
+    char.set("job", JOB_NAME)
+    TriggerEvent('job:sendNewLog', source, JOB_NAME, true)
     TriggerEvent("eblips:add", {name = char.getName(), src = source, color = 1})
   end
 end)
@@ -79,9 +86,9 @@ AddEventHandler("emsstation2:offduty", function()
 	local char = exports["usa-characters"]:GetCharacter(source)
   local playerWeapons = char.getWeapons()
   TriggerClientEvent("emsstation2:setciv", source, char.get("appearance"), playerWeapons) -- need to test
-  if char.get('job') == 'ems' then
+  if char.get('job') == JOB_NAME then
       char.set("job", "civ")
-      TriggerEvent('job:sendNewLog', source, 'ems', false)
+      TriggerEvent('job:sendNewLog', source, JOB_NAME, false)
       TriggerEvent("eblips:remove", source)
       TriggerClientEvent("radio:unsubscribe", source)
   end

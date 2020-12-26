@@ -3,7 +3,7 @@ local ReportAssault = true
 local ReportShotsFired = true
 local ReportCarjacking = true
 local ReportPersonWithAGun = false
-local ReportPersonWithAKnife = true
+local ReportPersonWithAKnife = false
 local ReportRecklessDriving = false
 local ReportVehicleTheft = false
 local ReportExplosion = true
@@ -379,6 +379,16 @@ function ShowHelp(text, bleep)
     EndTextCommandDisplayHelp(0, false, bleep, -1)
 end
 
+-- checks if the provided ped handle is the ped for an actual player
+function isPedAPlayerPed(ped)
+	local i = NetworkGetPlayerIndexFromPed(ped)
+	if index ~= -1 then
+		return NetworkIsPlayerActive(i)
+	else
+		return false
+	end
+end
+
 function isNearAnyPeds()
 	local myPed = PlayerPedId()
 	local playerCoords = GetEntityCoords(myPed)
@@ -388,8 +398,7 @@ function isNearAnyPeds()
 		local distanceBetweenNpcAndPed = Vdist(pedCoords, playerCoords)
 
 		if DoesEntityExist(otherPed) then
-			SetEntityAsMissionEntity(otherPed)
-			if distanceBetweenNpcAndPed < MAX_REPORT_DISTANCE and otherPed ~= myPed and IsPedHuman(otherPed) then
+			if distanceBetweenNpcAndPed < MAX_REPORT_DISTANCE and otherPed ~= myPed and IsPedHuman(otherPed) and not isPedAPlayerPed(otherPed) then
 				return true
 			end
 		end

@@ -12,11 +12,14 @@ resources/koil-debug
 resources/eup-ui
 resources/paletopd
 resources/\[cassino\]
+resources/RES_Anticheat/events.lua
+resources [UNSCRAMBLED]
 server2.cfg
 gitpull.bat
 CitizenFX.log
 scramble.log
 start2.bat
+setup.sh
 
 node_modules
 scrambled_resources

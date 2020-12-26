@@ -31,20 +31,19 @@ PRODUCTS = {
 PLANTED = {} -- global table of all currently planted plants (sort of an in-memory cache between DB and server)
 
 STAGE_CHECK_INTERVAL_MINUTES = 30
-SAVE_INTERVAL_MINUTES = 35
+--SAVE_INTERVAL_MINUTES = 35
 
-WATER_DECREMENT_VAL = 0.75
-FOOD_DECREMENT_VAL = 0.60
+WATER_DECREMENT_VAL = 0.65
+FOOD_DECREMENT_VAL = 0.50
 
 LOW_THRESHOLD = 70.0
 MED_THRESHOLD = 45.0
 HIGH_THRESHOLD = 30.0
 DIE_THRESHOLD = 10.0 -- no longer harvestable if below this threshold
 
-RegisterServerEvent("cultivation:load")
-AddEventHandler("cultivation:load", function()
-    TriggerClientEvent("cultivation:load", source, PRODUCTS, PLANTED)
-end)
+NEARBY_DISTANCE = 400
+
+--DAYS_DEAD_BEFORE_DELETE = 7 -- auto delete when dead for X days
 
 --[[
 local testobj = {}

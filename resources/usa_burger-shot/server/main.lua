@@ -1,5 +1,7 @@
 exports["globals"]:PerformDBCheck("usa-burger_shot", "burgershot")
 
+local ENABLE_CRIMINAL_HISTORY_CHECK = false
+
 local fine = 3000
 
 local ITEMS = {
@@ -49,8 +51,7 @@ AddEventHandler("burgerjob:quitJob", function()
     end
 end)
 
-function checkStrikes(char)
-    local src = source
+function checkStrikes(char, src)
     BurgerHelper.getStrikes(char.get("_id"), function(strikes)
         TriggerClientEvent('burgerjob:checkStrikes', src, strikes)
     end)
@@ -59,16 +60,18 @@ end
 RegisterServerEvent("burgerjob:checkCriminalHistory")
 AddEventHandler("burgerjob:checkCriminalHistory", function()
     local char = exports["usa-characters"]:GetCharacter(source)
-    local criminal_history = char.get("criminalHistory")
-    if #criminal_history > 0 then
-        for i = 1, #criminal_history do
-            if hasCriminalRecord(criminal_history[i].charges) then
-                TriggerClientEvent("usa:notify", source, "Unfortunately you have a pretty serious criminal background therefore, we are unable to hire you.")
-                return
+    if ENABLE_CRIMINAL_HISTORY_CHECK then
+        local criminal_history = char.get("criminalHistory")
+        if #criminal_history > 0 then
+            for i = 1, #criminal_history do
+                if hasCriminalRecord(criminal_history[i].charges) then
+                    TriggerClientEvent("usa:notify", source, "Unfortunately you have a pretty serious criminal background therefore, we are unable to hire you.")
+                    return
+                end
             end
         end
     end
-    checkStrikes(char)
+    checkStrikes(char, source)
 end)
 
 RegisterServerEvent("burgerjob:addStrike")

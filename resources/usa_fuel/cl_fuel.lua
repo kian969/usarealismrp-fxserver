@@ -17,6 +17,7 @@ local fuelStations = {
 			{351.42, -588.21, 75.16}, -- PILLBOX MEDICAL
 			{-1513.0, -67.61, 56.57}, -- Reapers House
 			{-33.22, 768.99, 223.42}, -- Scott Johnson
+			{-1023.3225097656, 173.47639465332, 63.475910186768}, -- Josef
 		}
 	},
 	['Watercraft'] = {
@@ -341,7 +342,6 @@ function IsNearFuelStation(stationType)
 	return false
 end
 
-local BLIPS = {}
 function CreateMapBlips(type)
 	if type == 'Gasoline' then
 		for i = 1, #fuelStations['Gasoline'].locations do
@@ -358,7 +358,6 @@ function CreateMapBlips(type)
 	        BeginTextCommandSetBlipName("STRING")
 	        AddTextComponentString('Fuel Station')
 	        EndTextCommandSetBlipName(blip)
-	        table.insert(BLIPS, blipItem)
 	    end
 	elseif type == 'Watercraft' then
 	    for i = 1, #fuelStations['Watercraft'].locations do
@@ -376,7 +375,6 @@ function CreateMapBlips(type)
 	        BeginTextCommandSetBlipName("STRING")
 	        AddTextComponentString('Watercraft Fuel')
 	        EndTextCommandSetBlipName(blip)
-	        table.insert(BLIPS, blipItem)
 	    end
 	elseif type == 'Aircraft' then
 	    for i = 1, #fuelStations['Aircraft'].locations do
@@ -395,49 +393,14 @@ function CreateMapBlips(type)
 		        BeginTextCommandSetBlipName("STRING")
 		        AddTextComponentString('Aircraft Fuel')
 		        EndTextCommandSetBlipName(blip)
-		        table.insert(BLIPS, blipItem)
 		    end
 	    end
 	end
 end
 
-TriggerServerEvent('blips:getBlips')
-
-RegisterNetEvent('blips:returnBlips')
-AddEventHandler('blips:returnBlips', function(blipsTable)
-  if blipsTable['fuel'] then
-    CreateMapBlips('Gasoline')
-  else
-  	for i = 1, #BLIPS do
-  		if BLIPS[i].type == 'Gasoline' then
-      		RemoveBlip(BLIPS[i].handle)
-      		table.remove(BLIPS, i)
-      	end
-    end
-  end
-  -----------------------------------------------
-  if blipsTable['planefuel'] then
-  	CreateMapBlips('Aircraft')
-  else
-  	for i = 1, #BLIPS do
-  		if BLIPS[i].type == 'Aircraft' then
-      		RemoveBlip(BLIPS[i].handle)
-      		table.remove(BLIPS, i)
-      	end
-    end
-  end
-  -----------------------------------------------
-  if blipsTable['boatfuel'] then
-  	CreateMapBlips('Watercraft')
-  else
-  	for i = 1, #BLIPS do
-  		if BLIPS[i].type == 'Watercraft' then
-      		RemoveBlip(BLIPS[i].handle)
-      		table.remove(BLIPS, i)
-      	end
-    end
-  end
-end)
+CreateMapBlips('Gasoline')
+CreateMapBlips('Watercraft')
+CreateMapBlips('Aircraft')
 
 --[[
 local JERRY_CAN_LOCATIONS = {

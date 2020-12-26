@@ -39,7 +39,7 @@ Citizen.CreateThread(function()
               SetPedFleeAttributes(ped,0,0)
               SetPedCombatAttributes(ped,17,1)
               SetPedRandomComponentVariation(ped, true)
-              TaskStartScenarioInPlace(ped, "WORLD_HUMAN_STAND_MOBILE", 0, true)
+              TaskStartScenarioInPlace(ped, (mkt['pedScenario'] or "WORLD_HUMAN_STAND_MOBILE"), 0, true)
               createdJobPeds[k] = ped
           end
       else 
@@ -130,8 +130,8 @@ Citizen.CreateThread(function()
       -- Draw Markers --
       ------------------
       for k, v in pairs(markets) do
-          local x, y, z = table.unpack(markets[k]['coords'])
-          DrawText3D(x, y, z, 15, '[E] - Black Market')
+        local x, y, z = table.unpack(markets[k]['coords'])
+        DrawText3D(x, y, z, (markets[k]['3dTextDistance'] or 15), '[E] - Black Market')
       end
       --------------------------
       -- Listen for menu open --

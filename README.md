@@ -23,7 +23,7 @@ To get started with your own testing environment:
     * We use this to expose a chat log via an HTTP web server, so we provide a path to a file in its public directory
 	* For example: ``C:/wamp/www/log.txt``
 5) Create your database views (see below view definitions)
-6) Add ``stop usa_utils`` to your ``server_internal.cfg`` so you don't get banned for code injection when developing.
+6) Add ``stop usa_utils`` and ``stop _anticheese`` to your ``server_internal.cfg`` so you don't get banned for code injection when developing.
 7) Start the server.
 	* Windows:
 		- with resource scrambling: ``./start.bat`` from the ``server-data`` folder
@@ -37,6 +37,7 @@ For it to work properly you need to follow these rules:
 	- Use ``__resource.lua`` instead of ``fxmanifest.lua``
 	- No globbing syntax allowed in the ``__resource.lua``
 	- Use ``RegisterServerEvent``, not ``RegisterNetEvent`` in server scripts
+	- Don't name registered chat commands the same as events
 
 **Job Types**
 1. "civ"
@@ -77,6 +78,33 @@ For it to work properly you need to follow these rules:
 	* In the ``phone-messages`` db:
 		* **getReceivedMessagesByNum**
 			- ``emit(doc.receiver, doc);``
-3) Must create following couch db views in a ``characterFilters`` design doc in a ``characters``:
+3) Must create following couch db views in a ``characterFilters`` design doc in the ``characters`` db:
 	* **getCharactersForSelectionBySteamID**
 		- ``emit(doc.created.ownerIdentifier, [doc._id, doc._rev, doc.name, doc.dateOfBirth, doc.money, doc.bank, doc.spawn, doc.created.time]);``
+4) Must create following couch db views in a ``businessFilters`` design doc in the ``businesses`` db:
+	* **getBusinessByName**
+		- ``emit(doc._id, doc);``
+	* **getBusinessFeeInfo**
+		- ``emit(doc._id, [doc._id, doc.fee.paidAt]);``
+	* **getBusinessOwner**
+		- ``emit(doc._id, doc.owner);``
+	* **getBusinessStorage**
+		- ``emit(doc._id, doc.storage);``
+
+**Common Framework Usage**
+
+```
+--[[
+	The server-sided character object (from usa-characters) has a whole bunch of helpful properties and methods pertaining to the player's character
+]]
+
+-- for example:
+local char = exports["usa-characters]:GetCharacter(source) -- get the usa-characters resource character object for player with given source
+
+if char.get("money") > 100 then
+	-- do something
+end
+
+if char.hasItem("Tuna Fish") then
+	-- do something
+end

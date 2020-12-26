@@ -94,6 +94,20 @@ local locations = {
 		ped = {},
 		private = true
 	},
+	["Elemental"] = {
+		menu = {
+			x = -1013.7918701172, y = 176.72352600098, z = 61.654273986816
+		},
+		returns = {
+			x = -1025.7778320313, y = 179.72576904297, z = 63.475910186768
+		},
+		spawn = {
+			x = -1024.7823486328, y = 176.40382385254, z = 63.475910186768,
+			heading = 42.68
+		},
+		ped = {},
+		private = true
+	}
 	--["GloryCorp"] = {
 	--	menu = {
 	--		x = -1607.23,
@@ -221,7 +235,7 @@ Citizen.CreateThread(function()
             local shopDist = GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), data.menu.x, data.menu.y, data.menu.z, true)
 			if data.private and shopDist < 70 then
 				DrawText3D(data.menu.x, data.menu.y, data.menu.z, 2, '[E] - Private Hanger')
-				if IsControlPressed(0, KEYS.E) then
+				if IsControlPressed(0, KEYS.E) and shopDist < 5 then
 					TriggerServerEvent('aircraft:requestOpenPrivateMenu')
 				end
 			elseif shopDist < 70 then
@@ -469,39 +483,16 @@ end
 ----------------------
 ---- Set up blips ----
 ----------------------
-
-local BLIPS = {}
-function CreateMapBlips()
-  if #BLIPS == 0 then
-  	for k, v in pairs(locations) do
-      local blip = AddBlipForCoord(locations[k].menu.x, locations[k].menu.y, locations[k].menu.z)
-      SetBlipSprite(blip, MAP_BLIP_SPRITE)
-      SetBlipDisplay(blip, 4)
-      SetBlipScale(blip, 0.8)
-      SetBlipAsShortRange(blip, true)
-      BeginTextCommandSetBlipName("STRING")
-      AddTextComponentString('Aircrafts')
-      EndTextCommandSetBlipName(blip)
-      table.insert(BLIPS, blip)
+local MAP_BLIP_SPRITE = 251
+for k, v in pairs(locations) do
+	if not v.private then
+		local blip = AddBlipForCoord(locations[k].menu.x, locations[k].menu.y, locations[k].menu.z)
+		SetBlipSprite(blip, MAP_BLIP_SPRITE)
+		SetBlipDisplay(blip, 4)
+		SetBlipScale(blip, 0.8)
+		SetBlipAsShortRange(blip, true)
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString('Aircrafts')
+		EndTextCommandSetBlipName(blip)
 	end
-  end
 end
-
-RegisterNetEvent('blips:returnBlips')
-AddEventHandler('blips:returnBlips', function(blipsTable)
-  if blipsTable['planeshop'] then
-    CreateMapBlips()
-  else
-    for _, k in pairs(BLIPS) do
-      print(k)
-      RemoveBlip(k)
-    end
-    BLIPS = {}
-  end
-end)
-
-TriggerServerEvent('blips:getBlips')
-
------------------
------------------
------------------

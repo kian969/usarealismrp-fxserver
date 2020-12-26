@@ -1,11 +1,11 @@
 local DUTY_FEE = 100
-local BASE_PAY = 20
+local BASE_PAY = 150
 
 RegisterServerEvent("taxiJob:payDriver")
 AddEventHandler("taxiJob:payDriver", function(distance)
 	local char = exports["usa-characters"]:GetCharacter(source)
 	if char.get("job") == "taxi" then
-		local amountRewarded = math.ceil(BASE_PAY + (0.04 * distance))
+		local amountRewarded = math.ceil(BASE_PAY + (0.095 * distance))
 		char.giveMoney(amountRewarded)
 		TriggerClientEvent('usa:notify', source, 'Request completed, you have received: ~g~$'..amountRewarded..'.00')
 		print("TAXI: " .. GetPlayerName(source) .. "["..GetPlayerIdentifier(source).."] has received amount["..amountRewarded..'] after distance['..distance..'] for taxi request!')
@@ -31,17 +31,9 @@ AddEventHandler("taxiJob:setJob", function()
 			local drivers_license = char.getItem("Driver's License")
 			if drivers_license then
 				if drivers_license.status == "valid" then
-					local usource = source
-					TriggerClientEvent("chatMessage", usource, "", {}, "Use ^3/dispatch [id] [msg]^0 to respond to a player taxi request!")
-					Citizen.Wait(3000)
-					TriggerClientEvent("chatMessage", usource, "", {}, "Use ^3/togglerequests^0 to allow or deny local taxi requests.")
-					Citizen.Wait(3000)
-					TriggerClientEvent("chatMessage", usource, "", {}, "Use ^3/ping [id]^0 to request a person\'s location.")
-					Citizen.Wait(3000)
-					TriggerClientEvent("chatMessage", usource, "", {}, "A taxi is waiting for you, use this vehicle while working.")
 					char.removeMoney(DUTY_FEE)
 					char.set("job", "taxi")
-					TriggerClientEvent("taxiJob:onDuty", usource)
+					TriggerClientEvent("taxiJob:onDuty", source)
 					return
 				else
 					TriggerClientEvent("usa:notify", source, "Your driver's license is ~y~suspended~s~!")

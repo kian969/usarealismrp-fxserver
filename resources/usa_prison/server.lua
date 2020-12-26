@@ -1,21 +1,62 @@
+local JOB_NAME = "corrections"
+
 local WEAPONS = {
-	{ hash = "WEAPON_NIGHTSTICK", name = "Nightstick", rank = 1, weight = "10", price = 50},
-    { hash = "WEAPON_FLASHLIGHT", name = "Flashlight", rank = 1, weight = "10", price = 50},
-    { hash = "WEAPON_STUNGUN", name = "Stun Gun", rank = 1, weight = "9", price = 200},
-    { hash = 1593441988, name = "Combat Pistol", rank = 1, weight = "15", price = 200},
-	{ hash = -1600701090, name = "Tear Gas", rank = 2, weight = "10", price = 150},
-	{ name = "SMG", hash = 736523883, rank = 2, price = 500, weight = "30" },
-	{ name = "MK2 Pump Shotgun", hash = 1432025498, rank = 2, price = 500, weight = "30" },
-	{ name = "MK2 Carbine Rifle", hash = 4208062921, rank = 2, price = 500, weight = "30"},
-	{ hash = 100416529, name = "Marksman Rifle", rank = 2, weight = "40", price = 1000}
+	{ hash = "WEAPON_NIGHTSTICK", name = "Nightstick", rank = 1, weight = 10, price = 50},
+    { hash = "WEAPON_FLASHLIGHT", name = "Flashlight", rank = 1, weight = 10, price = 50},
+    { hash = "WEAPON_STUNGUN", name = "Stun Gun", rank = 1, weight = 9, price = 200},
+    { hash = 1593441988, name = "Combat Pistol", rank = 1, weight = 15, price = 200},
+	{ hash = -1600701090, name = "Tear Gas", rank = 2, weight = 10, price = 150},
+	{ name = "SMG", hash = 736523883, rank = 2, price = 500, weight = 30 },
+	{ name = "MK2 Pump Shotgun", hash = 1432025498, rank = 2, price = 500, weight = 30 },
+	{ name = "MK2 Carbine Rifle", hash = 4208062921, rank = 2, price = 500, weight = 30},
+	{ name = "SMG MK2", hash = 0x78A97CD0, price = 750, rank = 2, weight = 20 },
+	{ hash = 100416529, name = "Marksman Rifle", rank = 2, weight = 40, price = 1000},
+	{ name = "Spike Strips", rank = 3 },
+    { name = "Police Radio", rank = 1, price = 300, type = "misc", weight = 5 }
 }
 
 for i = 1, #WEAPONS do
     WEAPONS[i].serviceWeapon = true
     WEAPONS[i].notStackable = true
     WEAPONS[i].quantity = 1
-    WEAPONS[i].legality = "legal"
-    WEAPONS[i].type = "weapon"
+	WEAPONS[i].legality = "legal"
+	if WEAPONS[i].name ~= "Spike Strips" and WEAPONS[i].name ~= "Police Radio" then
+		WEAPONS[i].type = "weapon"
+	end
+end
+
+local function GetWeaponAttachments(name)
+    local attachments = {}
+    if name == "MK2 Carbine Rifle" then
+        table.insert(attachments, 'COMPONENT_AT_SIGHTS')
+        table.insert(attachments, 'COMPONENT_AT_AR_FLSH')
+        table.insert(attachments, 'COMPONENT_AT_AR_AFGRIP_02')
+        --table.insert(attachments, 'COMPONENT_CARBINERIFLE_MK2_CLIP_FMJ')
+        table.insert(attachments, 'COMPONENT_AT_CR_BARREL_02')
+        table.insert(attachments, 'COMPONENT_AT_MUZZLE_06')
+    elseif name == "MK2 Pump Shotgun" then
+        table.insert(attachments, 'COMPONENT_AT_SIGHTS')
+        table.insert(attachments, 'COMPONENT_AT_AR_FLSH')
+        --table.insert(attachments, 'COMPONENT_PUMPSHOTGUN_MK2_CLIP_HOLLOWPOINT')
+    elseif name == "Combat Pistol" then
+        table.insert(attachments, 0x359B7AAE)
+    elseif name == "SMG MK2" then
+        table.insert(attachments, "COMPONENT_AT_AR_FLSH")
+        table.insert(attachments, "COMPONENT_AT_SIGHTS_SMG")
+    end
+    return attachments
+end
+
+function getBCSORank(id, cb)
+	TriggerEvent('es:exposeDBFunctions', function(db)
+		db.getDocumentByRow("correctionaldepartment", "identifier" , GetPlayerIdentifiers(id)[1], function(doc)
+			if doc and doc.rank then
+				cb(doc.rank)
+			else
+				cb(nil)
+			end
+		end)
+	end)
 end
 
 RegisterServerEvent("doc:getWeapons")
@@ -24,7 +65,7 @@ AddEventHandler("doc:getWeapons", function()
 end)
 
 -- Check inmates remaining jail time --
-TriggerEvent('es:addJobCommand', 'roster', {"corrections"}, function(source, args, char)
+TriggerEvent('es:addJobCommand', 'roster', {JOB_NAME}, function(source, args, char)
 	local hasInmates = false
 	TriggerClientEvent('chatMessage', source, "", {255, 255, 255}, "^1^*[BOLINGBROKE PENITENTIARY]")
 	exports["usa-characters"]:GetCharacters(function(characters)
@@ -50,7 +91,7 @@ end, {
 ----------------
 local cellblockOpen = false
 
-TriggerEvent('es:addJobCommand', 'c', {"corrections"}, function(source, args, char)
+TriggerEvent('es:addJobCommand', 'c', {JOB_NAME}, function(source, args, char)
 	cellblockOpen = not cellblockOpen
 	print("cellblock is now: " .. tostring(cellblockOpen))
 	TriggerClientEvent('toggleJailDoors', -1, cellblockOpen)
@@ -60,7 +101,7 @@ RegisterServerEvent("jail:checkJobForWarp")
 AddEventHandler("jail:checkJobForWarp", function()
 	local char = exports["usa-characters"]:GetCharacter(source)
 	local job = char.get("job")
-	if job == "sheriff" or job == "ems" or job == "fire" or job == "corrections" or job == "doctor" then
+	if job == "sheriff" or job == "ems" or job == "fire" or job == JOB_NAME or job == "doctor" then
 		TriggerClientEvent("jail:continueWarp", source)
 	else
 		TriggerClientEvent("usa:notify", source, "That area is prohibited!")
@@ -123,8 +164,8 @@ AddEventHandler("doc:offduty", function()
 	-------------------------
 	-- put back to civ job --
 	-------------------------
-	if job == "corrections" then
-		TriggerEvent('job:sendNewLog', source, 'BCSO', false)
+	if job == JOB_NAME then
+		TriggerEvent('job:sendNewLog', source, JOB_NAME, false)
 	end
 	--exports["usa_ems"]:RemoveServiceWeapons(char)
 	char.set("job", "civ")
@@ -147,16 +188,16 @@ RegisterServerEvent("doc:forceDuty")
 AddEventHandler("doc:forceDuty", function()
 	local char = exports["usa-characters"]:GetCharacter(source)
 	local job = char.get("job")
-	if job ~= "corrections" then
+	if job ~= JOB_NAME then
 		----------------------------
 		-- set to corrections job --
 		----------------------------
-		char.set("job", "corrections")
+		char.set("job", JOB_NAME)
 		TriggerEvent("doc:loadUniform", 1, source)
 		TriggerClientEvent("usa:notify", source, "You have clocked in!")
-		TriggerEvent('job:sendNewLog', source, 'corrections', true)
+		TriggerEvent('job:sendNewLog', source, JOB_NAME, true)
 		TriggerClientEvent("ptt:isEmergency", source, true)
-		TriggerClientEvent("interaction:setPlayersJob", source, "corrections")
+		TriggerClientEvent("interaction:setPlayersJob", source, JOB_NAME)
 		TriggerEvent("eblips:add", {name = char.getName(), src = source, color = 82})
 	end
 end)
@@ -188,12 +229,12 @@ AddEventHandler("doc:loadOutfit", function(slot, id)
 	local char = exports["usa-characters"]:GetCharacter(usource)
 	local job = char.get("job")
 	local player_identifer = GetPlayerIdentifiers(usource)[1]
-	if job ~= "corrections" then
-		char.set("job", "corrections")
-		TriggerEvent('job:sendNewLog', source, 'corrections', true)
+	if job ~= JOB_NAME then
+		char.set("job", JOB_NAME)
+		TriggerEvent('job:sendNewLog', source, JOB_NAME, true)
 		TriggerClientEvent("usa:notify", usource, "You have clocked in!")
 		TriggerClientEvent("ptt:isEmergency", usource, true)
-		TriggerClientEvent("interaction:setPlayersJob", usource, "corrections")
+		TriggerClientEvent("interaction:setPlayersJob", usource, JOB_NAME)
 		TriggerEvent("eblips:add", {name = char.getName(), src = usource, color = 82})
 	end
 	TriggerEvent('es:exposeDBFunctions', function(usersTable)
@@ -209,7 +250,7 @@ RegisterServerEvent("doc:spawnVehicle")
 AddEventHandler("doc:spawnVehicle", function(veh)
 	local char = exports["usa-characters"]:GetCharacter(source)
 	local job = char.get("job")
-	if job == "corrections" then
+	if job == JOB_NAME then
 		TriggerClientEvent("doc:spawnVehicle", source, veh)
 	else
 		TriggerClientEvent("usa:notify", source, "You are not on-duty!")
@@ -222,43 +263,48 @@ AddEventHandler("doc:checkRankForWeapon", function(weapon)
 	local usource = source
 	local char = exports["usa-characters"]:GetCharacter(usource)
 	local job = char.get("job")
-	if job == "corrections" then
+	if job == JOB_NAME then
 		TriggerEvent('es:exposeDBFunctions', function(GetDoc)
 			GetDoc.getDocumentByRow("correctionaldepartment", "identifier" , GetPlayerIdentifiers(usource)[1], function(result)
 				if type(result) ~= "boolean" then
 					if result.rank >= weapon.rank then
-						if char.canHoldItem(weapon) then
-							if char.get("money") < weapon.price then
-								TriggerClientEvent("usa:notify", usource, "Not enough money!")
-								return
-							end
-							char.removeMoney(weapon.price)
-							local letters = {}
-							for i = 65,  90 do table.insert(letters, string.char(i)) end -- add capital letters
-					        local serialEnding = math.random(100000000, 999999999)
-					        local serialLetter = letters[math.random(#letters)]
-					        weapon.serialNumber = serialLetter .. serialEnding
-							weapon.uuid = weapon.serialNumber
-							TriggerClientEvent("doc:equipWeapon", usource, weapon)
-							char.giveItem(weapon)
-							local weaponDB = {}
-					        weaponDB.name = weapon.name
-					        weaponDB.serialNumber = serialLetter .. serialEnding
-					        weaponDB.ownerName = char.getFullName()
-					        weaponDB.ownerDOB = char.get('dateOfBirth')
-							local timestamp = os.date("*t", os.time())
-					        weaponDB.issueDate = timestamp.month .. "/" .. timestamp.day .. "/" .. timestamp.year
-							TriggerEvent('es:exposeDBFunctions', function(db)
-					          db.createDocumentWithId("legalweapons", weaponDB, weaponDB.serialNumber, function(success)
-					              if success then
-					                  print("* Weapon created serial["..weaponDB.serialNumber.."] name["..weaponDB.name.."] owner["..weaponDB.ownerName.."] *")
-					              else
-					                  print("* Error: Weapon failed to be created!! *")
-					              end
-					          end)
-					        end)
+						if weapon.name == "Spike Strips" then
+							TriggerEvent("spikestrips:equip", true, usource)
 						else
-							TriggerClientEvent("usa:notify", usource, "Inventory full!")
+							if char.canHoldItem(weapon) then
+								if char.get("money") < weapon.price then
+									TriggerClientEvent("usa:notify", usource, "Not enough money!")
+									return
+								end
+								char.removeMoney(weapon.price)
+								local letters = {}
+								for i = 65,  90 do table.insert(letters, string.char(i)) end -- add capital letters
+								local serialEnding = math.random(100000000, 999999999)
+								local serialLetter = letters[math.random(#letters)]
+								weapon.serialNumber = serialLetter .. serialEnding
+								weapon.uuid = weapon.serialNumber
+								weapon.components = GetWeaponAttachments(weapon.name)
+								TriggerClientEvent("doc:equipWeapon", usource, weapon)
+								char.giveItem(weapon)
+								local weaponDB = {}
+								weaponDB.name = weapon.name
+								weaponDB.serialNumber = serialLetter .. serialEnding
+								weaponDB.ownerName = char.getFullName()
+								weaponDB.ownerDOB = char.get('dateOfBirth')
+								local timestamp = os.date("*t", os.time())
+								weaponDB.issueDate = timestamp.month .. "/" .. timestamp.day .. "/" .. timestamp.year
+								TriggerEvent('es:exposeDBFunctions', function(db)
+								db.createDocumentWithId("legalweapons", weaponDB, weaponDB.serialNumber, function(success)
+									if success then
+										print("* Weapon created serial["..weaponDB.serialNumber.."] name["..weaponDB.name.."] owner["..weaponDB.ownerName.."] *")
+									else
+										print("* Error: Weapon failed to be created!! *")
+									end
+								end)
+								end)
+							else
+								TriggerClientEvent("usa:notify", usource, "Inventory full!")
+							end
 						end
 					else
 						TriggerClientEvent("usa:notify", usource, "Not a high enough rank!")
@@ -274,7 +320,7 @@ AddEventHandler("doc:checkRankForWeapon", function(weapon)
 end)
 
 -- adding new DOC employees --
-TriggerEvent('es:addJobCommand', 'setcorrectionsrank', {"corrections"}, function(source, args, user)
+TriggerEvent('es:addJobCommand', 'setcorrectionsrank', {JOB_NAME}, function(source, args, user)
 	local usource = source
 	if not GetPlayerName(tonumber(args[2])) or not tonumber(args[3]) then
 		TriggerClientEvent("usa:notify", source, "Error: bad format!")
@@ -324,15 +370,3 @@ TriggerEvent('es:addJobCommand', 'setcorrectionsrank', {"corrections"}, function
 		end)
 	end)
 end)
-
-function getBCSORank(id, cb)
-	TriggerEvent('es:exposeDBFunctions', function(db)
-		db.getDocumentByRow("correctionaldepartment", "identifier" , GetPlayerIdentifiers(id)[1], function(doc)
-			if doc and doc.rank then
-				cb(doc.rank)
-			else
-				cb(nil)
-			end
-		end)
-	end)
-end

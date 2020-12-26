@@ -363,7 +363,6 @@ AddEventHandler("mechanic:repairJobCheck", function()
 				local driveable = IsVehicleDriveable(veh, true)
 				local isAnyTireBurst = IsAnyVehicleTireBursted(veh)
 				if engineHP < 600 or not driveable or isAnyTireBurst then
-					print("gonna check palyer's job")
 					TriggerServerEvent("mechanic:repairJobCheck")
 				else
 					exports.globals:notify("Vehicle does not need repairs!")
@@ -379,22 +378,26 @@ end)
 
 RegisterNetEvent("mechanic:repair")
 AddEventHandler("mechanic:repair", function(repairCount)
-	local veh = MechanicHelper.getClosestVehicle(5)
-	if veh then
+	if not isRepairing then
 		isRepairing = true
-		MechanicHelper.repairVehicle(veh, repairCount, function(success)
-			if success then
-				print("repair succeeded!")
-				TriggerServerEvent("mechanic:vehicleRepaired")
-				exports.globals:notify("Vehicle repaired!")
-			else 
-				print("repair failed")
-				exports.globals:notify("Vehicle repair failed!")
-			end
-			isRepairing = false
-		end)
-	else 
-		exports.globals:notify("No vehicle found!")
+		local veh = MechanicHelper.getClosestVehicle(5)
+		if veh then
+			MechanicHelper.repairVehicle(veh, repairCount, function(success)
+				if success then
+					print("repair succeeded!")
+					TriggerServerEvent("mechanic:vehicleRepaired")
+					exports.globals:notify("Vehicle repaired!")
+				else 
+					print("repair failed")
+					exports.globals:notify("Vehicle repair failed!")
+				end
+			end)
+		else 
+			exports.globals:notify("No vehicle found!")
+		end
+		isRepairing = false
+	else
+		exports.globals:notify("Busy")
 	end
 end)
 
@@ -487,7 +490,14 @@ function ImpoundVehicle()
 			SetEntityAsMissionEntity(targetVehicle, true, true)
 			DelVehicle(targetVehicle)
 			vehicleToImpound = nil
-			TriggerServerEvent("towJob:giveReward")
+			exports.globals:notify("Impounding...")
+			Citizen.CreateThread(function()
+				Wait(3000)
+				if not DoesEntityExist(targetVehicle) then
+					TriggerServerEvent("towJob:giveReward")
+					exports.globals:notify("Impounded!")
+				end
+			end)
 		end
 	end
 end
@@ -580,8 +590,9 @@ end
 
 -- Delete car function borrowed frtom Mr.Scammer's model blacklist, thanks to him!
 function DelVehicle(entity)
-	TriggerEvent('persistent-vehicles/forget-vehicle', entity)
-	Citizen.InvokeNative( 0xEA386986E786A54F, Citizen.PointerValueIntInitialized( entity ) )
+	--TriggerEvent('persistent-vehicles/forget-vehicle', entity)
+	--Citizen.InvokeNative( 0xEA386986E786A54F, Citizen.PointerValueIntInitialized( entity ) )
+	DeleteVehicle(entity)
 end
 
 function isPlayerAtTowSpot()
@@ -673,7 +684,7 @@ function ShowHelp(isRank3)
 		TriggerEvent("chatMessage", "", {}, "^3INFO: ^0Use ^3NUMPAD 8^0 to raise the tow arm and ^3NUMPAD 5^0 to lower the arm. Hold ^3H^0 to release the vehicle. Press ^3E^0 to toggle light bar.")
 		Wait(3000)
 	else
-		TriggerEvent("chatMessage", "", {}, "^3INFO: ^0Use ^3/tow^0 when facing a vehicle to load/unload it from the flatbed.")
+		TriggerEvent("chatMessage", "", {}, "^3INFO: ^0Use ^3/tow^0 when near a vehicle to load/unload it from the flatbed.")
 		Wait(3000)
 	end
 	TriggerEvent("chatMessage", "", {}, "^3INFO: ^0Use ^3/install [upgrade]^0 to install custom vehicle upgrades (must be lvl 2 mechanic).")
@@ -681,6 +692,4 @@ function ShowHelp(isRank3)
 	TriggerEvent("chatMessage", "", {}, "^3INFO: ^0You can get a repair kit from the hardware store and use that to repair vehicles.")
 	Wait(3000)
 	TriggerEvent("chatMessage", "", {}, "^3INFO: ^0You can use the company tow truck that is right over there. It has a repair kit inside.")
-	Wait(3000)
-	TriggerEvent("chatMessage", "", {}, "^3INFO: ^0Press ^3SHIFT + F2^0 to open the radio, left/right arrows keys to change channels, and CAPS LOCK to speak on it.")
 end

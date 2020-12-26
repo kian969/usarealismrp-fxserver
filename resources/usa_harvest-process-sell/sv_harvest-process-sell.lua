@@ -1,10 +1,12 @@
+local CHECK_CRIMINAL_HISTORY = false
+
 local REWARDS = {
   ["Sand"] = {
     harvest_item_requirement = "Shovel",
     harvest_item = {
       name = "Raw Sand",
       quantity = 1,
-      weight = 8.0,
+      weight = 5.0,
       type = "misc",
       legality = "legal",
       objectModel = "prop_cs_box_step"
@@ -19,7 +21,7 @@ local REWARDS = {
     processed_item = {
       name = "Processed Sand",
       quantity = 1,
-      weight = 8.0,
+      weight = 5.0,
       type = "misc",
       legality = "legal",
       objectModel = "prop_cs_box_step"
@@ -30,13 +32,15 @@ local REWARDS = {
 
 RegisterServerEvent("HPS:checkCriminalHistory")
 AddEventHandler("HPS:checkCriminalHistory", function(job_name, process_time, stage)
-  local char = exports["usa-characters"]:GetCharacter(source)
-  local criminal_history = char.get("criminalHistory")
-  if #criminal_history > 0 then
-    for i = 1, #criminal_history do
-      if hasCriminalRecord(criminal_history[i].charges) then
-        TriggerClientEvent("usa:notify", source, "Due to your serious criminal background, we cannot hire you to work in our sandpit!")
-        return
+  if CHECK_CRIMINAL_HISTORY then
+    local char = exports["usa-characters"]:GetCharacter(source)
+    local criminal_history = char.get("criminalHistory")
+    if #criminal_history > 0 then
+      for i = 1, #criminal_history do
+        if hasCriminalRecord(criminal_history[i].charges) then
+          TriggerClientEvent("usa:notify", source, "Due to your serious criminal background, we cannot hire you to work in our sandpit!")
+          return
+        end
       end
     end
   end
@@ -55,7 +59,7 @@ AddEventHandler("HPS:rewardItem", function(job_name, stage)
       local char = exports["usa-characters"]:GetCharacter(source)
       if stage == "Harvest" then
         local givePowderItemChance = math.random()
-        if givePowderItemChance < 0.05 then
+        if givePowderItemChance < 0.07 then
           if char.canHoldItem(data.powder) then
             char.giveItem(data.powder)
             TriggerClientEvent("usa:notify", source, "You have dug and retrieved " .. data.powder.name)

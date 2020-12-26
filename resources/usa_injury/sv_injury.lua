@@ -49,7 +49,8 @@ injuries = { -- ensure this is the same as sv_injury.lua
     [2343591895] = {type = 'blunt', bleed = 2700, string = 'Blunt Object', treatableWithBandage = true, treatmentPrice = 40, dropEvidence = 0.6}, -- WEAPON_FLASHLIGHT
     [3219281620] = {type = 'penetrating', bleed = 300, string = 'High-speed Projectile', treatableWithBandage = false, treatmentPrice = 150, dropEvidence = 1.0}, -- WEAPON_PISTOL_MK2
     [4208062921] = {type = 'penetrating', bleed = 300, string = 'High-speed Projectile', treatableWithBandage = false, treatmentPrice = 80, dropEvidence = 1.0}, -- WEAPON_CARBINERIFLE_MK2
-    [1432025498] = {type = 'penetrating', bleed = 300, string = 'High-speed Projectile', treatableWithBandage = false, treatmentPrice = 80, dropEvidence = 1.0} -- WEAPON_PUMPSHOTGUN_MK2
+	[1432025498] = {type = 'penetrating', bleed = 300, string = 'High-speed Projectile', treatableWithBandage = false, treatmentPrice = 80, dropEvidence = 1.0}, -- WEAPON_PUMPSHOTGUN_MK2
+	[GetHashKey("WEAPON_COMPACTRIFLE")] = {type = 'penetrating', bleed = 300, string = 'High-speed Projectile', treatableWithBandage = false, treatmentPrice = 80, dropEvidence = 1.0}
 }
 
 local WEBHOOK_URL = "https://discordapp.com/api/webhooks/618096654842593281/tz9hG-cD-2EqzMLr-4Z3KdRG1XHQyS8OhVLMWQLCIT6ebz6SGI6-iM0qgj-wXf8FBXBx"
@@ -93,6 +94,8 @@ TriggerEvent('es:addJobCommand', 'bandage', {'ems', 'doctor', 'sheriff', 'correc
 	if targetSource and GetPlayerName(targetSource) then
 		TriggerEvent('injuries:bandagePlayer', targetSource)
 		TriggerClientEvent('usa:notify', _source, 'Patient\'s injuries have been bandaged.')
+		exports.globals:sendLocalActionMessage(_source, "gives bandage", 5.0, 3500)
+		TriggerClientEvent("usa:playAnimation", _source, "anim@move_m@trash", "pickup", -8, 1, -1, 53, 0, 0, 0, 0, 3)
 	else
 		TriggerClientEvent('injuries:bandageNearestPed', _source)
 	end
@@ -255,19 +258,20 @@ end)
 
 RegisterServerEvent('injuries:toggleOnDuty')
 AddEventHandler('injuries:toggleOnDuty', function()
+	local JOB_NAME = "doctor"
 	local char = exports["usa-characters"]:GetCharacter(source)
 	if char.get("job") ~= 'doctor' then
 		if char.get('emsRank') >= 4 then
 			TriggerClientEvent('usa:notify', source, 'You are now signed ~g~on-duty~s~ as a doctor.')
 			char.set('job', 'doctor')
-			TriggerEvent('job:sendNewLog', source, 'doctor', true)
+			TriggerEvent('job:sendNewLog', source, JOB_NAME, true)
 		else
 			TriggerClientEvent('usa:notify', source, '~y~You are not whitelisted for DOCTOR')
 		end
 	else
 		TriggerClientEvent('usa:notify', source, 'You are now signed ~y~off-duty~s~ as a doctor.')
 		char.set('job', 'civ')
-		TriggerEvent('job:sendNewLog', source, 'doctor', false)
+		TriggerEvent('job:sendNewLog', source, JOB_NAME, false)
 	end
 end)
 

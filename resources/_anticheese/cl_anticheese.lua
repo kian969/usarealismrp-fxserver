@@ -59,7 +59,8 @@ local COORDS_TO_ALLOW_TELEPORTATION_FROM = {
 	{ x = 996.50, y = -3200.201, z = -36.19}, -- meth exit
 	{ x = 138.18, y = 2295.25, z = 94.09}, -- meth enter
 	{ x = -1569.64, y = -3013.94, z = -74.41 }, -- night club interior
-	{ x = -337.22, y = 207.74, z = 88.57 } -- night club entrance
+	{ x = -337.22, y = 207.74, z = 88.57 }, -- night club entrance
+	{x = 300.96530151367, y = -585.62915039063, z = 43.283988952637} -- pillbox entrance
 }
 
 local PROPERTY_COORDS = {
@@ -128,13 +129,16 @@ local PROPERTY_COORDS = {
 }
 
 local COORDS_THAT_ALLOW_INVISIBILITY = {
+	{ x = 288.62399291992, y = 6229.2231445312, z = 32.454002380372 }, -- not sure but apparently it triggers lots of false alarms
+	{ x = -391.07147216797, y = 6216.5712890625, z = 31.4739818573 }, -- default spawnmanager spawn point
 	{x = -337.3863,y = -136.9247,z = 38.5737},  -- LSC 1
 	{x = 733.69,y = -1088.74, z = 21.733},  -- LSC 2
 	{x = -1155.077,y = -2006.61, z = 12.465},  -- LSC 3
 	{x = 1174.823,y = 2637.807, z = 37.045},  -- LSC 4
 	{x = 108.842,y = 6628.447, z = 31.072},  -- LSC 5
 	{x = -212.368,y = -1325.486, z = 30.176},  -- LSC 6
-	{x= 0.0, y= 0.0, z = 1.0} -- ?
+	{x= 0.0, y= 0.0, z = 1.0}, -- unsure why, but this spot was flagging
+	{x = 306.6242980957, y = -590.22576904297, z = 43.283988952637} -- pillbox entrance
 }
 
 local BlacklistedWeapons = { -- weapons that will get people banned

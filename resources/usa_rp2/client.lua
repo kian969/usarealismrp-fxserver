@@ -226,7 +226,11 @@ function AddTextEntry(key, value)
 end
 
 Citizen.CreateThread(function()
+  Wait(1000)
   SetPlayerHealthRechargeMultiplier(PlayerId(), 0.0)
+end)
+
+Citizen.CreateThread(function()
   AddTextEntry('FE_THDR_GTAO', 'USA REALISM RP - HTTPS://USARRP.NET')
 end)
 
@@ -236,7 +240,7 @@ Citizen.CreateThread(function()
 		Wait(0)
 
 		SetPedDensityMultiplierThisFrame(1.0)
-		SetVehicleDensityMultiplierThisFrame(0.3) -- npc vehicle amount
+		SetVehicleDensityMultiplierThisFrame(0.5) -- npc vehicle amount
 		--local playerPed = GetPlayerPed(-1)
 		--local pos = GetEntityCoords(playerPed)
 		--RemoveVehiclesFromGeneratorsInArea(pos['x'] - 1500.0, pos['y'] - 1500.0, pos['z'] - 1500.0, pos['x'] + 1500.0, pos['y'] + 1500.0, pos['z'] + 1500.0);
@@ -598,19 +602,11 @@ local policeVehicles = {
 
 }
 
---------------------------------------
--- increase tazer gun stun duration --
---------------------------------------
-local tiempo = 8000 -- in miliseconds >> 1000 ms = 1s
-
 Citizen.CreateThread(function()
-	while true do
-    playerPed = PlayerPedId() -- IMPORTANT!! DO NOT REMOVE!! THIS IS USED TO SET THE GLOBAL PLAYER PED FOR THE WHOLE FILE! --
-		if IsPedBeingStunned(playerPed) then
-		    SetPedMinGroundTimeForStungun(playerPed, tiempo)
-		end
-        Wait(10)
-	end
+  while true do
+    playerPed = PlayerPedId() -- !! IMPORTANT! DO NOT DELETE! THIS SETS playerPed FOR THE _WHOLE_ SCRIPT!! !!
+    Wait(2)
+  end
 end)
 
 ------------------------------------
@@ -787,6 +783,10 @@ AddEventHandler("usa:loadCivCharacter", function(character, playerWeapons)
           end
         end
       end
+      -- eye color --
+			if head.eyeColor then
+				SetPedEyeColor(ped, head.eyeColor)
+			end
     else
       --print("no barber shop customizations!")
     end
@@ -844,6 +844,10 @@ AddEventHandler("usa:setPlayerComponents", function(character)
             end
           end
         end
+        -- eye color --
+        if head.eyeColor then
+          SetPedEyeColor(ped, head.eyeColor)
+        end
       else
         --print("no barber customizations!")
         -- set default values --
@@ -890,6 +894,10 @@ AddEventHandler("usa:setPlayerComponents", function(character)
             SetPedHeadOverlayColor(ped, i - 1, 2, old_head.other[i][3])
           end
           --]]
+        end
+        -- eye color --
+        if old_head.eyeColor then
+          SetPedEyeColor(ped, old_head.eyeColor)
         end
       end
     else
@@ -1186,4 +1194,16 @@ Citizen.CreateThread(function()
 end)
 
 -- add XMAS tree --
---local xmasTree = CreateObject(118627012, 226.48237609863, -895.41094970703, 28.692138671875, 0, 0, 0)
+local TREES = {
+  LEGION = {226.48237609863, -895.41094970703, 28.692138671875},
+  UPPER_PILLBOX = {242.40295410156, -565.30682373047, 41.278789520264},
+  BURGERSHOT = { -1191.5321044922, -894.51275634766, 18.479234695435},
+  PDM = { -30.562828063965, -1100.5909423828, 32.261386108398},
+  --MRPD = { 455.22213745117, -1024.1641845703, 26.466562271118},
+}
+
+local LARGE_XMAS_TREE_MODEL = 118627012
+
+for tree, coords in pairs(TREES) do
+  CreateObject(LARGE_XMAS_TREE_MODEL, coords[1], coords[2], coords[3], 0, 0, 0)
+end

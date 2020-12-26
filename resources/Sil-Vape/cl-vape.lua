@@ -22,19 +22,15 @@ end)
 AddEventHandler("Vape:StartVaping", function()
 	local ped = GetPlayerPed(-1)
 	if DoesEntityExist(ped) and not IsEntityDead(ped) then
-		if IsPedOnFoot(ped) then
-			if IsPlayerAbleToVape == false then
-				IsVaping = true
-				PlayerIsAbleToVape()
-				TriggerEvent("Vape:HelpFadeIn", 0)
-				ShowNotification("~c~You've ~b~started ~c~using your vape.")
-				Wait(Config.HelpTextLength)
-				TriggerEvent("Vape:HelpFadeOut", 0)
-			else
-				ShowNotification("~r~You are already holding your vape.")
-			end
+		if IsPlayerAbleToVape == false then
+			IsVaping = true
+			PlayerIsAbleToVape()
+			TriggerEvent("Vape:HelpFadeIn", 0)
+			ShowNotification("~c~You've ~b~started ~c~using your vape.")
+			Wait(Config.HelpTextLength)
+			TriggerEvent("Vape:HelpFadeOut", 0)
 		else
-			ShowNotification("~r~You can not do this in a vehicle.")
+			ShowNotification("~r~You are already holding your vape.")
 		end
 	else
 		ShowNotification("~r~You can not do this if you are dead.")
@@ -169,10 +165,6 @@ end)
 
 Citizen.CreateThread(function()
 	while true do
-		local ped = GetPlayerPed(-1)
-		if IsPedInAnyVehicle(ped, true) then
-			PlayerIsEnteringVehicle()
-		end
 		if IsPlayerAbleToVape then
 			if IsControlPressed(0, Config.DragControl) then
 			  Wait(Config.ButtonHoldTime)
@@ -234,7 +226,11 @@ function PlayerIsUnableToVape()
 	IsPlayerAbleToVape = false
 	local ped = GetPlayerPed(-1)
 	DeleteObject(VapeMod)
-	ClearPedTasksImmediately(ped)
+	if IsPedInAnyVehicle(ped, true) then
+		ClearPedTasks(ped)
+	else 
+		ClearPedTasksImmediately(ped)
+	end
 	ClearPedSecondaryTask(ped)
 end
 function ShowNotification( text )

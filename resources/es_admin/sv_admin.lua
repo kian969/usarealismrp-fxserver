@@ -182,6 +182,7 @@ TriggerEvent('es:addCommand', 'help', function(source, args, char)
 				end
 			end
 		end)
+		TriggerClientEvent("chatMessage", source, "", {}, "^6^*YOU:^r^0 " .. GetPlayerName(source) .. " [#" .. source .. "] ^6^*|^r^0 " .. message)
 	else
 		TriggerClientEvent("chatMessage", tonumber(source), "", {}, "^3Usage: ^0/help [message]")
 	end
@@ -300,7 +301,7 @@ end
 -- Announcing
 TriggerEvent('es:addGroupCommand', 'announce', "mod", function(source, args, char)
 	table.remove(args, 1)
-	TriggerClientEvent('chatMessage', -1, "", {255, 0, 0}, "^2^*[STAFF ANNOUNCEMENT] ^r^0" .. table.concat(args, " "))
+	TriggerClientEvent('chatMessage', -1, "", {255, 0, 0}, "^2^*[CITY ANNOUNCEMENT] ^r^0" .. table.concat(args, " "))
 end, {
 	help = "Send a server-wide message.",
 	params = {
@@ -612,7 +613,7 @@ AddEventHandler('rconCommand', function(commandName, args)
 			-- update db
 			GetDoc.createDocument("bans",  {char_name = char_name, name = targetPlayerName, identifiers = allPlayerIdentifiers, banned = true, reason = reason, bannerName = banner, bannerId = bannerId, timestamp = os.date("!%Y-%m-%dT%XZ", os.time() - 7 * 60 * 60)}, function()
 				RconPrint("player banned!")
-				DropPlayer(targetPlayer, "Banned: " .. reason)
+				DropPlayer(targetPlayer, "Banned: " .. reason .. " - Banned by: " .. banner)
 			end)
 		end)
 	elseif commandName == "banid" then
@@ -763,7 +764,7 @@ AddEventHandler('rconCommand', function(commandName, args)
 					if(true)then
 						print(args[1] .. " " .. args[2])
 						TriggerClientEvent('es:setPlayerDecorator', tonumber(args[1]), 'group', tonumber(args[2]), true)
-						TriggerClientEvent('chatMessage', -1, "", {255, 255, 255}, "^2^*[SERVER] ^r^0Group of ^2^*" .. GetPlayerName(tonumber(args[1])) .. "^r^0 has been set to ^2^*" .. args[2]..'^r^0.')
+						--TriggerClientEvent('chatMessage', -1, "", {255, 255, 255}, "^2^*[SERVER] ^r^0Group of ^2^*" .. GetPlayerName(tonumber(args[1])) .. "^r^0 has been set to ^2^*" .. args[2]..'^r^0.')
 					end
 				end)
 			else
@@ -899,13 +900,15 @@ AddEventHandler('rconCommand', function(commandName, args)
 			local newDob = args[4]
 
 			local query = {
-				["firstName"] = {
-					["$regex"] = "(?i)" .. prevFirst
+				name = {
+					first = {
+						["$regex"] = "(?i)" .. prevFirst
+					},
+					last = {
+						["$regex"] = "(?i)" .. prevLast
+					}
 				},
-				["lastName"] = {
-					["$regex"] = "(?i)" .. prevLast
-				},
-				["dateOfBirth"] = prevDob
+				dateOfBirth = prevDob
 			}
 
 			-- search for player's document in DB --
@@ -931,6 +934,63 @@ end)
 --------------- BAN MANAGEMENT: -------------------
 -- PERFORM FIRST TIME DB CHECK --
 exports["globals"]:PerformDBCheck("BANS", "bans", fetchAllBans)
+
+AddEventHandler('playerConnecting', function(playerName, setKickReason, deferrals)
+	deferrals.defer()
+	deferrals.update("Checking ban status...")
+	local usource = source
+	local allPlayerIdentifiers = GetPlayerIdentifiers(tonumber(usource))
+	local gameLicense, steamLicense, ipAddress
+	for j = 1, #allPlayerIdentifiers do
+		if string.find(allPlayerIdentifiers[j], "license") then
+			gameLicense = allPlayerIdentifiers[j]
+		elseif string.find(allPlayerIdentifiers[j], "steam") then
+			steamLicense = allPlayerIdentifiers[j]
+		elseif string.find(allPlayerIdentifiers[j], "ip") then
+			ipAddress = allPlayerIdentifiers[j]
+		end
+	end
+	TriggerEvent('es:exposeDBFunctions', function(couchdb)
+		local query = {
+			["identifiers"] = {
+				["$elemMatch"] = {
+					["$or"] = {
+						gameLicense, steamLicense, ipAddress
+					}
+				}
+			}
+		}
+		couchdb.getDocumentByRows("bans", query, function(doc)
+			if doc then
+				print("found banned player document, name: " .. doc.name)
+				if doc.duration then
+					if getHoursFromTime(doc.time) < doc.duration then
+						print(GetPlayerName(tonumber(usource)) .. " has been temp banned from your server and should not be able to play!")
+						--DropPlayer(tonumber(usource), "Temp Banned: " .. doc.reason .. " This ban is in place for " .. doc.duration .. " hour(s).")
+						deferrals.done("Temp Banned: " .. doc.reason .. " This ban is in place for " .. doc.duration .. " hour(s). Banned by: " .. doc.bannerName)
+					else
+						local docid = doc._id
+						local docRev = doc._rev
+						--RconPrint("\nfound a matching identifer to unban for "..bannedPlayer.name.."!")
+						-- found a match, unban
+						PerformHttpRequest("http://127.0.0.1:5984/bans/" .. docid .. "?rev=" .. docRev, function(err, rText, headers)
+							print("\nrText = " .. rText)
+							print("\nerr = " .. err)
+						end, "DELETE", "", { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })
+						print("\nPlayer ".. doc.name .." has been unbanned due to tempban expiration!")
+						deferrals.done()
+					end
+				else
+					print(GetPlayerName(tonumber(usource)) .. " has been perma banned from your server and should not be able to play!")
+					--DropPlayer(tonumber(usource), "Banned: " .. doc.reason)
+					deferrals.done("Banned: " .. doc.reason .. " - Banned by: " .. doc.bannerName)
+				end
+			else
+				deferrals.done()
+			end
+		end)
+	end)
+end)
 
 -- ban command --
 TriggerEvent('es:addGroupCommand', 'ban', "admin", function(source, args, char)
@@ -983,7 +1043,7 @@ TriggerEvent('es:addGroupCommand', 'ban', "admin", function(source, args, char)
 			print("player banned!")
 			-- drop player from session
 			--print("banning player with endpoint: " .. GetPlayerEP(targetPlayer))
-			DropPlayer(targetPlayer, "Banned: " .. reason .. " -- You can file an appeal at https://usarrp.net")
+			DropPlayer(targetPlayer, "Banned: " .. reason .. " -- You can file an appeal at https://usarrp.net. Banned by: " .. banner)
 		end)
 	end)
 end, {
@@ -995,7 +1055,7 @@ end, {
 })
 
 function BanPlayer(targetSrc, reason)
-	-- add player to ban list
+	-- add player to ban list / send discord web hook msg
 	TriggerEvent('es:exposeDBFunctions', function(GetDoc)
 		-- get info from command
 		local targetPlayer = targetSrc
@@ -1011,8 +1071,10 @@ function BanPlayer(targetSrc, reason)
 			char_name = player.getFullName()
 		end
 		local desc = "**Character Name:** " .. char_name
+		-- kick from server
+		DropPlayer(targetPlayer, "Banned: " .. reason .. " -- You can file an appeal at https://usarrp.net")
 		-- send discord message
-		desc = desc .. "\n**Display Name:** " .. targetPlayerName
+		desc = desc .. "\n**Display Name:** " .. (targetPlayerName or "UNDEFINED")
 		for i = 1, #allPlayerIdentifiers do
 			desc = desc .. " \n**Identifier #"..i..":** " .. allPlayerIdentifiers[i]
 		end
@@ -1034,8 +1096,7 @@ function BanPlayer(targetSrc, reason)
 			}), { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })
 		-- update db
 		GetDoc.createDocument("bans",  {char_name = char_name, name = targetPlayerName, identifiers = allPlayerIdentifiers, banned = true, reason = reason, bannerName = "anticheese", bannerId = -1, timestamp = os.date("!%Y-%m-%dT%XZ", os.time() - 7 * 60 * 60)}, function()
-			print("player banned!")
-			DropPlayer(targetPlayer, "Banned: " .. reason .. " -- You can file an appeal at https://usarrp.net")
+			print("[es_admin] player ban document saved!")
 		end)
 	end)
 end
@@ -1095,7 +1156,7 @@ TriggerEvent('es:addGroupCommand', 'tempban', "mod", function(source, args, char
 			print("player banned!")
 			-- drop player from session
 			--print("banning player with endpoint: " .. GetPlayerEP(targetPlayer))
-			DropPlayer(targetPlayer, "Temp Banned: " .. reason .. " This ban is in place for " .. time .. " hour(s).")
+			DropPlayer(targetPlayer, "Temp Banned: " .. reason .. " This ban is in place for " .. time .. " hour(s). Banned by: " .. banner)
 		end)
 	end)
 end, {
@@ -1148,7 +1209,7 @@ AddEventHandler('mini:checkPlayerBannedOnSpawn', function()
 				if doc.duration then
 					if getHoursFromTime(doc.time) < doc.duration then
 						print(GetPlayerName(tonumber(usource)) .. " has been temp banned from your server and should not be able to play!")
-						DropPlayer(tonumber(usource), "Temp Banned: " .. doc.reason .. " This ban is in place for " .. doc.duration .. " hour(s).")
+						DropPlayer(tonumber(usource), "Temp Banned: " .. doc.reason .. " This ban is in place for " .. doc.duration .. " hour(s). Banned by: " .. doc.bannerName)
 					else
 						local docid = doc._id
 						local docRev = doc._rev
@@ -1163,7 +1224,7 @@ AddEventHandler('mini:checkPlayerBannedOnSpawn', function()
 					end
 				else
 					print(GetPlayerName(tonumber(usource)) .. " has been perma banned from your server and should not be able to play!")
-					DropPlayer(tonumber(usource), "Banned: " .. doc.reason)
+					DropPlayer(tonumber(usource), "Banned: " .. doc.reason .. " - Banned by: " .. doc.bannerName)
 				end
 			end
 		end)
@@ -1410,18 +1471,45 @@ end
 
 -- TESTING COMMAND --
 TriggerEvent('es:addGroupCommand', 'test', "owner", function(source, args, char)
-	--[[ GIVING LSD VILES
+	-- GIVING ITEM
 	local char = exports["usa-characters"]:GetCharacter(source)
-	--TriggerClientEvent("testing:spawnObject", source, "bkr_prop_meth_acetone")
-	local lsd = {name = "LSD Vile", price = 6, type = "drug", quantity = 1, legality = "illegal", weight = 5.0, objectModel = "prop_cs_pour_tube"}
-	if char.canHoldItem(lsd) then
-		char.giveItem(lsd)
-	end
-	--]]
+	--local lsd = {name = "LSD Vile", price = 6, type = "drug", quantity = 1, legality = "illegal", weight = 5.0, objectModel = "prop_cs_pour_tube"}
+	local advancedPick = {name = 'Advanced Pick', type = 'illegal', price = 800, legality = 'illegal', quantity = 1, weight = 7.0}
+	local lockpick = {name = 'Lockpick', type = 'misc', price = 150, legality = 'illegal', quantity = 1, weight = 5, stock = math.random(0, 7)}
+	local drill = {
+        name = "Drill",
+        legality = "legal",
+        quantity = 1,
+        type = "misc",
+		weight = 10,
+		objectModel = "hei_prop_heist_drill"
+	}
+	local thermite = {
+		name = "Thermite",
+		legality = "illegal",
+		quantity = 2,
+		type = "misc",
+		weight = 20
+	}
+	local bodyArmor = { name = "Body Armor", type = "misc", price = 1000, legality = "legal", quantity = 1, weight = 15, objectModel = "prop_bodyarmour_03" }
+	local chemical = {
+		name = "Red Phosphorus",
+		legality = "illegal",
+		quantity = 1,
+		type = "chemical",
+		weight = 6,
+		objectModel = "bkr_prop_meth_acetone"
+	}
 
-	--TriggerClientEvent("interaction:equipWeapon", source, {hash = GetHashKey("WEAPON_RPG")}, true)
+	--if char.canHoldItem(thermite) then
+		char.giveItem(advancedPick)
+	--end
 
-	TriggerClientEvent("testtest", source)
+	-- TriggerClientEvent("interaction:equipWeapon", source, {hash = GetHashKey("WEAPON_RPG")}, true)
+
+	--TriggerClientEvent("testing:spawnObject", source, "stt_prop_stunt_track_sh45_a")
+
+	--TriggerClientEvent("testtest", source)
 end, {
 	help = "Test something"
 })

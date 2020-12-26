@@ -84,13 +84,6 @@ function attemptDrilling(depositBox, source)
     end
 end
 
-RegisterServerEvent('fleeca:bustedDrill')
-AddEventHandler('fleeca:bustedDrill', function()
-    local char = exports["usa-characters"]:GetCharacter(source)
-    char.removeItem('Drill', 1)
-    TriggerClientEvent("usa:notify", source, "The drill broke!")
-end)
-
 RegisterServerEvent('fleeca:drilledGoods')
 AddEventHandler('fleeca:drilledGoods', function()
     local char = exports["usa-characters"]:GetCharacter(source)
@@ -120,7 +113,8 @@ AddEventHandler('fleeca:purchaseDrill', function()
         legality = "legal",
         quantity = 1,
         type = "misc",
-        weight = 10
+        weight = 10,
+        objectModel = "hei_prop_heist_drill"
     }
 
     if char.canHoldItem(drill) then
