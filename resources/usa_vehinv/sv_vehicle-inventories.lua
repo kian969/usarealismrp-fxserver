@@ -48,6 +48,24 @@ AddEventHandler("vehicle:storeItem", function(src, vehicle_plate, item, quantity
                     if item.name:find("Radio") then
                         TriggerClientEvent("Radio.Set", usource, false, {})
                     end
+                    local url = 'PUT_WEBHOOK_HERE_MINI'
+                    local char = exports["usa-characters"]:GetCharacter(src)
+                    local char_name = char.getFullName()
+                    PerformHttpRequest(url, function(err, text, headers)
+                        if text then
+                            print(text)
+                        end
+                    end, "POST", json.encode({
+                        embeds = {
+                            {
+                                description = char_name .. " stored " .. quantity .. " " .. item.name .. " in vehicle with plate " .. vehicle_plate .. "\n**Timestamp:** " .. os.date('%m-%d-%Y %H:%M:%S', os.time()),
+                                color = 263172,
+                                author = {
+                                    name = "Vehicle Inventory Log"
+                                }
+                            }
+                        }
+                    }), { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })
                     TriggerClientEvent("usa:playAnimation", usource, "anim@move_m@trash", "pickup", -8, 1, -1, 53, 0, 0, 0, 0, 3)
                 end
                 if msg then
@@ -113,6 +131,24 @@ AddEventHandler("vehicle:moveItemToPlayerInv", function(src, plate, fromSlot, to
             if char.canHoldItem(item, quantity) then
                 char.putItemInSlot(item, toSlot, quantity, function(success)
                     if success == true then
+                        local url = 'PUT_WEBHOOK_HERE_MINI'
+                        local char = exports["usa-characters"]:GetCharacter(src)
+                        local char_name = char.getFullName()
+                        PerformHttpRequest(url, function(err, text, headers)
+                            if text then
+                                print(text)
+                            end
+                        end, "POST", json.encode({
+                            embeds = {
+                                {
+                                    description = char_name .. " retrieved " .. quantity .. " " .. item.name .. " from vehicle with plate " .. plate .. "\n**Timestamp:** " .. os.date('%m-%d-%Y %H:%M:%S', os.time()),
+                                    color = 263172,
+                                    author = {
+                                        name = "Vehicle Inventory Log"
+                                    }
+                                }
+                            }
+                        }), { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })
                         TriggerClientEvent("usa:playAnimation", usource, "anim@move_m@trash", "pickup", -8, 1, -1, 53, 0, 0, 0, 0, 3)
                         VehInventoryManager.removeItemInSlot(plate, inv, fromSlot, quantity)
                         cb(inv)
