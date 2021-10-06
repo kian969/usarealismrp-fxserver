@@ -1,18 +1,44 @@
+TriggerEvent("es:exposeDBFunctions", function(api)
+    db = api
+end)
+
 exports.globals:PerformDBCheck("gcphone", "phone-app-chat", nil)
 
 function currentTimestamp()
   local date = os.date("*t", os.time())
-  local timestamp = string.format("%02d-%02d-%02d %02d-%02d-%02d", date.year, date.month, date.day, date.hour, date.min, date.sec)
+  local mili = 000
+  local timestamp = string.format("%02d-%02d-%02d %02d:%02d:%02d.%02d", date.year, date.month, date.day, date.hour, date.min, date.sec, mili)
   return timestamp
 end
 
 function TchatGetMessageChannel (channel, cb)
-  local query = {
-    ["channel"] = channel
-  }
-  db.getDocumentsByRowsLimitAndSort("phone-app-chat", query, 100, {{time = "desc"}}, function(docs)
-      cb(docs)
-  end)
+  -- local query = {
+  --   ["channel"] = channel
+  -- }
+  -- db.getDocumentsByRowsLimitAndSort("phone-app-chat", query, 100, {{time = "desc"}}, function(docs)
+  --     cb(docs)
+  -- end)
+  local endpoint = "/phone-app-chat/_design/tchatViews/_view/getMessageByChannel"
+  local url = "http://" .. exports["essentialmode"]:getIP() .. ":" .. exports["essentialmode"]:getPort() .. endpoint
+  PerformHttpRequest(url, function(err, responseText, headers)
+      if responseText then
+        local data = json.decode(responseText)
+        local messages = {}
+        if data.rows then
+            for i = 1, #data.rows do
+              if data.rows[i].channel == channel then
+                table.insert(messages, data.rows[i])
+              end
+            end
+            for i = 1, #messages do
+              messages[i].id = messages[i]._id -- for front end to read correctly, just renaming id field for now
+            end
+            cb(messages)
+        else
+            cb({})
+        end
+      end
+  end, "GET", "", { ["Content-Type"] = 'application/json', Authorization = "Basic " .. exports["essentialmode"]:getAuth() })
   --[[
     MySQL.Async.fetchAll("SELECT * FROM phone_app_chat WHERE channel = @channel ORDER BY time DESC LIMIT 100", { 
         ['@channel'] = channel

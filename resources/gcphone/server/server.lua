@@ -872,6 +872,14 @@ AddEventHandler('gcPhone:allUpdate', function()
     end
 end)
 
+RegisterServerEvent('gcphone:bankUpdate')
+AddEventHandler('gcphone:bankUpdate', function()
+    local sourcePlayer = tonumber(source)
+    local char = exports["usa-characters"]:GetCharacter(sourcePlayer)
+    local bal = char.get("bank")
+    TriggerClientEvent("gcphone:bankReturn", sourcePlayer, bal)
+end)
+
 
 --[[
 AddEventHandler('onMySQLReady', function ()

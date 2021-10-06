@@ -172,6 +172,28 @@
       "routeName": "photo"
     },
     {
+      "name": "Bank",
+      "fr_FR__name": "Bank",
+      "cs_CZ__name": "Bank",
+      "en_US__name": "Bank",
+      "de_DE__name": "Bank",
+      "pl_PL__name": "Bank",
+      "es_ES__name": "Bank",
+      "icons": "/html/static/img/icons_app/bank.png",
+      "routeName": "bank"
+    },
+    {
+      "name": "TChat",
+      "fr_FR__name": "tchat",
+      "cs_CZ__name": "tchat",
+      "en_US__name": "tchat",
+      "de_DE__name": "tchat",
+      "pl_PL__name": "tchat",
+      "es_ES__name": "tchat",
+      "icons": "/html/static/img/icons_app/tchat.png",
+      "routeName": "tchat"
+    },
+    {
       "name": "9GAG",
       "icons": "/html/static/img/icons_app/9gag.png",
       "routeName": "9gag"

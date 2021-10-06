@@ -79,10 +79,12 @@ function CreateCharacter(data)
 
   rTable.giveBank = function(amount)
     self.bank = self.bank + tonumber(amount)
+    TriggerClientEvent("gcphone:bankUpdateNeeded", self.source)
   end
 
   rTable.removeBank = function(amount)
     self.bank = self.bank - tonumber(amount)
+    TriggerClientEvent("gcphone:bankUpdateNeeded", self.source)
   end
 
   rTable.getName = function()

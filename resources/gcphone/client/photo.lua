@@ -18,11 +18,16 @@ function CellFrontCamActivate(activate)
 end
 
 Citizen.CreateThread(function()
-	DestroyMobilePhone()
+DestroyMobilePhone()
 	while true do
 		Citizen.Wait(0)
-				
-		if IsControlJustPressed(1, 177) and phone == true then -- CLOSE PHONE
+		
+		if IsControlJustPressed(0, 27) and phone == true then -- SELFIE MODE
+			frontCam = not frontCam
+			CellFrontCamActivate(frontCam)
+		end
+		
+		if IsControlJustPressed(0, 177) and phone == true then -- CLOSE PHONE
 			DestroyMobilePhone()
 			phone = false
 			CellCamActivate(false, false)
@@ -33,9 +38,13 @@ Citizen.CreateThread(function()
 			end
 		end
 		
-		if IsControlJustPressed(1, 27) and phone == true then -- SELFIE MODE
-			frontCam = not frontCam
-			CellFrontCamActivate(frontCam)
+		if IsControlJustPressed(0, 176) and phone == true then -- TAKE.. PIC
+			BeginTakeHighQualityPhoto()
+			if (GetStatusOfTakeHighQualityPhoto() and SaveHighQualityPhoto(-1)) then
+				-- SetLoadingPromptTextEntry("CELL_278")
+				-- ShowLoadingPrompt(1)
+				FreeMemoryForHighQualityPhoto()
+			end
 		end
 			
 		if phone == true then
@@ -47,11 +56,11 @@ Citizen.CreateThread(function()
 			HideHudAndRadarThisFrame()
 		end
 			
-		ren = GetMobilePhoneRenderId()
-		SetTextRenderId(ren)
+		-- ren = GetMobilePhoneRenderId()
+		-- SetTextRenderId(ren)
 		
 		-- Everything rendered inside here will appear on your phone.
 		
-		SetTextRenderId(1) -- NOTE: 1 is default
+		-- SetTextRenderId(1) -- NOTE: 1 is default
 	end
 end)

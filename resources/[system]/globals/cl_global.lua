@@ -157,7 +157,7 @@ function GetUserInput(placeholder, charLimit)
               TriggerEvent("hotkeys:enable", true)
               return input
           else
-              DisplayOnscreenKeyboard( false, "", "", "", "", "", "", 15 )
+              DisplayOnscreenKeyboard(1, "", "", (placeholder or ""), "", "", "", (charLimit or 15))
           end
       elseif ( UpdateOnscreenKeyboard() == 2 ) then
           break
