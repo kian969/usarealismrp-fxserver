@@ -35,7 +35,14 @@ local vehicles = {
   { name = "Tahoe", hash = GetHashKey("hptahoe") },
   { name = "Explorer 2", hash = GetHashKey("pdfpiu") },
   { name = "Charger 2", hash = GetHashKey("pdcharger") },
-  { name = "Truck 2", hash = GetHashKey("sotruck") }
+  { name = "Truck 2", hash = GetHashKey("sotruck") },
+  { name = "2015 F150", hash = GetHashKey("valor15f150") },
+  { name = "2016 Explorer", hash = GetHashKey("valor16fpiu") },
+  { name = "2020 Explorer", hash = GetHashKey("valor20fpiu") },
+  { name = "CVPI 2", hash = GetHashKey("valorcvpi") },
+  { name = "Taurus 2", hash = GetHashKey("valorfpis") },
+  { name = "GMC", hash = GetHashKey("valorgmc") },
+  { name = "Boat Trailer", hash = GetHashKey("bwtrail") }
 }
 
 local PRISON_GUARD_SIGN_IN_LOCATIONS = {
