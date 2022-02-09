@@ -32,6 +32,18 @@ local CELLS = {
 	{x = 1774.32, y = 2568.13, z = 50.55, occupant = nil},
 }
 
+local SOL_CELLS = {
+	{id = "SOL1", x = 1766.16, y = 2596.96, z = 50.55},
+	{id = "SOL2", x = 1766.16, y = 2594.16, z = 50.55},
+	{id = "SOL3", x = 1766.16, y = 2591.29, z = 50.55},
+	{id = "SOL4", x = 1766.16, y = 2588.34, z = 50.55},
+	{id = "SOL5", x = 1766.16, y = 2596.96, z = 50.55},
+	{id = "SOL6", x = 1766.16, y = 2596.96, z = 50.55},
+	{id = "SOL7", x = 1766.16, y = 2596.96, z = 50.55},
+	{id = "SOL8", x = 1766.16, y = 2596.96, z = 50.55},
+
+}
+
 local alarm_on = false
 
 local DB_NAME = "prisonitemstorage"
@@ -66,6 +78,21 @@ TriggerEvent('es:addCommand', 'toggle_alarm', function(source, args, char)
 	end
 end, {
 	help = "Toggle the Prison Alarm on or off (Police/Corrections)"
+})
+
+TriggerEvent('es:addCommand', 'assigncell', function(source, args, char)
+	local id = tonumber(args[2])
+	local cell = args[3]
+	local job = char.get("job")
+	if job == "sheriff" or job == "cop" or job == "corrections" then
+		
+	end
+end, {
+	help = "Assign a prisoner to a cell that persists if they log out",
+	params = {
+		{ name = "id", help = "id of inmate" },
+		{ name = "cell", help = "Cell Number e.g. SOL1"}
+	}
 })
 
 RegisterServerEvent("jail:jailPlayerFromMenu")

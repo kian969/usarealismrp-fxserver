@@ -52,7 +52,7 @@ AddEventHandler("usa_rp:spawnPlayer", function()
 end)
 
 
-RegisterServerEvent("usa_rp:checkJailedStatusOnPlayerJoin")
+RegisterServerEvent("usa_rp:checkJailedStatusOnPlayerJoin") -- Jails Player if they rejoin while prison sentence is remaining
 AddEventHandler("usa_rp:checkJailedStatusOnPlayerJoin", function(id)
 	if id then source = id end
 	local time = exports["usa-characters"]:GetCharacterField(source, "jailTime")
