@@ -8,7 +8,8 @@ local WEED_PROCESS_LOCATIONS = {
   vector3(382.287109375, -816.33471679688, 29.30421257019),
   vector3(440.03646850586, -1886.7438964844, 31.739208221436),
   vector3(1145.2351074219, -1660.7742919922, 36.614681243896),
-  vector3(-1075.3463134766, -1678.7690429688, 4.575234413147)
+  vector3(-1075.3463134766, -1678.7690429688, 4.575234413147),
+  vector3(2229.373046875, 5605.4873046875, 54.872550964355)
 }
 
 function isNearWeedProcessingSpot(range)
@@ -75,6 +76,9 @@ AddEventHandler("weed:continueHarvesting", function()
     end
   end
   if harvested then
+    while securityToken == nil do
+      Wait(1)
+    end
     TriggerServerEvent("weed:rewardItem", "Harvest", securityToken)
     TriggerEvent('usa:notify', 'You have harvested a ~y~Weed Bud~s~.')
     TriggerEvent('evidence:weedScent')
@@ -103,6 +107,9 @@ AddEventHandler("weed:continueProcessing", function()
     end
   end
   if processed then
+    while securityToken == nil do
+      Wait(1)
+    end
     TriggerServerEvent("weed:rewardItem", "Process", securityToken)
     TriggerEvent('usa:notify', 'You have processed a ~y~Weed Bud~s~.')
     ClearPedTasks(playerPed)

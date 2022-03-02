@@ -44,13 +44,13 @@ TriggerEvent('es:addJobCommand', 'removesuspension', {'judge', 'sheriff', 'corre
 	local isAllowed = nil
 	-- check SGT + rank for police or if judge --
 	if char.get("job") == "sheriff" then
-	    if char.get("policeRank") < 4 then
+	    if char.get("policeRank") < 6 then
 			isAllowed = false
 		else
 			isAllowed = true
 	    end
     elseif char.get("job") == "corrections" then
-	    if char.get("bcsoRank") < 5 then
+	    if char.get("bcsoRank") < 7 then
 			isAllowed = false
 		else
 			isAllowed = true
@@ -195,7 +195,7 @@ TriggerEvent('es:addJobCommand', 'changesuspension', {'judge'}, function(source,
 	local target_item_name = nil
     -- check SGT + rank for police --
     if char.get("job") == "sheriff" then
-        if char.get("policeRank") < 4 then
+        if char.get("policeRank") < 6 then
             TriggerClientEvent("usa:notify", source, "Not high enough rank!")
             return
         end
@@ -237,13 +237,13 @@ TriggerEvent('es:addJobCommand', 'issue', {'judge', 'sheriff', 'corrections'}, f
 	local isAllowed = nil
   	-- check SGT + rank for police or if judge --
 	if char.get("job") == "sheriff" then
-	    if char.get("policeRank") < 4 then
+	    if char.get("policeRank") < 6 then
 			isAllowed = false
 		else
 			isAllowed = true
 	    end
     elseif char.get("job") == "corrections" then
-	    if char.get("bcsoRank") < 5 then
+	    if char.get("bcsoRank") < 7 then
 			isAllowed = false
 		else
 			isAllowed = true
@@ -387,13 +387,13 @@ TriggerEvent('es:addJobCommand', 'suspend', {'judge', "sheriff", "corrections"},
 	local isAllowed = nil
 	-- check SGT + rank for police or if judge --
 	if char.get("job") == "sheriff" then
-	    if char.get("policeRank") < 4 then
+	    if char.get("policeRank") < 6 then
 			isAllowed = false
 		else
 			isAllowed = true
 	    end
     elseif char.get("job") == "corrections" then
-	    if char.get("bcsoRank") < 5 then
+	    if char.get("bcsoRank") < 7 then
 			isAllowed = false
 		else
 			isAllowed = true
@@ -467,13 +467,13 @@ TriggerEvent('es:addJobCommand', 'revoke', {'judge', 'sheriff', 'corrections'}, 
 
     -- check SGT + rank for police or if judge --
 	if char.get("job") == "sheriff" then
-	    if char.get("policeRank") < 4 then
+	    if char.get("policeRank") < 6 then
 			isAllowed = false
 		else
 			isAllowed = true
 	    end
     elseif char.get("job") == "corrections" then
-	    if char.get("bcsoRank") < 5 then
+	    if char.get("bcsoRank") < 7 then
 			isAllowed = false
 		else
 			isAllowed = true

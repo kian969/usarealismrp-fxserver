@@ -425,7 +425,26 @@ local vehicleShopItems = {
 			{make = "Chevrolet", model = "Silverado (Single Cab)", price = 70000, hash = "silv20", storage_capacity = 280.0},
 			{make = "GMC", model = "Sierra (2006)", price = 80000, hash = "polar06seirra", storage_capacity = 280.0},
 			{make = "Chevrolet", model = "Tahoe (2008)", price = 80000, hash = "tahoe08", storage_capacity = 250.0},
-			{make = "Nissan", model = "240SX (s14)", price = 75000, hash = "silvia3", storage_capacity = 150.0}
+			{make = "Nissan", model = "240SX (s14)", price = 75000, hash = "silvia3", storage_capacity = 150.0},
+			{make = "Volkswagon", model = "Golf (Mk6)", price = 75000, hash = "golfmk6", storage_capacity = 200.0},
+			{make = "Ford", model = "F-150 SVT Lightning (1999)", price = 70000, hash = "flightning99", storage_capacity = 400.0},
+			{make = "Dodge", model = "Ram SRT-10", price = 140000, hash = "ramsrt10", storage_capacity = 400.0},
+			{make = "BMW", model = "M8", price = 340000, hash = "bmwm8", storage_capacity = 180.0},
+			{make = "Peugeot", model = "206 GTi", price = 30000, hash = "peugeot206", storage_capacity = 175.0},
+			{make = "Subaru", model = "WRX STI (2017)", price = 105000, hash = "sti17", storage_capacity = 230.0},
+			{make = "Lamborghini", model = "Diablo GTR (1999)", price = 975000, hash = "500gtrlam", storage_capacity = 120.0},
+			{make = "Mercedes", model = "S63 AMG Cabriolet (2017)", price = 190000, hash = "mers63c", storage_capacity = 185.0},
+			{make = "Can Am", model = "Maverick (2018)", price = 70000, hash = "can", storage_capacity = 100.0},
+			{make = "Audi", model = "RS6 Avant (2020)", price = 160000, hash = "rs62", storage_capacity = 285.0},
+			{make = "Chrysler", model = "Pacifica Limited S (2020)", price = 45000, hash = "pacificasb", storage_capacity = 375.0},
+			{make = "BMW", model = "BMW 1100R Street Fighter", price = 80000, hash = "BMW1100R", storage_capacity = 20.0},
+			{make = "BMW", model = "BMW S1000RR (2016)", price = 90000, hash = "BMWS1000RR", storage_capacity = 20.0},
+			{make = "Ford", model = "Hula Girl (1932)", price = 60000, hash = "ford32hulagirl", storage_capacity = 160.0},
+			{make = "Ford", model = "GT500 (1967)", price = 130000, hash = "67GT500", storage_capacity = 140.0},
+			{make = "Bugatti", model = "Veyron Super Sport (2011)", price = 3200000, hash = "supersport", storage_capacity = 120.0},
+			{make = "Volkswagen", model = "Passat (2016)", price = 60000, hash = "passat", storage_capacity = 190.0},
+			{make = "Honda", model = "Civic Type-R (2018)", price = 90000, hash = "FK8", storage_capacity = 190.0},
+			{make = "BMW", model = "i4 (2020)", price = 80000, hash = "ocni422spe", storage_capacity = 190.0},
 		}
 	}
 }

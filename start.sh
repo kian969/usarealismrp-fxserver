@@ -8,6 +8,10 @@ bash setup.sh
 git checkout . --recurse-submodules
 git pull --recurse-submodules
 
+# init submodules if ncessary
+git submodule init
+git submodule update
+
 # avoid scrambling node_modules within resources
 #cp -r resources/[system]/[builders] .
 #cp -r resources/ws_server/node_modules .

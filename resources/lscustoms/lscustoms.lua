@@ -10,12 +10,12 @@ local currentgarage = 0
 local savedVehicleLockState = nil
 
 local garages = {
-	[1] = { locked = false, camera = {x = -330.945, y = -135.471, z = 39.01, heading = 102.213}, driveout = {x = -350.376,y = -136.76, z = 38.294, heading = 70.226}, drivein = {x = -350.655,y = -136.55, z = 38.295, heading = 249.532}, outside = { x = -362.7962, y = -132.4005, z = 38.25239, heading = 71.187133}, inside = {x = -337.3863,y = -136.9247,z = 38.5737, heading = 269.455}},
-	[2] = { locked = false, camera = {x = 737.09, y = -1085.721, z = 22.169, heading = 114.86}, driveout = {x = 725.46,y = -1088.822, z = 21.455, heading = 89.395}, drivein = {x = 726.157, y = -1088.768, z = 22.169, heading = 270.288}, outside = {x = 716.54,y = -1088.757, z = 21.651, heading = 89.248}, inside = {x = 733.69,y = -1088.74, z = 21.733, heading = 270.528}},
-	[3] = { locked = false, camera = {x = -1154.902, y = -2011.438, z = 13.18, heading = 95.49}, driveout = {x = -1150.379,y = -1995.845, z = 12.465, heading = 313.594}, drivein = {x = -1150.26,y = -1995.642, z = 12.466, heading = 136.859}, outside = {x = -1140.352,y = -1985.89, z = 12.45, heading = 314.406}, inside = {x = -1155.077,y = -2006.61, z = 12.465, heading = 162.58}},
-	[4] = { locked = false, camera = {x = 1177.98, y = 2636.059, z = 37.754, heading = 37.082}, driveout = {x = 1175.003,y = 2642.175, z = 37.045, heading = 0.759}, drivein = {x = 1174.701,y = 2643.764, z = 37.048, heading = 178.119}, outside = {x = 1175.565,y = 2652.819, z = 37.941, heading = 351.579}, inside = {x = 1174.823,y = 2637.807, z = 37.045, heading = 181.19}},
-	[5] = { locked = false, camera = {x = 105.825, y = 6627.562, z = 31.787, heading = 266.692}, driveout = {x = 112.326,y = 6625.148, z = 31.073, heading = 224.641}, drivein = {x = 112.738,y = 6624.644, z = 31.072, heading = 44.262}, outside = {x = 118.493,y = 6618.897, z = 31.13, heading = 224.701}, inside = {x = 108.842,y = 6628.447, z = 31.072, heading = 45.504}},
-	[6]= { locked = false, camera = {x = -215.518, y = -1329.135, z = 30.89, heading = 329.092}, driveout = {x = -205.935,y = -1316.642, z = 30.176, heading = 356.495}, drivein = {x = -205.626,y = -1314.99, z = 30.247, heading = 179.395}, outside = {x = -205.594,y = -1304.085, z = 30.614, heading = 359.792}, inside = {x = -212.368,y = -1325.486, z = 30.176, heading = 141.107} }
+	[1] = { locked = false, camera = {x = -330.945, y = -135.471, z = 39.01, heading = 102.213}, driveout = {x = -350.376,y = -136.76, z = 38.294, heading = 70.226}, drivein = {x = -350.655,y = -136.55, z = 38.1, heading = 249.532}, outside = { x = -362.7962, y = -132.4005, z = 38.25239, heading = 71.187133}, inside = {x = -337.3863,y = -136.9247,z = 38.5737, heading = 269.455}},
+	[2] = { locked = false, camera = {x = 737.09, y = -1085.721, z = 22.169, heading = 114.86}, driveout = {x = 725.46,y = -1088.822, z = 21.2, heading = 89.395}, drivein = {x = 726.157, y = -1088.768, z = 21.369, heading = 270.288}, outside = {x = 716.54,y = -1088.757, z = 21.651, heading = 89.248}, inside = {x = 733.69,y = -1088.74, z = 21.733, heading = 270.528}},
+	[3] = { locked = false, camera = {x = -1154.902, y = -2011.438, z = 13.18, heading = 95.49}, driveout = {x = -1150.379,y = -1995.845, z = 12.465, heading = 313.594}, drivein = {x = -1150.26,y = -1995.642, z = 12.266, heading = 136.859}, outside = {x = -1140.352,y = -1985.89, z = 12.45, heading = 314.406}, inside = {x = -1155.077,y = -2006.61, z = 12.465, heading = 162.58}},
+	[4] = { locked = false, camera = {x = 1177.98, y = 2636.059, z = 37.754, heading = 37.082}, driveout = {x = 1175.003,y = 2642.175, z = 37.045, heading = 0.759}, drivein = {x = 1174.701,y = 2643.764, z = 36.7, heading = 178.119}, outside = {x = 1175.565,y = 2652.819, z = 37.941, heading = 351.579}, inside = {x = 1174.823,y = 2637.807, z = 37.045, heading = 181.19}},
+	[5] = { locked = false, camera = {x = 105.825, y = 6627.562, z = 31.787, heading = 266.692}, driveout = {x = 112.326,y = 6625.148, z = 31.073, heading = 224.641}, drivein = {x = 112.738,y = 6624.644, z = 30.9, heading = 44.262}, outside = {x = 118.493,y = 6618.897, z = 31.13, heading = 224.701}, inside = {x = 108.842,y = 6628.447, z = 31.072, heading = 45.504}},
+	[6]= { locked = false, camera = {x = -215.518, y = -1329.135, z = 30.89, heading = 329.092}, driveout = {x = -205.935,y = -1316.642, z = 30.176, heading = 356.495}, drivein = {x = -205.626,y = -1314.99, z = 30.0, heading = 179.395}, outside = {x = -205.594,y = -1304.085, z = 30.614, heading = 359.792}, inside = {x = -212.368,y = -1325.486, z = 30.176, heading = 141.107} }
 }
 
 function getLocations()
@@ -61,7 +61,7 @@ end
 -- mini's added function to save customizations
 RegisterNetEvent("customs:applyCustomizations")
 AddEventHandler("customs:applyCustomizations", function(veh)
-    	local currentvehicle = GetVehiclePedIsIn(GetPlayerPed(-1), false)
+		local currentvehicle = GetVehiclePedIsIn(GetPlayerPed(-1), false)
 
 		local customizations = veh.mods
 		local extracolor = veh.extracolor
@@ -348,6 +348,7 @@ local function DriveInGarage()
 
 		-- get set mods
 		for i = 0,48 do
+			print("# mods for mod " .. i .. ": " .. json.encode(GetNumVehicleMods(veh, i)))
 			if GetNumVehicleMods(veh,i) ~= nil and GetNumVehicleMods(veh,i) ~= false and GetNumVehicleMods(veh,i) > 0 then
 				if i == 1 then
 					bumper = true
@@ -375,7 +376,8 @@ local function DriveInGarage()
 		AddMod(4,LSCMenu.categories,"EXHAUST", "Exhausts", "Customized sports exhausts.",true)
 		AddMod(6,LSCMenu.categories,"GRILLE", "Grille", "Improved engine cooling.",true)
 		AddMod(7,LSCMenu.categories,"HOOD", "Hood", "Enhance car engine cooling.",true)
-		AddMod(8,LSCMenu.categories,"FENDERS", "Fenders", "Enhance body paneling with custom fenders.",true)
+		AddMod(8,LSCMenu.categories,"FENDERS 1", "Fenders 1", "Enhance body paneling (left).",true)
+		AddMod(9,LSCMenu.categories,"FENDERS 2", "Fenders 2", "Enhance body paneling (right)",true)
 		if not (GetEntityModel(veh) == GetHashKey("revolter")) then
 			AddMod(10,LSCMenu.categories,"ROOF", "Roof", "Lower your center of gravity with lightweight roof panels.",true)
 		end
@@ -555,32 +557,112 @@ local function DriveInGarage()
 						end
 				else
 					sportw = wtype:addSubMenu("SPORT WHEELS", "Sport", nil,true)
-						for n, w in pairs(LSC_Config.prices.sportwheels) do
-							local btn = sportw:addPurchase(w.name,w.price)btn.wtype = w.wtype btn.modtype = 23 btn.mod = w.mod
+						for i = 0, 224 do
+							local name = "Sport Wheel #" .. (i + 1)
+							local price = LSC_Config.prices.GENERIC_WHEEL
+							if i >= 72 then
+								price = LSC_Config.prices.NICER_WHEEL
+							end
+							for n, w in pairs(LSC_Config.prices.sportwheels) do
+								if w.mod == i then
+									name = w.name
+									price = w.price
+								end
+							end
+							local btn = sportw:addPurchase(name, price)
+							btn.wtype = 0
+							btn.modtype = 23
+							btn.mod = i
 						end
 					musclew = wtype:addSubMenu("MUSCLE WHEELS", "Muscle", nil,true)
-						for n, w in pairs(LSC_Config.prices.musclewheels) do
-							local btn = musclew:addPurchase(w.name,w.price)btn.wtype =  w.wtype btn.modtype = 23 btn.mod = w.mod
+						for i = 0, 101 do
+							local name = "Muscle Wheel #" .. (i + 1)
+							local price = LSC_Config.prices.GENERIC_WHEEL
+							for n, w in pairs(LSC_Config.prices.musclewheels) do
+								if w.mod == i then
+									name = w.name
+									price = w.price
+								end
+							end
+							local btn = musclew:addPurchase(name, price)
+							btn.wtype = 1
+							btn.modtype = 23
+							btn.mod = i
 						end
 					lowriderw = wtype:addSubMenu("LOWRIDER WHEELS", "Lowrider", nil,true)
-						for n, w in pairs(LSC_Config.prices.lowriderwheels) do
-							local btn = lowriderw:addPurchase(w.name,w.price)btn.wtype =  w.wtype btn.modtype = 23 btn.mod = w.mod
+						for i = 0, 45 do
+							local name = "Lowrider Wheel #" .. (i + 1)
+							local price = LSC_Config.prices.GENERIC_WHEEL
+							for n, w in pairs(LSC_Config.prices.lowriderwheels) do
+								if w.mod == i then
+									name = w.name
+									price = w.price
+								end
+							end
+							local btn = lowriderw:addPurchase(name, price)
+							btn.wtype = 2
+							btn.modtype = 23
+							btn.mod = i
 						end
 					suvw = wtype:addSubMenu("SUV WHEELS", "Suv", nil,true)
-						for n, w in pairs(LSC_Config.prices.suvwheels) do
-							local btn = suvw:addPurchase(w.name,w.price)btn.wtype = w.wtype btn.modtype = 23 btn.mod = w.mod
+						for i = 0, 41 do
+							local name = "SUV Wheel #" .. (i + 1)
+							local price = LSC_Config.prices.GENERIC_WHEEL
+							for n, w in pairs(LSC_Config.prices.suvwheels) do
+								if w.mod == i then
+									name = w.name
+									price = w.price
+								end
+							end
+							local btn = suvw:addPurchase(name, price)
+							btn.wtype = 3
+							btn.modtype = 23
+							btn.mod = i
 						end
 					offroadw = wtype:addSubMenu("OFFROAD WHEELS", "Offroad", nil,true)
-						for n, w in pairs(LSC_Config.prices.offroadwheels) do
-							local btn = offroadw:addPurchase(w.name,w.price)btn.wtype = w.wtype btn.modtype = 23 btn.mod = w.mod
+						for i = 0, 49 do
+							local name = "Offroad Wheel #" .. (i + 1)
+							local price = LSC_Config.prices.GENERIC_WHEEL
+							for n, w in pairs(LSC_Config.prices.offroadwheels) do
+								if w.mod == i then
+									name = w.name
+									price = w.price
+								end
+							end
+							local btn = offroadw:addPurchase(name, price)
+							btn.wtype = 4
+							btn.modtype = 23
+							btn.mod = i
 						end
 					tunerw = wtype:addSubMenu("TUNER WHEELS", "Tuner", nil,true)
-						for n, w in pairs(LSC_Config.prices.tunerwheels) do
-							local btn = tunerw:addPurchase(w.name,w.price)btn.wtype = w.wtype btn.modtype = 23 btn.mod = w.mod
+						for i = 0, 48 do
+							local name = "Tuner Wheel #" .. (i + 1)
+							local price = LSC_Config.prices.GENERIC_WHEEL
+							for n, w in pairs(LSC_Config.prices.offroadwheels) do
+								if w.mod == i then
+									name = w.name
+									price = w.price
+								end
+							end
+							local btn = tunerw:addPurchase(name, price)
+							btn.wtype = 5
+							btn.modtype = 23
+							btn.mod = i
 						end
-					hughendw = wtype:addSubMenu("HIGHEND WHEELS", "Highend", nil,true)
-						for n, w in pairs(LSC_Config.prices.highendwheels) do
-							local btn = hughendw:addPurchase(w.name,w.price)btn.wtype = w.wtype btn.modtype = 23 btn.mod = w.mod
+					highendw = wtype:addSubMenu("HIGHEND WHEELS", "Highend", nil,true)
+						for i = 0, 58 do
+							local name = "Highend Wheel #" .. (i + 1)
+							local price = LSC_Config.prices.GENERIC_WHEEL
+							for n, w in pairs(LSC_Config.prices.highendwheels) do
+								if w.mod == i then
+									name = w.name
+									price = w.price
+								end
+							end
+							local btn = highendw:addPurchase(name, price)
+							btn.wtype = 7
+							btn.modtype = 23
+							btn.mod = i
 						end
 					bennysw = wtype:addSubMenu("BENNY'S WHEELS", "Benny's", nil,true)
 						for n, w in pairs(LSC_Config.prices.bennyswheels) do
@@ -591,8 +673,19 @@ local function DriveInGarage()
 							local btn = bespokew:addPurchase(w.name,w.price)btn.wtype = w.wtype btn.modtype = 23 btn.mod = w.mod
 						end
 					trackwheels = wtype:addSubMenu("TRACK WHEELS", "Track", nil,true)
-						for n, w in pairs(LSC_Config.prices.trackwheels) do
-							local btn = trackwheels:addPurchase(w.name,w.price)btn.wtype = w.wtype btn.modtype = 23 btn.mod = w.mod
+						for i = 0, 210 do
+							local name = "Track Wheel #" .. (i + 1)
+							local price = LSC_Config.prices.GENERIC_WHEEL
+							for n, w in pairs(LSC_Config.prices.trackwheels) do
+								if w.mod == i then
+									name = w.name
+									price = w.price
+								end
+							end
+							local btn = trackwheels:addPurchase(name, price)
+							btn.wtype = 12
+							btn.modtype = 23
+							btn.mod = i
 						end
 					streetwheels = wtype:addSubMenu("STREET WHEELS", "Street", nil,true)
 						for n, w in pairs(LSC_Config.prices.streetwheels) do
@@ -758,6 +851,32 @@ local function tableContains(t,val)
 	end
 	return false
 end
+
+local nearby = {}
+
+Citizen.CreateThread(function()
+	while true do
+		local mycoords = GetEntityCoords(PlayerPedId())
+		for i, pos in pairs(garages) do
+			local dist = #(mycoords - vector3(pos.drivein.x, pos.drivein.y, pos.drivein.z))
+			if dist < 100 then
+				nearby[i] = pos.drivein
+			else
+				nearby[i] = nil
+			end
+		end
+		Wait(1000)
+	end
+end)
+
+Citizen.CreateThread(function()
+	while true do
+		for i, driveInCoords in pairs(nearby) do
+			DrawMarker(27, driveInCoords.x, driveInCoords.y, driveInCoords.z, 0, 0, 0, 0, 0, 0, 2.5, 2.5, 2.5, 82, 140, 55, 80 --[[alpha]], 0, 0, 2, 0, 0, 0, 0)
+		end
+		Wait(1)
+	end
+end)
 
 --Magical loop that allows you to  drive in garage if you successfully go through checks
 Citizen.CreateThread(function()
@@ -984,13 +1103,21 @@ AddEventHandler("LSC:buttonSelected", function(name, button, canpurchase)
 			myveh.mods[button.modtype].mod = button.mod
 			SetVehicleMod(veh,button.modtype,button.mod)
 		end
-	elseif mname == "fenders" then
+	elseif mname == "fenders 1" then
 		if button.name == "Stock" or button.purchased or CanPurchase(price, canpurchase)then
 			if button.name == "Stock" then
 				myveh.mods[8].mod = button.mod
+				SetVehicleMod(veh,8,button.mod)
+			else
+				myveh.mods[button.modtype].mod = button.mod
+				SetVehicleMod(veh,button.modtype,button.mod)
+			end
+		end
+	elseif mname == "fenders 2" then
+		if button.name == "Stock" or button.purchased or CanPurchase(price, canpurchase)then
+			if button.name == "Stock" then
 				myveh.mods[9].mod = button.mod
 				SetVehicleMod(veh,9,button.mod)
-				SetVehicleMod(veh,8,button.mod)
 			else
 				myveh.mods[button.modtype].mod = button.mod
 				SetVehicleMod(veh,button.modtype,button.mod)

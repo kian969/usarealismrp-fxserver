@@ -20,7 +20,7 @@ Config.Guards = {
 	[1] = {
 		pos = {1064.79, -3097.34, -38.99, 184.67},
 		ped = 'mp_s_m_armoured_01',
-		weapon = 'WEAPON_PISTOL',
+		weapon = 'WEAPON_HEAVYPISTOL',
 		armour = 100
 	},
 	[2] = {
@@ -32,7 +32,7 @@ Config.Guards = {
 	[3] = {
 		pos = {1056.69, -3107.81, -38.99, 355.67},
 		ped = 'mp_s_m_armoured_01',
-		weapon = 'WEAPON_PISTOL',
+		weapon = 'WEAPON_PUMPSHOTGUN',
 		armour = 100
 	},
 	[4] = {
@@ -212,22 +212,31 @@ Config.Rewards = {
 		}
 	},
 	[15] = {
-		[1] = {name = "Iron Oxide", legality = "legal", quantity = 10, type = "misc", weight = 8},
-		[2] = {name = "Thermite", legality = "illegal", quantity = 1, type = "misc", weight = 20},
-		[3] = {name = "Thermite", legality = "illegal", quantity = 1, type = "misc", weight = 20},
-		[4] = {name = "Thermite", legality = "illegal", quantity = 1, type = "misc", weight = 20},
-		[5] = {name = "Thermite", legality = "illegal", quantity = 1, type = "misc", weight = 20},
+		type = "items",
+		reward = {
+			[1] = {name = "Iron Oxide", legality = "legal", quantity = 10, type = "misc", weight = 8},
+			[2] = {name = "Thermite", legality = "illegal", quantity = 1, type = "misc", weight = 20},
+			[3] = {name = "Thermite", legality = "illegal", quantity = 1, type = "misc", weight = 20},
+			[4] = {name = "Thermite", legality = "illegal", quantity = 1, type = "misc", weight = 20},
+			[5] = {name = "Thermite", legality = "illegal", quantity = 1, type = "misc", weight = 20},
+		}
 	},
 	[16] = {
-		[1] = {name = 'Hotwiring Kit', type = 'misc', legality = 'illegal', quantity = 1, weight = 10},
-		[2] = {name = 'Hotwiring Kit', type = 'misc', legality = 'illegal', quantity = 1, weight = 10},
-		[3] = {name = 'Hotwiring Kit', type = 'misc', legality = 'illegal', quantity = 1, weight = 10},
-		[4] = {name = 'Hotwiring Kit', type = 'misc', legality = 'illegal', quantity = 1, weight = 10},
-		[5] = {name = 'Hotwiring Kit', type = 'misc', legality = 'illegal', quantity = 1, weight = 10},
-		[6] = {name = 'Hotwiring Kit', type = 'misc', legality = 'illegal', quantity = 1, weight = 10},
+		type = "items",
+		reward = {
+			[1] = {name = 'Hotwiring Kit', type = 'misc', legality = 'illegal', quantity = 1, weight = 10},
+			[2] = {name = 'Hotwiring Kit', type = 'misc', legality = 'illegal', quantity = 1, weight = 10},
+			[3] = {name = 'Hotwiring Kit', type = 'misc', legality = 'illegal', quantity = 1, weight = 10},
+			[4] = {name = 'Hotwiring Kit', type = 'misc', legality = 'illegal', quantity = 1, weight = 10},
+			[5] = {name = 'Hotwiring Kit', type = 'misc', legality = 'illegal', quantity = 1, weight = 10},
+			[6] = {name = 'Hotwiring Kit', type = 'misc', legality = 'illegal', quantity = 1, weight = 10},
+		}
 	},
 	[17] = {
-		[1] = {name = "Grappling Hook", legality = "legal", quantity = 1, type = "misc", weight = 25},
+		type = "items",
+		reward = {
+			[1] = {name = "Grappling Hook", legality = "legal", quantity = 1, type = "misc", weight = 25},
+		}
 	}
 }
 

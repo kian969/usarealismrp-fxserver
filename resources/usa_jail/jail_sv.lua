@@ -63,18 +63,15 @@ end, {
 	help = "See how much time you have left in jail / jail a player (police)"
 })
 
-TriggerEvent('es:addCommand', 'toggle_alarm', function(source, args, char)
-	local job = char.get("job")
-	if job == "sheriff" or job == "cop" or job == "corrections" then
-		if alarm_on == false then
-			alarm_on = true
-			TriggerClientEvent('chat:addMessage', source, { args = { '^1SYSTEM', 'Prison Alarm Activated!' } })
-			TriggerEvent("jail:startalarmSV", -1)
-		else
-			alarm_on = false
-			TriggerClientEvent('chat:addMessage', source, { args = { '^1SYSTEM', 'Prison Alarm Deactivated!' } })
-			TriggerEvent("jail:stopalarmSV",-1)
-		end
+TriggerEvent('es:addJobCommand', 'togglealarm', { "corrections", "sheriff", "cop"}, function(source, args, char)
+	if alarm_on == false then
+		alarm_on = true
+	    TriggerClientEvent('chat:addMessage', source, { args = { '^1PRISON SYSTEM', 'Prison Alarm Activated!' } })
+	    TriggerEvent("jail:startalarmSV")
+	else
+		alarm_on = false
+		TriggerClientEvent('chat:addMessage', source, { args = { '^1PRISON SYSTEM', 'Prison Alarm Deactivated!' } })
+		TriggerEvent("jail:stopalarmSV")
 	end
 end, {
 	help = "Toggle the Prison Alarm on or off (Police/Corrections)"
@@ -93,6 +90,14 @@ end, {
 		{ name = "id", help = "id of inmate" },
 		{ name = "cell", help = "Cell Number e.g. SOL1"}
 	}
+
+})
+
+TriggerEvent('es:addJobCommand', 'lockdoors', {"corrections"}, function(source, args, char)
+	TriggerEvent("doormanager:lockPrisonDoors")
+	TriggerClientEvent("usa:notify", source, "All Jail Doors have been locked!")
+end, {
+	help = "Lock all Cell Doors (Corrections)"
 })
 
 RegisterServerEvent("jail:jailPlayerFromMenu")
@@ -289,12 +294,15 @@ end)
 
 RegisterServerEvent("jail:startalarmSV")
 AddEventHandler('jail:startalarmSV', function()
-TriggerClientEvent("jail:startalarmCL", -1)
+	TriggerClientEvent("jail:startalarmCL", -1)
+	TriggerEvent("doormanager:lockPrisonDoors")
 end)
+
 RegisterServerEvent("jail:stopalarmSV")
 AddEventHandler('jail:stopalarmSV', function()
-TriggerClientEvent("jail:stopalarmCL", -1)
+	TriggerClientEvent("jail:stopalarmCL", -1)
 end)
+
 RegisterServerEvent("jail:checkalarm")
 AddEventHandler('jail:checkalarm', function()
 	if alarm_on then

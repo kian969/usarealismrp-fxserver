@@ -3,25 +3,28 @@ local POLICE_RANKS = {
 		[1] = "Cadet",
 		[2] = "Trooper",
 		[3] = "Senior Trooper",
-		[4] = "Corporal",
-		[5] = "Sergeant",
-		[6] = "Lieutenant",
-		[7] = "Captain",
-		[8] = "Deputy Commissioner",
-		[9] = "Commissioner",
-		[10] = "Director of Emergency Services"
+		[4] = "Lead Senior Trooper",
+		[5] = "Corporal",
+		[6] = "Sergeant",
+		[7] = "Staff Sergeant",
+		[8] = "Lieutenant",
+		[9] = "Captain",
+		[10] = "Deputy Commissioner",
+		[11] = "Commissioner",
+		[12] = "Director of Emergency Services"
 	},
 	["BCSO"] = {
 		[1] = "Correctional Deputy",
-		[2] = "Sr. Correctional Deputy",
-		[3] = "Deputy Sheriff",
-		[4] = "Sr. Deputy Sheriff",
-		[5] = "Sergeant",
-		[6] = "Captain",
-		[7] = "Commander",
-		[8] = "Assistant Sheriff",
-		[9] = "Undersheriff",
-		[10] = "Sheriff"
+		[2] = "Senior Correctional Deputy",
+		[3] = "Correctional Corporal",
+		[4] = "Sheriff's Deputy",
+		[5] = "Senior Sheriff's Deputy",
+		[6] = "Corporal",
+		[7] = "Sergeant",
+		[8] = "Captain",
+		[9] = "Commander",
+		[10] = "Undersheriff",
+		[11] = "Sheriff"
 	}
 }
 

@@ -84,6 +84,9 @@ LSC_Config.prices = {}
 --------Prices---------
 LSC_Config.prices = {
 
+	GENERIC_WHEEL = 6000,
+	NICER_WHEEL = 15000,
+
 	livery = {
 		price = 2000
 	},
@@ -109,22 +112,22 @@ LSC_Config.prices = {
 	--Classic
 	classic = {
 		colors = colors,
-		price = 200
+		price = 5000
 	},
 	--Matte
 	matte = {
 		colors = mattecolors,
-		price = 500
+		price = 5000
 	},
 	--Metallic
 	metallic = {
 		colors = colors,
-		price = 300
+		price = 5000
 	},
 	--Metals
 	metal = {
 		colors = metalcolors,
-		price = 300
+		price = 5000
 	},
 
 ----Secondary color---
@@ -138,22 +141,22 @@ LSC_Config.prices = {
 	--Classic
 	classic2 = {
 		colors = colors,
-		price = 200
+		price = 1000
 	},
 	--Matte
 	matte2 = {
 		colors = mattecolors,
-		price = 500
+		price = 1000
 	},
 	--Metallic
 	metallic2 = {
 		colors = colors,
-		price = 300
+		price = 1000
 	},
 	--Metals
 	metal2 = {
 		colors = metalcolors,
-		price = 300
+		price = 1000
 	},
 
 ------Neon layout------
@@ -846,7 +849,10 @@ backwheel = {
 		startprice = 500,
 		increaseby = 400
 	},
-
+	[9] = {
+		startprice = 500,
+		increaseby = 400
+	},
 ------------Hood----------
 	[7] = {
 		startprice = 800,

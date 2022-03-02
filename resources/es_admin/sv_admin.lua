@@ -958,23 +958,11 @@ AddEventHandler('playerConnecting', function(playerName, setKickReason, deferral
 	deferrals.update("Checking ban status...")
 	local usource = source
 	local allPlayerIdentifiers = GetPlayerIdentifiers(tonumber(usource))
-	local gameLicense, steamLicense, ipAddress
-	for j = 1, #allPlayerIdentifiers do
-		if string.find(allPlayerIdentifiers[j], "license") then
-			gameLicense = allPlayerIdentifiers[j]
-		elseif string.find(allPlayerIdentifiers[j], "steam") then
-			steamLicense = allPlayerIdentifiers[j]
-		elseif string.find(allPlayerIdentifiers[j], "ip") then
-			ipAddress = allPlayerIdentifiers[j]
-		end
-	end
 	TriggerEvent('es:exposeDBFunctions', function(couchdb)
 		local query = {
 			["identifiers"] = {
 				["$elemMatch"] = {
-					["$or"] = {
-						gameLicense, steamLicense, ipAddress
-					}
+					["$or"] = allPlayerIdentifiers
 				}
 			}
 		}
@@ -1200,23 +1188,11 @@ AddEventHandler('mini:checkPlayerBannedOnSpawn', function()
 	local usource = source
 	--local identifier = GetPlayerIdentifiers(source)[1]
 	local allPlayerIdentifiers = GetPlayerIdentifiers(tonumber(usource))
-	local gameLicense, steamLicense, ipAddress
-	for j = 1, #allPlayerIdentifiers do
-		if string.find(allPlayerIdentifiers[j], "license") then
-			gameLicense = allPlayerIdentifiers[j]
-		elseif string.find(allPlayerIdentifiers[j], "steam") then
-			steamLicense = allPlayerIdentifiers[j]
-		elseif string.find(allPlayerIdentifiers[j], "ip") then
-			ipAddress = allPlayerIdentifiers[j]
-		end
-	end
 	TriggerEvent('es:exposeDBFunctions', function(couchdb)
 		local query = {
 			["identifiers"] = {
 				["$elemMatch"] = {
-					["$or"] = {
-						gameLicense, steamLicense, ipAddress
-					}
+					["$or"] = allPlayerIdentifiers
 				}
 			}
 		}
@@ -1521,9 +1497,13 @@ TriggerEvent('es:addGroupCommand', 'test', "owner", function(source, args, char)
 	local ammo_9mm = { name = "9mm Bullets", type = "ammo", price = 50, weight = 0.5, quantity = 10 }
 	local loaded_9mm_mag_12 = { name = "Loaded 9mm Mag [12]", type = "magazine", price = 50, weight = 25, receives = "9mm", MAX_CAPACITY = 12, currentCapacity = 12, notStackable = true  }
 	local loaded_556_mag_30 = { name = "Loaded 5.56mm Mag [30]", type = "magazine", price = 50, weight = 3, receives = "5.56mm", MAX_CAPACITY = 30, currentCapacity = 30 }
-	local stickyBomb = { name = "Sticky Bomb", type = "weapon", hash = `WEAPON_STICKYBOMB`, quantity = 1, weight = 25, objectModel = "prop_bomb_01_s" }
+	local stickyBomb = { name = "Sticky Bomb", type = "weapon", hash = `WEAPON_STICKYBOMB`, quantity = 1, weight = 10, objectModel = "prop_bomb_01_s" }
+	local grapplingHook = { name = "Grappling Hook", type = "misc", quantity = 1, weight = 10 }
+	local pantherItem = { name = "Panther", type = "misc", quantity = 1, weight = 20 }
+	local pumpShotgun = { name = "Pump Shotgun", type = "weapon", hash = `WEAPON_PUMPSHOTGUN`, quantity = 1, weight = 10 }
+	local ammo_12guage = { name = "12 Gauge Shells", type = "ammo", price = 50, weight = 0.5, quantity = 10 }
 	
-	local toGiveItem = stickyBomb
+	local toGiveItem = thermite
 	toGiveItem.quantity = (toGiveItem.quantity or 1)
 
 	toGiveItem.uuid = exports.globals:generateID()

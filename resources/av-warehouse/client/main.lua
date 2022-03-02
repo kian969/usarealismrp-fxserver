@@ -98,6 +98,7 @@ Citizen.CreateThread(function()
 			w = 5
 			DrawText3D(1073.03, -3102.28, -38.99, Config.Lang['exit'])
 			if IsControlJustPressed(0,38) and s < 1.5 then
+				exports["_anticheese"]:Disable()
 				if PlayerData.job.name == Config.PoliceJobName then
 					if sC ~= nil then
 						DoScreenFadeOut(1000)
@@ -131,6 +132,7 @@ Citizen.CreateThread(function()
 						currentlyInsideWarehouse = false
 					end
 				end
+				exports["_anticheese"]:Enable()
 			end
 		end	
 		Citizen.Wait(w)
@@ -163,6 +165,9 @@ function Cajas3D()
 							ClearPedTasksImmediately(PlayerPedId())
 							FreezeEntityPosition(PlayerPedId(),false)
 							TriggerEvent("av_warehouse:openCrate")
+							while securityToken == nil do
+								Wait(1)
+							end
 							TriggerServerEvent('av_warehouse:loot', a, i, securityToken)
 						else
 							exports.globals:notify("Need crowbar!")
@@ -283,7 +288,7 @@ end)
 
 RegisterNetEvent("av_warehouse:teleport")
 AddEventHandler("av_warehouse:teleport", function()
-	exports["_anticheese"]:Disable("speedOrTPHack")
+	exports["_anticheese"]:Disable()
 	if hintBlipHandle then
 		RemoveBlip(hintBlipHandle)
 		hintBlipHandle = nil
@@ -312,7 +317,7 @@ AddEventHandler("av_warehouse:teleport", function()
 	TriggerEvent('av_warehouse:loadCrates')
 	Citizen.Wait(1000)
 	DoScreenFadeIn(1500)
-	exports["_anticheese"]:Enable("speedOrTPHack")
+	exports["_anticheese"]:Enable()
 	Cajas3D()
 end)
 

@@ -26,7 +26,21 @@ local KARTS = {
         COORDS = vector3(-70.300369262695, -1831.78515625, 25.941976547241),
         HEADING = 231.0,
         PRICE = 30000
-    }
+    },
+    {
+        MODEL = "Minibike",
+        HASH = GetHashKey("minibati"),
+        COORDS = vector3(-69.829116821289, -1834.2430419922, 25.941274642944),
+        HEADING = 179.0,
+        PRICE = 50000
+    },
+    {
+        MODEL = "Minisanchez",
+        HASH = GetHashKey("minisanchez"),
+        COORDS = vector3(-69.451683044434, -1836.3793945313, 25.912698745728),
+        HEADING = 211.0,
+        PRICE = 50000
+    },
 }
 
 local GO_KART_STORAGE_CAPACITY = 10.0
@@ -48,7 +62,7 @@ AddEventHandler("gokarts:buy", function(index)
             owner = owner_name,
             make = "",
             model = KARTS[index].MODEL,
-            hash = GetHashKey(KARTS[index].MODEL),
+            hash = KARTS[index].HASH,
             plate = plate,
             stored = false,
             price = KARTS[index].PRICE,
@@ -77,7 +91,7 @@ AddEventHandler("gokarts:buy", function(index)
                 KARTS[index].plate = plate
                 TriggerClientEvent("gokarts:spawn", src, KARTS[index])
                 local chatSentence1 = "Purchased a " .. KARTS[index].MODEL .. " for $" .. exports.globals:comma_value(KARTS[index].PRICE)
-                local chatSentence2 = "Remember, these are ^3not legal to drive on the streets^0! We receommend having them towed to their final destination."
+                local chatSentence2 = "Remember, the go-karts are ^3not legal to drive on the streets^0! We receommend having them towed to their final destination."
                 local chatSentence3 = "The keys are in the kart!"
                 TriggerClientEvent("usa:notify", src, chatSentence1, "^3INFO:^0 " .. chatSentence1)
                 TriggerClientEvent("usa:notify", src, chatSentence3, "^3INFO:^0 " .. chatSentence3)

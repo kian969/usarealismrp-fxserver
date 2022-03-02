@@ -39,8 +39,11 @@ end
 --
 
 RegisterServerEvent('encore_trucking:loadDelivered')
-AddEventHandler('encore_trucking:loadDelivered', function()
+AddEventHandler('encore_trucking:loadDelivered', function(securityToken)
 	local playerId = source
+	if not exports['salty_tokenizer']:secureServerEvent(GetCurrentResourceName(), source, securityToken) then
+		return false
+	end
 	local totalRouteDistance = TRUCKERS[playerId].distanceToPickup + TRUCKERS[playerId].distanceToDelivery
 	local payout   = math.floor(totalRouteDistance * Config.PayPerMeter) + math.random(0, 200)
 
@@ -54,7 +57,7 @@ AddEventHandler('encore_trucking:rentTruck', function()
 	local playerId = source
 
 	if not doesPlayerHaveValidLicense(playerId) then
-		TriggerClientEvent('encore_trucking:helper:showNotification', playerId, 'Your license is suspended!')
+		TriggerClientEvent('encore_trucking:helper:showNotification', playerId, 'Invalid driver\'s license!')
 		return
 	end
 

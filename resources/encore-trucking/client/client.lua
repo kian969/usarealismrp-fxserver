@@ -121,7 +121,10 @@ function deliveringThread(playerId, playerCoordinates)
 				EncoreHelper.ShowAlert('Press ~INPUT_PICKUP~ to deliver the load.', true)
 
 				if IsControlJustReleased(0, 38) then
-					TriggerServerEvent('encore_trucking:loadDelivered')
+					while securityToken == nil do
+						Wait(1)
+					end
+					TriggerServerEvent('encore_trucking:loadDelivered', securityToken)
 					cleanupTask()
 				end
 			end

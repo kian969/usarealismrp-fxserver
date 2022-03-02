@@ -48,6 +48,7 @@ AddEventHandler("motiontext:submit", function(info)
             if ok then 
                 print("* New motiontext doc created! *")
                 TriggerClientEvent("motiontext:new", -1, info)
+                table.insert(allText, info)
             else 
                 print("* Error creating new motiontext doc in DB *")
             end
@@ -63,13 +64,13 @@ AddEventHandler("motiontext:delete", function(index)
         db.deleteDocument("motiontext", allText[index]._id, function(ok)
             TriggerClientEvent("usa:notify", src, "Sign deleted!")
         end)
+        table.remove(allText, index)
     end)
 end)
 
 RegisterServerEvent("motiontext:playerSpawned")
 AddEventHandler("motiontext:playerSpawned", function()
-    local src = source
-    TriggerClientEvent("motiontext:set", src, allText)
+    TriggerClientEvent("motiontext:set", source, allText)
 end)
 
 Citizen.CreateThread(function()
@@ -87,7 +88,7 @@ Citizen.CreateThread(function()
                         if os.difftime(os.time(), (doc.created.time or 0)) > TEXT_PERSIST_DAYS * 24 * 60 * 60 then
                             print("text was old enough! deleting!")
                             TriggerEvent('es:exposeDBFunctions', function(db)
-                                db.deleteDocument("motiontext", s._id, function(ok) end)
+                                db.deleteDocument("motiontext", doc._id, function(ok) end)
                             end)
                         else
                             table.insert(allText, doc)
