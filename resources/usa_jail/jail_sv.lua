@@ -37,11 +37,10 @@ local SOL_CELLS = {
 	{id = "SOL2", x = 1766.16, y = 2594.16, z = 50.55},
 	{id = "SOL3", x = 1766.16, y = 2591.29, z = 50.55},
 	{id = "SOL4", x = 1766.16, y = 2588.34, z = 50.55},
-	{id = "SOL5", x = 1766.16, y = 2596.96, z = 50.55},
-	{id = "SOL6", x = 1766.16, y = 2596.96, z = 50.55},
-	{id = "SOL7", x = 1766.16, y = 2596.96, z = 50.55},
-	{id = "SOL8", x = 1766.16, y = 2596.96, z = 50.55},
-
+	{id = "SOL5", x = 1761.80, y = 2596.96, z = 50.55},
+	{id = "SOL6", x = 1761.80, y = 2594.16, z = 50.55},
+	{id = "SOL7", x = 1761.80, y = 2591.29, z = 50.55},
+	{id = "SOL8", x = 1761.80, y = 2588.34, z = 50.55},
 }
 
 local alarm_on = false
@@ -82,7 +81,14 @@ TriggerEvent('es:addCommand', 'assigncell', function(source, args, char)
 	local cell = args[3]
 	local job = char.get("job")
 	if job == "sheriff" or job == "cop" or job == "corrections" then
-		
+	local ident = GetPlayerIdentifiers(id)[1]
+		TriggerEvent("es:exposeDBFunctions", function(db)
+			db.getDocumentByRow("correctionaldepartment", "identifier", ident, function(doc)
+				if doc then
+					character.set("assigned_cell", cell)
+				end
+			end)
+		end)
 	end
 end, {
 	help = "Assign a prisoner to a cell that persists if they log out",
