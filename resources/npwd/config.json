@@ -1,0 +1,30 @@
+{
+  "PhoneAsItem": {
+    "enabled": false,
+    "exportResource": "my-core-resource",
+    "exportFunction": "myCheckerFunction"
+  },
+  "general": {
+    "useResourceIntegration": true,
+    "toggleKey": "f1",
+    "toggleCommand": "phone"
+  },
+  "database": {
+    "useIdentifierPrefix": true,
+    "playerTable": "users",
+    "identifierColumn": "identifier",
+    "identifierType": "license",
+    "profileQueries": true,
+    "phoneNumberColumn": "phone_number"
+  },
+  "profanityFilter": {
+    "enabled": false,
+    "badWords": ["esx"]
+  },
+  "debug": {
+    "level": "error",
+    "enabled": true,
+    "sentryEnabled": true
+  },
+  "apps": ["pefcl"]
+}
