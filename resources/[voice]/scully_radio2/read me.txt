@@ -1,0 +1,40 @@
+-- Add the following to your server.cfg --
+
+ensure scully_radio2
+
+-- To give someone perms add the following to your server.cfg and replace the group.leo with the group you want to add them to above, please don't ask me about other permission systems as I will not support them.
+
+add_ace group.police radio.police allow
+add_ace group.ems radio.ems allow
+
+add_principal identifier.discord:530698981920079882 group.police
+add_principal identifier.discord:530698981920079882 group.ems
+
+-- If using scully_perms your config permissions would look like the example below.
+
+Permissions = {
+    ['police'] = 'roleid',
+    ['ems'] = 'roleid'
+}
+
+-- To get someones radio name in your other resources you can use the server sided export below.
+exports['scully_radio2']:getPlayerName(source)
+
+-- Add the following item to your database/item list if you don't have it already.
+radio
+
+-- If AllowColours and UseItem is enabled in the config then add the following items to your database/item list.
+
+radio_blue
+radio_brown
+radio_cherry
+radio_coral
+radio_cyan
+radio_green
+radio_mint
+radio_orange
+radio_pink
+radio_purple
+radio_red
+radio_yellow
+radio_white
