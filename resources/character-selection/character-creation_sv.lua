@@ -18,6 +18,7 @@ AddEventHandler("character:getCharactersAndOpenMenu", function(menu, src)
 	exports["usa-characters"]:SaveCurrentCharacter(usource, function()
 		local steamID = GetPlayerIdentifiers(usource)[1]
 		exports["usa-characters"]:LoadCharactersForSelection(steamID, function(characters)
+			exports.npwd:unloadPlayer(usource)
 			TriggerClientEvent("character:open", usource, menu, characters)
 		end)
 	end)

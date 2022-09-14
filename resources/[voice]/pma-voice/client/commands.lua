@@ -70,5 +70,5 @@ RegisterCommand('cycleproximity', function()
 	TriggerEvent('pma-voice:setTalkingMode', mode)
 end, false)
 if gameVersion == 'fivem' then
-	RegisterKeyMapping('cycleproximity', 'Cycle Proximity', 'keyboard', GetConvar('voice_defaultCycle', 'F11'))
+	RegisterKeyMapping('cycleproximity', 'Cycle Proximity', 'keyboard', GetConvar('voice_defaultCycle', 'F2'))
 end
