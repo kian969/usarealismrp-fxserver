@@ -157,16 +157,22 @@ end
 
 if Scully.UseKeybind ~= '' then
     RegisterCommand(Scully.Language.Command, function()
-        if Scully.UseItem then
-            Scully.Functions.HasItem('radio', function(hasItem)
-                if hasItem then
-                    Scully.Radio.ToggleRadio(true)
-                else
-                    Scully.Functions.ShowNotification(Scully.Language.NoRadio)
-                end
-            end)
-        else
-            Scully.Radio.ToggleRadio(true)
+        local KEYS = {
+            SHIFT = 340,
+            F2 = 289
+        }
+        if IsControlPressed(0, KEYS.SHIFT) and IsControlJustPressed(0, KEYS.F2) then
+            if Scully.UseItem then
+                Scully.Functions.HasItem('radio', function(hasItem)
+                    if hasItem then
+                        Scully.Radio.ToggleRadio(true)
+                    else
+                        Scully.Functions.ShowNotification(Scully.Language.NoRadio)
+                    end
+                end)
+            else
+                Scully.Radio.ToggleRadio(true)
+            end
         end
     end)
 
