@@ -55,6 +55,13 @@ exports("clearProximityOverride", function()
 end)
 
 RegisterCommand('cycleproximity', function()
+	local KEYS = {
+		SHIFT = 340
+	}
+	if IsControlPressed(0, KEYS.SHIFT) then -- avoid conflict with SHIFT + F2 radio interface hotkey
+		return
+	end
+
 	-- Proximity is either disabled, or manually overwritten.
 	if GetConvarInt('voice_enableProximityCycle', 1) ~= 1 or disableProximityCycle then return end
 	local newMode = mode + 1
