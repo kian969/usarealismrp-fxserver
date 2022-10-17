@@ -32,6 +32,8 @@ local MAGAZINE_LOAD_ANIM = {
     NAME = "reload_aim"
 }
 
+local MAGS_ENBALED = true
+
 RegisterNetEvent("ammo:playMagazineFillingAnimation")
 AddEventHandler("ammo:playMagazineFillingAnimation", function()
     playAnimation(MAGAZINE_LOAD_ANIM.DICT, MAGAZINE_LOAD_ANIM.NAME, MAGAZINE_LOAD_TIME, 48, "Loading Mag")
@@ -66,9 +68,9 @@ AddEventHandler("ammo:reloadMag", function(data)
         -- fill currently equipped weapon with mag.currentCapacity (or +1 if not pistol)
         --SetPedAmmo(myped, currentWeaponHash, ammoCountToUse)
         SetAmmoInClip(myped, currentWeaponHash, ammoCountToUse)
-        if isFullAuto(currentWeaponHash) then
-            SetPedAmmo(myped, currentWeaponHash, ammoCountToUse + 1) -- give pseudo ammo so we don't auto store weapon
-        end
+        --if isFullAuto(currentWeaponHash) then
+            --SetPedAmmo(myped, currentWeaponHash, ammoCountToUse + 1) -- give pseudo ammo so we don't auto store weapon
+        --end
     end
 end)
 
@@ -190,7 +192,11 @@ Citizen.CreateThread(function()
         if IsDisabledControlJustPressed(1, 45) then -- 45 = R
             if GetGameTimer() - lastPressTime >= RELOAD_TIME_MS then
                 lastPressTime = GetGameTimer()
-                TriggerServerEvent("ammo:checkForMagazine")
+                if MAGS_ENBALED then
+                    TriggerServerEvent("ammo:checkForMagazine")
+                else
+                    TriggerServerEvent("ammo:checkForAmmo")
+                end
             end
         end
         Wait(1)

@@ -260,6 +260,48 @@ AddEventHandler("ammo:checkForMagazine", function(selectedIndex, vehiclePlate, s
     end
 end)
 
+RegisterServerEvent("ammo:checkForAmmo")
+AddEventHandler("ammo:checkForAmmo", function()
+    local char = exports["usa-characters"]:GetCharacter(source)
+    local selectedIndex = char.get("currentlySelectedIndex")
+    if selectedIndex then
+        local curWep = char.getItemByIndex(selectedIndex)
+        if curWep and curWep.type == "weapon" then
+            curWep.hash = tonumber(curWep.hash) & 0xFFFFFFFF -- ensure hash key is an unsigned int to match our look up table
+            if WEPS_WITH_MAGS[curWep.hash] then -- desired ammo quantity depends on currently equipped mag type (regular? extended? drum? box? etc)
+                -- todo
+            elseif WEPS_NO_MAGS[curWep.hash] then -- desired ammo quantity has no variation
+                local max = WEPS_NO_MAGS[curWep.hash].MAX_CAPACITY
+                local neededAmmo = max - ((curWep.magazine and curWep.magazine.currentCapacity) or 0)
+                local ammoItem = char.getItem(WEPS_NO_MAGS[curWep.hash].AMMO_NAME)
+                if ammoItem then
+                    local ammoCountToUse = math.min(neededAmmo, ammoItem.quantity)
+                    char.modifyItemByUUID(ammoItem.uuid, { quantity = ammoItem.quantity - ammoCountToUse })
+                    if curWep.magazine then
+                        local updatedMag = curWep.magazine
+                        updatedMag.currentCapacity = updatedMag.currentCapacity + ammoCountToUse
+                        char.modifyItemByUUID(curWep.uuid, { magazine = updatedMag })
+                    else
+                        local newMag = {
+                            type = "magazine",
+                            receives = WEPS_NO_MAGS[curWep.hash].AMMO_NAME,
+                            MAX_CAPACITY = WEPS_NO_MAGS[curWep.hash].MAX_CAPACITY,
+                            currentCapacity = ammoCountToUse
+                        }
+                        char.modifyItemByUUID(curWep.uuid, { magazine = newMag })
+                    end
+                    TriggerClientEvent("ammo:reloadMag", source, ammoCountToUse)
+                    if curWep.name:find("Taser") or curWep.name:find("Stun Gun") then
+                        TriggerClientEvent("usa-taser:enable", source, true)
+                    end
+                else
+                    TriggerClientEvent("usa:notify", source, "No " .. WEPS_NO_MAGS[curWep.hash].AMMO_NAME .. " found!")
+                end
+            end
+        end
+    end
+end)
+
 -- filing magazines
 RegisterServerEvent("ammo:useMagazine")
 AddEventHandler("ammo:useMagazine", function(magazine)
@@ -459,4 +501,8 @@ function stringSplit(inputstr, sep)
             table.insert(t, str)
     end
     return t
+end
+
+function getAmmoTypeByWeaponHash(wepHash)
+    return (WEPS_WITH_MAGS[wepHash].accepts or WEPS_NO_MAGS[wepHash].AMMO_NAME)
 end
