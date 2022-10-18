@@ -269,7 +269,29 @@ AddEventHandler("ammo:checkForAmmo", function()
         if curWep and curWep.type == "weapon" then
             curWep.hash = tonumber(curWep.hash) & 0xFFFFFFFF -- ensure hash key is an unsigned int to match our look up table
             if WEPS_WITH_MAGS[curWep.hash] then -- desired ammo quantity depends on currently equipped mag type (regular? extended? drum? box? etc)
-                -- todo
+                local max = ((curWep.magazine and curWep.magazine.MAX_CAPACITY) or WEPS_WITH_MAGS[curWep.hash].magAmmoCounts[1])
+                local neededAmmo = max - ((curWep.magazine and curWep.magazine.currentCapacity) or 0)
+                local ammoItem = char.getItem(WEPS_WITH_MAGS[curWep.hash].accepts)
+                if ammoItem then
+                    local ammoCountToUse = math.min(neededAmmo, ammoItem.quantity)
+                    char.modifyItemByUUID(ammoItem.uuid, { quantity = ammoItem.quantity - ammoCountToUse })
+                    if curWep.magazine then
+                        local updatedMag = curWep.magazine
+                        updatedMag.currentCapacity = updatedMag.currentCapacity + ammoCountToUse
+                        char.modifyItemByUUID(curWep.uuid, { magazine = updatedMag })
+                    else
+                        local newMag = {
+                            type = "magazine",
+                            receives = WEPS_WITH_MAGS[curWep.hash].accepts,
+                            MAX_CAPACITY = WEPS_WITH_MAGS[curWep.hash].magAmmoCounts[1],
+                            currentCapacity = ammoCountToUse
+                        }
+                        char.modifyItemByUUID(curWep.uuid, { magazine = newMag })
+                    end
+                    TriggerClientEvent("ammo:reloadMag", source, ammoCountToUse)
+                else
+                    TriggerClientEvent("usa:notify", source, "No " .. WEPS_WITH_MAGS[curWep.hash].accepts .. " ammo found!")
+                end
             elseif WEPS_NO_MAGS[curWep.hash] then -- desired ammo quantity has no variation
                 local max = WEPS_NO_MAGS[curWep.hash].MAX_CAPACITY
                 local neededAmmo = max - ((curWep.magazine and curWep.magazine.currentCapacity) or 0)
