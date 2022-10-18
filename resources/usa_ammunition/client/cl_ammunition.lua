@@ -65,12 +65,19 @@ AddEventHandler("ammo:reloadMag", function(data)
                 end
             end
         end
-        -- fill currently equipped weapon with mag.currentCapacity (or +1 if not pistol)
+        -- fill currently equipped weapon with mag.currentCapacity
         --SetPedAmmo(myped, currentWeaponHash, ammoCountToUse)
         SetAmmoInClip(myped, currentWeaponHash, ammoCountToUse)
-        --if isFullAuto(currentWeaponHash) then
-            --SetPedAmmo(myped, currentWeaponHash, ammoCountToUse + 1) -- give pseudo ammo so we don't auto store weapon
-        --end
+    end
+end)
+
+RegisterNetEvent("ammo:ejectMag")
+AddEventHandler("ammo:ejectMag", function(data)
+    if MAGS_ENBALED then
+        TriggerServerEvent("ammo:ejectMag", data.inventoryItemIndex)
+	    exports.globals:playAnimation("cover@weapon@machinegun@combat_mg_str", "low_reload_left", 2000, 48, "Unloading")
+    else 
+        exports.globals:notify("Disabled in ammo only mode")
     end
 end)
 

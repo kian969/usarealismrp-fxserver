@@ -745,8 +745,7 @@ RegisterNUICallback('reloadWeapon', function(data, cb)
 end)
 
 RegisterNUICallback('unloadWeapon', function(data, cb)
-	TriggerServerEvent("ammo:ejectMag", data.inventoryItemIndex)
-	exports.globals:playAnimation("cover@weapon@machinegun@combat_mg_str", "low_reload_left", 2000, 48, "Unloading")
+	TriggerEvent("ammo:ejectMag", data.inventoryItemIndex)
 end)
 
 RegisterNUICallback('notification', function(data, cb)
