@@ -81,12 +81,32 @@ AddEventHandler("ammo:ejectMag", function(data)
     end
 end)
 
+RegisterNetEvent("ammo:reloadFromInventoryButton")
+AddEventHandler("ammo:reloadFromInventoryButton", function(data)
+    if MAGS_ENBALED then
+        local me = PlayerPedId()
+        local myveh = nil
+        local vehiclePlate = nil
+        if IsPedInAnyVehicle(me, false) then
+            myveh = GetVehiclePedIsIn(me, false)
+            vehiclePlate = GetVehicleNumberPlateText(myveh)
+            vehiclePlate = exports.globals:trim(vehiclePlate)
+        end
+        TriggerServerEvent("ammo:checkForMagazine", data.inventoryItemIndex, (vehiclePlate or false))
+    else
+        TriggerServerEvent("ammo:checkForAmmo")
+    end
+end)
+
 -- save ammo after shooting
 Citizen.CreateThread(function()
     while true do
         local myped = PlayerPedId()
         if IsPedShooting(myped) then
-            Wait(50)
+            local start = GetGameTimer()
+            while GetGameTimer() - start < 300 do
+                Wait(1)
+            end
             if not IsPedShooting(myped) then
                 local w = GetSelectedPedWeapon(myped)
                 local b1, wa = GetAmmoInClip(myped, w)

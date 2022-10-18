@@ -733,15 +733,7 @@ function RemovePedObject()
 end
 
 RegisterNUICallback('reloadWeapon', function(data, cb)
-	local me = PlayerPedId()
-	local myveh = nil
-	local vehiclePlate = nil
-	if IsPedInAnyVehicle(me, false) then
-		myveh = GetVehiclePedIsIn(me, false)
-		vehiclePlate = GetVehicleNumberPlateText(myveh)
-		vehiclePlate = exports.globals:trim(vehiclePlate)
-	end
-	TriggerServerEvent("ammo:checkForMagazine", data.inventoryItemIndex, (vehiclePlate or false))
+	TriggerEvent("ammo:reloadFromInventoryButton", data)
 end)
 
 RegisterNUICallback('unloadWeapon', function(data, cb)
