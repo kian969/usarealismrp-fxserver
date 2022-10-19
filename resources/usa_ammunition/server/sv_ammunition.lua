@@ -281,6 +281,7 @@ AddEventHandler("ammo:checkForAmmo", function()
                         char.modifyItemByUUID(curWep.uuid, { magazine = updatedMag })
                     else
                         local newMag = {
+                            name = "Loaded " .. WEPS_WITH_MAGS[curWep.hash].accepts .. " Mag [ " .. WEPS_WITH_MAGS[curWep.hash].magAmmoCounts[1] .. "]",
                             type = "magazine",
                             receives = WEPS_WITH_MAGS[curWep.hash].accepts,
                             MAX_CAPACITY = WEPS_WITH_MAGS[curWep.hash].magAmmoCounts[1],
@@ -305,6 +306,7 @@ AddEventHandler("ammo:checkForAmmo", function()
                         char.modifyItemByUUID(curWep.uuid, { magazine = updatedMag })
                     else
                         local newMag = {
+                            name = "Loaded " .. WEPS_NO_MAGS[curWep.hash].AMMO_NAME .. " Mag [ " .. WEPS_NO_MAGS[curWep.hash].MAX_CAPACITY .. "]",
                             type = "magazine",
                             receives = WEPS_NO_MAGS[curWep.hash].AMMO_NAME,
                             MAX_CAPACITY = WEPS_NO_MAGS[curWep.hash].MAX_CAPACITY,
@@ -528,3 +530,28 @@ end
 function getAmmoTypeByWeaponHash(wepHash)
     return (WEPS_WITH_MAGS[wepHash].accepts or WEPS_NO_MAGS[wepHash].AMMO_NAME)
 end
+
+TriggerEvent('es:addCommand', 'magmode', function(source, args, char)
+    local newVal = true
+    local doc = exports.essentialmode:getDocument("magmode-setting", char.get("_id"))
+    if doc then
+        newVal = not doc.value
+    end
+    TriggerClientEvent("ammo:setMagMode", source, newVal)
+    exports.essentialmode:updateDocument("magmode-setting", char.get("_id"), {value = newVal}, true)
+end, {help = "Toggle weapon magazine feature"})
+
+RegisterServerCallback {
+    eventName = "ammo:getMagMode",
+    eventCallback = function(source)
+        local char = exports["usa-characters"]:GetCharacter(source)
+        local doc = exports.essentialmode:getDocument("magmode-setting", char.get("_id"))
+        if doc and doc.value then
+            return doc.value
+        else
+            return true -- mag mode enabled by default
+        end
+    end
+}
+
+exports["globals"]:PerformDBCheck("usa_ammunition", "magmode-setting", nil)

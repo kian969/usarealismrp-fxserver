@@ -32,7 +32,22 @@ local MAGAZINE_LOAD_ANIM = {
     NAME = "reload_aim"
 }
 
-local MAGS_ENBALED = true
+Citizen.CreateThread(function()
+    local MAGS_ENBALED = TriggerServerCallback {
+        eventName = "ammo:getMagMode",
+        args = {}
+    }
+end)
+
+RegisterNetEvent("ammo:setMagMode")
+AddEventHandler("ammo:setMagMode", function(val)
+    MAGS_ENBALED = val
+    if MAGS_ENBALED then
+        exports.globals:notify("Realistic mag mode enabled")
+    else
+        exports.globals:notify("Arcade mag mode enabled")
+    end
+end)
 
 RegisterNetEvent("ammo:playMagazineFillingAnimation")
 AddEventHandler("ammo:playMagazineFillingAnimation", function()
