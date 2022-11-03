@@ -384,6 +384,15 @@ RegisterNUICallback('loadVehicleInventory', function(data, cb)
 	TriggerServerEvent("interaction:loadVehicleInventory", data.plate)
 end)
 
+RegisterCommand('openInventory', function()
+	local hitHandleVehicle, distance = getVehicleInsideOrInFrontOfUser()
+	local target_veh_plate = GetVehicleNumberPlateText(hitHandleVehicle)
+	local target_veh_plate = exports.globals:trim(target_veh_plate)
+	TriggerServerEvent("interaction:InvLoadHotkey", target_veh_plate)
+end)
+
+RegisterKeyMapping('openInventory', 'Open Inventory', 'keyboard', 'i')
+
 -- this is called when the player clicks "retrieve" in the interaction menu on a vehicle inventory item
 RegisterNUICallback('retrieveVehicleItem', function(data, cb)
 	DisableGui()
@@ -724,20 +733,11 @@ function RemovePedObject()
 end
 
 RegisterNUICallback('reloadWeapon', function(data, cb)
-	local me = PlayerPedId()
-	local myveh = nil
-	local vehiclePlate = nil
-	if IsPedInAnyVehicle(me, false) then
-		myveh = GetVehiclePedIsIn(me, false)
-		vehiclePlate = GetVehicleNumberPlateText(myveh)
-		vehiclePlate = exports.globals:trim(vehiclePlate)
-	end
-	TriggerServerEvent("ammo:checkForMagazine", data.inventoryItemIndex, (vehiclePlate or false))
+	TriggerEvent("ammo:reloadFromInventoryButton", data)
 end)
 
 RegisterNUICallback('unloadWeapon', function(data, cb)
-	TriggerServerEvent("ammo:ejectMag", data.inventoryItemIndex)
-	exports.globals:playAnimation("cover@weapon@machinegun@combat_mg_str", "low_reload_left", 2000, 48, "Unloading")
+	TriggerEvent("ammo:ejectMag", data)
 end)
 
 RegisterNUICallback('notification', function(data, cb)
@@ -987,6 +987,7 @@ function interactionMenuUse(index, itemName, wholeItem)
 
 		exports.globals:loadAnimDict(JERRY_CAN_ANIMATION.dict)
 
+		hitHandleVehicle, distance = getVehicleInsideOrInFrontOfUser()
 		if tonumber(hitHandleVehicle) ~= 0 then
 			busy = true
 			local ped = GetPlayerPed(-1)
@@ -1104,7 +1105,6 @@ function interactionMenuUse(index, itemName, wholeItem)
 						SetVehicleNeedsToBeHotwired(veh, true)
 					end
 					TriggerEvent("usa:notify", "Lockpick was ~y~successful~s~!")
-					TriggerServerEvent("usa:removeItem", wholeItem, 1)
 				else
 					TriggerEvent("usa:notify", "Lockpick has ~y~broken~s~!")
 					TriggerServerEvent("usa:removeItem", wholeItem, 1)
@@ -1127,7 +1127,7 @@ function interactionMenuUse(index, itemName, wholeItem)
 		-- Cell Phone --
 		-------------------
 	elseif string.find(itemName, "Cell Phone") then
-		TriggerServerEvent("gcPhone:getPhone")
+		TriggerEvent("high_phone:openPhone")
 		-------------------
 		-- Food Item  --
 		-------------------
@@ -1219,6 +1219,11 @@ function interactionMenuUse(index, itemName, wholeItem)
 		TriggerEvent("rahe-boosting:client:openTablet")
 	elseif itemName == "Racing Dongle" then
 		TriggerEvent("rahe-racing:client:openTablet")
+	elseif itemName == "Crumpled Paper" then
+		TriggerEvent("core_rob_truck:hint")
+		TriggerServerEvent("usa:removeItem", itemName, 1)
+	elseif itemName == "Bank Laptop" then
+		TriggerEvent("usa:notify", "Device not connected to a terminal.")
 	else
 		TriggerEvent("interaction:notify", "There is no use action for that item!")
 	end
@@ -1444,13 +1449,6 @@ AddEventHandler("interaction:equipWeapon", function(item, equip, ammoAmount, pla
 	if equip then
 		local currentWeaponAmmo = (ammoAmount or (item.magazine and item.magazine.currentCapacity) or 0)
 		print("equipping wep with ammo count: " .. currentWeaponAmmo)
-		if currentWeaponAmmo ~= 0 then
-			TriggerEvent("ammo:setRanOutOfAmmo", false)
-		else
-			if not isMeleeWeapon(item.hash) then
-				TriggerEvent("ammo:setRanOutOfAmmo", true)
-			end
-		end
 		GiveWeaponToPed(ped, item.hash, currentWeaponAmmo, false, equipNow)
 		if item.components then
 			if #item.components > 0 then
@@ -1938,9 +1936,9 @@ end
 
 function playHealingAnimation(ped)
 	exports.globals:loadAnimDict("combat@damage@injured_pistol@to_writhe")
-	TaskPlayAnim(ped, "combat@damage@injured_pistol@to_writhe", "variation_d", 8.0, 1, -1, 49, 0, 0, 0, 0)
-	Wait(2600)
-	StopAnimTask(ped, "combat@damage@injured_pistol@to_writhe", "variation_d", 1.0)
+	TaskPlayAnim(ped, "combat@damage@injured_pistol@to_writhe", "variation_b", 8.0, 1, -1, 49, 0, 0, 0, 0)
+	Wait(5000)
+	StopAnimTask(ped, "combat@damage@injured_pistol@to_writhe", "variation_b", 1.0)
 end
 
 function isMeleeWeapon(wepHash)

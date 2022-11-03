@@ -227,7 +227,47 @@ locations = {
 		show_blip = {
 			disable_blip = false
 		}
-	}
+	},
+	["Vespucci PD"] = {
+		duty = {
+			x = -1058.3012695313, 
+			y = -840.30407714844, 
+			z = 4.2009510993958
+		},
+		impound = {
+			x = -1049.2827148438, 
+			y = -863.85809326172, 
+			z = 3.5
+		},
+		truck_spawn = {
+			x = -1051.6624755859, 
+			y = -847.31860351563, 
+			z = 4.8675470352173,
+			heading = 217.0
+		},
+		ped = nil,
+		show_blip = {
+			disable_blip = false
+		}
+	},
+	["Greenwich PW."] = {
+		duty = {
+			x = -1140.01, 
+			y = -2005.84, 
+			z = 13.18,
+		},
+		truck_spawn = {
+			x = -1150.46, 
+			y = -1981.68, 
+			z = 13.16,
+			heading = 310.64
+		},
+		impound = nil,
+		ped = nil,
+		show_blip = {
+			disable_blip = true
+		}
+	},
 }
 	
 -- S P A W N  J O B  P E D S
@@ -269,23 +309,20 @@ Citizen.CreateThread(function()
 end)
 
 -- draw 3D text --
-Citizen.CreateThread(function()
-	while true do
-		if not isMechanicPartMenuOpen then
-			for name, data in pairs(locations) do
-				if onDuty == "no" then
-					DrawText3D(data.duty.x, data.duty.y, (data.duty.z + 1.0), 5, '[E] - Sign in (~g~Mechanic~s~)')
-				else
-					DrawText3D(data.duty.x, data.duty.y, (data.duty.z + 1.0), 5, '[E] - Sign out (~g~Mechanic~s~) | [Hold E] - Order Parts | [Hold V] - Retrieve Truck')
-				end
-				if data.impound then
-					DrawText3D(data.impound.x, data.impound.y, (data.impound.z + 1.5), 15, '[E] - Impound Vehicle')
-				end
-			end
-		end
-		Wait(1)
+local locationsData = {}
+for name, data in pairs(locations) do
+	table.insert(locationsData, {
+		coords = vector3(data.duty.x, data.duty.y, data.duty.z + 1.0),
+		text = '[E] - Toggle Duty (~g~Mechanic~s~) | [Hold E] - Order Parts | [Hold V] - Retrieve Truck'
+	})
+	if data.impound then
+		table.insert(locationsData, {
+			coords = vector3(data.impound.x, data.impound.y, data.impound.z + 1.5),
+			text = '[E] - Impound Vehicle'
+		})
 	end
-end)
+end
+exports.globals:register3dTextLocations(locationsData)
 
 -- listen for key presses --
 Citizen.CreateThread(function()
@@ -542,10 +579,14 @@ AddEventHandler("mechanic:tryInstall", function(upgrade, rank)
 		local veh = MechanicHelper.getClosestVehicle(5)
 			if veh then
 				exports.globals:notify("Installing " .. upgrade.displayName .. " upgrade!")
-				MechanicHelper.installUpgrade(veh, upgrade, function()
-					local plate = GetVehicleNumberPlateText(veh)
-					plate = exports.globals:trim(plate)
-					TriggerServerEvent("mechanic:installedUpgrade", plate, VehToNet(veh), rank)
+				MechanicHelper.installUpgrade(veh, upgrade, function(success)
+					if success then
+						local plate = GetVehicleNumberPlateText(veh)
+						plate = exports.globals:trim(plate)
+						TriggerServerEvent("mechanic:installedUpgrade", plate, VehToNet(veh), rank)
+					else
+						exports.globals:notify("Install failed!", "INFO: Install failed")
+					end
 				end)
 			else
 				exports.globals:notify("No vehicle found!")

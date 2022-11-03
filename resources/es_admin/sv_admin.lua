@@ -300,11 +300,14 @@ function stringsplit(self, delimiter)
 end
 
 -- Announcing
-TriggerEvent('es:addGroupCommand', 'announce', "mod", function(source, args, char)
-	table.remove(args, 1)
-	TriggerClientEvent('chatMessage', -1, "", {255, 0, 0}, "^2^*[CITY ANNOUNCEMENT] ^r^0" .. table.concat(args, " "))
+TriggerEvent('es:addCommand', 'announce', function(source, args, char, location)
+	local group = exports["essentialmode"]:getPlayerFromId(source).getGroup()
+	if group == "owner" or group == "superadmin" or group == "admin" or group == "mod" or char.get("job") == "eventPlanner" then
+		table.remove(args, 1)
+		TriggerClientEvent('chatMessage', -1, "", {255, 0, 0}, "^2^*[CITY ANNOUNCEMENT] ^r^0" .. table.concat(args, " "))
+	end
 end, {
-	help = "Send a server-wide message.",
+    help = "Send a server-wide message.",
 	params = {
 		{ name = "message", help = "message to send" }
 	}
@@ -1606,3 +1609,15 @@ function printStaffList(fromRCON, src)
 		end
 	end)
 end
+
+TriggerEvent('es:addGroupCommand', 'tx', 'mod', function(source, args, char)
+	TriggerClientEvent("tx:open", source)
+end, {
+	help = "Open the txAdmin staff menu!"
+})
+
+TriggerEvent('es:addGroupCommand', 'amenu', 'mod', function(source, args, char)
+	TriggerClientEvent("tx:open", source)
+end, {
+	help = "Open the txAdmin staff menu!"
+})

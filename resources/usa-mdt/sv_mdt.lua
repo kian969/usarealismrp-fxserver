@@ -343,7 +343,25 @@ AddEventHandler("mdt:PerformPersonCheckBySSN", function(ssn)
 			end
 		end
 	end)
-	
+
+	-- negative bank check --
+	if char.get("bank") <= 0 then
+		local msg = {
+			type = "personCheckNotification",
+			message  = "Person owes $" .. exports.globals:comma_value(char.get("bank")) .. " to the state!"
+		}
+		TriggerClientEvent("mdt:sendNUIMessage", usource, msg)
+	end
+
+	-- person notes --
+	local notes = exports.essentialmode:getDocument("mdt-person-check-notes", char.get("_id"))
+	if notes and notes.value then
+		person_info.personNotes = notes.value
+	end
+
+	person_info._id = char.get("_id")
+
+	-- send it!
 	TriggerClientEvent("mdt:performPersonCheck", usource, person_info)
 end)
 
@@ -450,6 +468,25 @@ AddEventHandler("mdt:PerformPersonCheckByName", function(data)
 							end
 						end
 					end)
+
+					-- negative bank check --
+					if person.bank <= 0 then
+						local msg = {
+							type = "personCheckNotification",
+							message  = "Person owes $" .. exports.globals:comma_value(person.bank) .. " to the state!"
+						}
+						TriggerClientEvent("mdt:sendNUIMessage", usource, msg)
+					end
+
+					-- person notes --
+					local notes = exports.essentialmode:getDocument("mdt-person-check-notes", person._id)
+					if notes and notes.value then
+						person_info.personNotes = notes.value
+					end
+
+					person_info._id = person._id
+
+					-- send it!
 					TriggerClientEvent("mdt:performPersonCheck", usource, person_info)
 				end)
 			else
@@ -547,6 +584,25 @@ AddEventHandler("mdt:PerformPersonCheckByDNA", function(data)
 							end
 						end
 					end)
+
+					-- negative bank check --
+					if person.bank <= 0 then
+						local msg = {
+							type = "personCheckNotification",
+							message  = "Person owes $" .. exports.globals:comma_value(person.bank) .. " to the state!"
+						}
+						TriggerClientEvent("mdt:sendNUIMessage", usource, msg)
+					end
+
+					-- person notes --
+					local notes = exports.essentialmode:getDocument("mdt-person-check-notes", person._id)
+					if notes and notes.value then
+						person_info.personNotes = notes.value
+					end
+
+					person_info._id = person._id
+
+					-- send it!
 					TriggerClientEvent("mdt:performPersonCheck", usource, person_info)
 				end)
 			else
@@ -572,6 +628,11 @@ AddEventHandler("mdt:performPlateCheck", function(plateNumber)
 			vehicle.veh_name = vehs[1].make .. " " .. vehs[1].model
 			vehicle.registered_owner = vehs[1].owner
 			vehicle.plate = plateNumber
+			-- vehicle notes --
+			local notes = exports.essentialmode:getDocument("mdt-vehicle-check-notes", plateNumber)
+			if notes and notes.value then
+				vehicle.vehicleNotes = notes.value
+			end
 			TriggerClientEvent("mdt:performPlateCheck", usource, vehicle)
 		else
 			-- make a random registration for the vehicle or check if vehicle is in temp list --
@@ -596,6 +657,11 @@ AddEventHandler("mdt:performWeaponCheck", function(serialNumber)
 	TriggerEvent('es:exposeDBFunctions', function(couchdb)
         couchdb.getDocumentById("legalweapons", serialNumber, function(weapon)
             if weapon then
+            	-- vehicle notes --
+							local notes = exports.essentialmode:getDocument("mdt-weapon-check-notes", serialNumber)
+							if notes and notes.value then
+								weapon.weaponNotes = notes.value
+							end
             	TriggerClientEvent("mdt:performWeaponCheck", usource, weapon)
             else
                 local msg = {
@@ -687,6 +753,9 @@ RegisterServerEvent("mdt:fetchWarrants")
 AddEventHandler("mdt:fetchWarrants", function()
 	local usource = source
 	exports["usa-warrants"]:getWarrants(function(warrants)
+		table.sort(warrants, function(a, b)
+			return a.timestamp > b.timestamp
+		end)
 		TriggerClientEvent("mdt:fetchWarrants", usource, warrants)
 	end)
 end)
@@ -696,7 +765,7 @@ AddEventHandler("mdt:createWarrant", function(warrant)
 	local author = exports["usa-characters"]:GetCharacter(source)
 	warrant.created_by = author.getFullName()
 	warrant.notes = warrant.charges .. " | " .. warrant.suspect_description
-	warrant.timestamp = os.date('%m-%d-%Y %H:%M:%S', os.time())
+	warrant.timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
 	exports["usa-warrants"]:createWarrant(source, warrant, true)
 end)
 
@@ -740,7 +809,7 @@ AddEventHandler("mdt:createBOLO", function(bolo)
 	local usource = source
 	local author = exports["usa-characters"]:GetCharacter(source)
 	bolo.author = author.getFullName()
-	bolo.timestamp = os.date('%m-%d-%Y %H:%M:%S', os.time())
+	bolo.timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
 	bolo.createdTime = os.time()
 	TriggerEvent('es:exposeDBFunctions', function(couchdb)
 		-- insert into db
@@ -800,7 +869,7 @@ AddEventHandler("mdt:createPoliceReport", function(report)
 	local usource = source
 	local author = exports["usa-characters"]:GetCharacter(usource)
 	report.author = author.getFullName()
-	report.timestamp = os.date('%m-%d-%Y %H:%M:%S', os.time())
+	report.timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
 	TriggerEvent('es:exposeDBFunctions', function(couchdb)
 		------------------------------
 		-- Insert into database  --
@@ -1046,11 +1115,164 @@ AddEventHandler("mdt:performPersonCheckByCharID", function(id)
 							end
 						end
 					end)
+
+					-- negative bank check --
+					if person.bank <= 0 then
+						local msg = {
+							type = "personCheckNotification",
+							message  = "Person owes $" .. exports.globals:comma_value(person.bank) .. " to the state!"
+						}
+						TriggerClientEvent("mdt:sendNUIMessage", usource, msg)
+					end
+
+					local notes = exports.essentialmode:getDocument("mdt-person-check-notes", person._id)
+					if notes and notes.value then
+						person_info.personNotes = notes.value
+					end
+
+					person_info._id = person._id
+
+					-- send it!
 					TriggerClientEvent("mdt:performPersonCheck", usource, person_info)
 				end)
 			end
 		end)
 	end)
+end)
+
+RegisterServerEvent("mdt:saveNote")
+AddEventHandler("mdt:saveNote", function(noteId, targetFname, targetLname, note)
+	exports.essentialmode:updateDocument("mdt-person-check-notes", noteId, { value = note } , true)
+	local WEBHOOK_URL = GetConvar("mdt-webook", "")
+	local char = exports["usa-characters"]:GetCharacter(source)
+  local name = char.get("name")
+	local charName = name.first .. " " .. name.last
+  local targetName = targetFname .. " " .. targetLname
+  -- local msg = "\n**MDT - Note Modified**\n\n**Note update for this person:**\n"..targetName.."\n**Note Updated by:**\n"..charName.."\n**New Note Value:**\n"..note.."\n\n**Timestamp:**\n"..os.date('%m-%d-%Y %H:%M:%S', os.time()).." PST\n"
+  -- exports["globals"]:SendDiscordLog(WEBHOOK_URL, msg) -- this looks shit
+	PerformHttpRequest(WEBHOOK_URL, function(err, text, headers)
+		if text then
+			print(text)
+		end
+	end, "POST", json.encode({
+		embeds = {
+			{
+				author = {
+					name = 'MDT - Note Modified'
+				},
+
+				fields = {
+					{
+						name = "Note update for this person",
+						value = targetName,
+						inline = true
+					},
+					{
+						name = "Note Updated by",
+						value = charName,
+						inline = true
+					},
+					{
+						name = "New Note Value",
+						value = note,
+						inline = true
+					},
+				},
+
+				footer = {
+					text = os.date('%m-%d-%Y %H:%M:%S', os.time()) .. ' PST'
+				}
+			}
+		},
+	}), { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })
+end)
+
+RegisterServerEvent("mdt:saveVehNote")
+AddEventHandler("mdt:saveVehNote", function(noteId, note)
+	exports.essentialmode:updateDocument("mdt-vehicle-check-notes", noteId, { value = note } , true)
+	local WEBHOOK_URL = GetConvar("mdt-webook", "")
+	local char = exports["usa-characters"]:GetCharacter(source)
+  local name = char.get("name")
+	local charName = name.first .. " " .. name.last
+	PerformHttpRequest(WEBHOOK_URL, function(err, text, headers)
+		if text then
+			print(text)
+		end
+	end, "POST", json.encode({
+		embeds = {
+			{
+				author = {
+					name = 'MDT - Vehicle Note Modified'
+				},
+
+				fields = {
+					{
+						name = "Plate",
+						value = noteId,
+						inline = true
+					},
+					{
+						name = "Note Updated by",
+						value = charName,
+						inline = true
+					},
+					{
+						name = "New Note Value",
+						value = note,
+						inline = true
+					},
+				},
+
+				footer = {
+					text = os.date('%m-%d-%Y %H:%M:%S', os.time()) .. ' PST'
+				}
+			}
+		},
+	}), { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })
+end)
+
+RegisterServerEvent("mdt:saveWepNote")
+AddEventHandler("mdt:saveWepNote", function(noteId, note)
+	exports.essentialmode:updateDocument("mdt-weapon-check-notes", noteId, { value = note } , true)
+	local WEBHOOK_URL = GetConvar("mdt-webook", "")
+	local char = exports["usa-characters"]:GetCharacter(source)
+  local name = char.get("name")
+	local charName = name.first .. " " .. name.last
+	PerformHttpRequest(WEBHOOK_URL, function(err, text, headers)
+		if text then
+			print(text)
+		end
+	end, "POST", json.encode({
+		embeds = {
+			{
+				author = {
+					name = 'MDT - Weapon Note Modified'
+				},
+
+				fields = {
+					{
+						name = "Weapon Serial",
+						value = noteId,
+						inline = true
+					},
+					{
+						name = "Note Updated by",
+						value = charName,
+						inline = true
+					},
+					{
+						name = "New Note Value",
+						value = note,
+						inline = true
+					},
+				},
+
+				footer = {
+					text = os.date('%m-%d-%Y %H:%M:%S', os.time()) .. ' PST'
+				}
+			}
+		},
+	}), { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })
 end)
 
 function addTableEntries(target, src)
@@ -1109,6 +1331,11 @@ function fetchBOLOs(src)
 			for i = 1, #(response.rows) do
 				table.insert(BOLOs, response.rows[i].doc)
 			end
+			-- sort by timestamp
+			table.sort(BOLOs, function(a, b)
+				return a.timestamp > b.timestamp
+			end)
+			-- send it!
 			local msg = {
 				type = "bolosLoaded",
 				bolos = BOLOs
@@ -1142,6 +1369,11 @@ function fetchPoliceReports(src)
 				}
 				table.insert(police_reports, report)
 			end
+			-- sort by timestamp
+			table.sort(police_reports, function(a, b)
+				return a.timestamp > b.timestamp
+			end)
+			-- send it!
 			local msg = {
 				type = "policeReportsLoaded",
 				police_reports = police_reports
@@ -1251,3 +1483,6 @@ end
 -- PERFORM FIRST TIME DB CHECKS --
 exports["globals"]:PerformDBCheck("POLICE REPORTS", "policereports")
 exports["globals"]:PerformDBCheck("BOLOS", "bolos", removeOldBOLOs)
+exports["globals"]:PerformDBCheck("MDT PERSON NOTES", "mdt-person-check-notes")
+exports["globals"]:PerformDBCheck("MDT VEHICLE NOTES", "mdt-vehicle-check-notes")
+exports["globals"]:PerformDBCheck("MDT WEAPON NOTES", "mdt-weapon-check-notes")

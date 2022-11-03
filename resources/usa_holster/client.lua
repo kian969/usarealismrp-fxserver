@@ -48,7 +48,12 @@ local smallWeapons = {
 	"WEAPON_DAGGER",
 	"WEAPON_MARKSMANPISTOL",
 	"WEAPON_SAWNOFFSHOTGUN",
-	"WEAPON_DBSHOTGUN"
+	"WEAPON_DBSHOTGUN",
+	"WEAPON_REVOLVER_MK2",
+	"WEAPON_DOUBLEACTION",
+	"WEAPON_NAVYREVOLVER",
+	"WEAPON_CERAMICPISTOL",
+	"WEAPON_SNSPISTOL_MK2",
 }
 
 local largeWeapons = {
@@ -71,7 +76,10 @@ local largeWeapons = {
 	'WEAPON_MUSKET',
 	"WEAPON_PETROLCAN",
 	"WEAPON_MICROSMG",
-	"WEAPON_MINISMG"
+	"WEAPON_MINISMG",
+	"WEAPON_ASSAULTSMG",
+	"WEAPON_TACTICALRIFLE",
+	"WEAPON_MILITARYRIFLE",
 }
 
 -- HOLD WEAPON HOLSTER ANIMATION --
@@ -130,7 +138,7 @@ end)
 function handleHolsterAnim()
 	local ped = GetPlayerPed(-1)
 	if GetPedParachuteState(ped) == -1 then
-		if DoesEntityExist(ped) and not IsEntityDead(ped) and not IsPedInAnyVehicle(ped, true) and not exports["usa_stretcher"]:IsInStretcher() then
+		if DoesEntityExist(ped) and not IsEntityDead(ped) and not IsPedInAnyVehicle(ped, true) and not exports["usa_stretcher"]:IsInStretcher() and not exports["usa_trains"]:checkIsPassanger() then
 			loadAnimDict("reaction@intimidation@1h")
 			loadAnimDict("rcmjosh4")
 			loadAnimDict("timetable@jimmy@ig_2@ig_2_p2")

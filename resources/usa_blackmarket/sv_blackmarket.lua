@@ -16,7 +16,7 @@ local markets = {
       { name = "Pistol .50 Parts", price = 7000, type = "weaponParts", weight = 18.0, quantity = 1, stock = math.random(0, 2) },
       --{name = 'Pump Shotgun', type = 'weapon', hash = 487013001, price = 9000, legality = 'illegal', quantity = 1, weight = 30, stock = math.random(0, 2), objectModel = "w_sg_pumpshotgun"},
       { name = "Pump Shotgun Parts", price = 9000, type = "weaponParts", weight = 30.0, quantity = 1, stock = math.random(0, 2) },
-      { name = 'Hotwiring Kit', type = 'misc', price = 300, legality = 'illegal', quantity = 1, weight = 10, stock = math.random(0, 6)},
+      { name = 'Hotwiring Kit', type = 'misc', price = 300, legality = 'illegal', quantity = 1, weight = 10, stock = math.random(0, 8)},
       --{ name = "AP Pistol", type = "weapon", hash = 0x22D8FE39, price = 20000, legality = "illegal", quantity = 1, weight = 15, stock = math.random(0, 2), objectModel = "w_pi_appistol" },
       { name = "AP Pistol Parts", price = 20000, type = "weaponParts", weight = 15.0, quantity = 1, stock = math.random(0, 2) },
       --{ name = "Sawn-off", type = "weapon", hash = 0x7846A318, price = 30000, legality = "illegal", quantity = 1, weight = 30, stock = math.random(0, 3), objectModel = "w_sg_sawnoff", },
@@ -25,6 +25,8 @@ local markets = {
       { name = "Micro SMG Parts", price = 25000, type = "weaponParts", weight = 30.0, quantity = 1, stock = math.random(0, 2) },
       --{ name = 'SMG', type = 'weapon', hash = 736523883, price = 45000, legality = 'illegal', quantity = 1, weight = 35, stock = math.random(0, 1), objectModel = "w_sb_smg"},
       { name = "SMG Parts", price = 30000, type = "weaponParts", weight = 35.0, quantity = 1, stock = math.random(0, 1) },
+      { name = "Combat PDW Parts", price = 35000, type = "weaponParts", weight = 25.0, quantity = 1, stock = math.random(0, 2) },
+      { name = "Double Barrel Shotgun Parts", price = 12000, type = "weaponParts", weight = 20.0, quantity = 1, stock = math.random(0, 2) },
       { name = "Police Armor", type = "misc", price = 5000, legality = "illegal", quantity = 1, weight = 25, stock = math.random(0, 3), objectModel = "prop_bodyarmour_03" },
       { name = "Empty 9mm Mag [12]", type = "magazine", legality = "legal", price = 100, weight = 5, receives = "9mm", MAX_CAPACITY = 12, currentCapacity = 0, objectModel = "w_pi_combatpistol_mag1" },
       { name = "Empty 9mm Mag [7]", type = "magazine", legality = "legal", price = 100, weight = 5, receives = "9mm", MAX_CAPACITY = 7, currentCapacity = 0, objectModel = "w_pi_combatpistol_mag1" },
@@ -37,6 +39,7 @@ local markets = {
       { name = "Ninja Star Kit", price = 200, type = "weaponParts", weight = 5.0, quantity = 1, stock = math.random(1, 10) },
       { name = "Ninja Star 2 Kit", price = 200, type = "weaponParts", weight = 5.0, quantity = 1, stock = math.random(1, 10) },
       { name = "Throwing Knife", price = 300, type = "weapon", hash = GetHashKey("WEAPON_THROWINGKNIFE"), weight = 8.0, quantity = 1, stock = math.random(1, 10) },
+      { name = "Bank Laptop", type = "misc",  quantity = 1,  legality = "legal", notStackable = true,  weight = 10, stock = math.random(1,2), price = tonumber(tostring(math.random(6, 10)) .. "000"), objectModel = "imp_prop_impexp_tablet" },
     },
     ["pedHash"] = -48477765
   },
@@ -44,13 +47,14 @@ local markets = {
     ['coords'] = {-1936.9052734375, 2051.40625, 140.83247375488}, -- Vineyard
     ['items'] = {
       {name = 'Lockpick', type = 'misc', price = 150, legality = 'illegal', quantity = 1, weight = 5, stock = math.random(1, 5)},
-      {name = 'Hotwiring Kit', type = 'misc', price = 300, legality = 'illegal', quantity = 1, weight = 10, stock = math.random(0, 6)},
+      {name = 'Hotwiring Kit', type = 'misc', price = 300, legality = 'illegal', quantity = 1, weight = 10, stock = math.random(0, 8)},
       --{name = 'Heavy Shotgun', type = 'weapon', hash = 984333226, price = 20000, legality = 'illegal', quantity = 1, weight = 35, stock = math.random(0, 2), objectModel = "w_sg_heavyshotgun"},
       { name = "Heavy Shotgun Parts", price = 15000, type = "weaponParts", weight = 35.0, quantity = 1, stock = math.random(0, 2) },
       --{name = 'SNS Pistol', type = 'weapon', hash = -1076751822, price = 3500, legality = 'illegal', quantity = 1, weight = 8, stock = math.random(0, 3), objectModel = "w_pi_sns_pistol"},
       { name = "SNS Pistol Parts", price = 5000, type = "weaponParts", weight = 8.0, quantity = 1, stock = math.random(0, 3) },
       --{name = 'Glock', type = 'weapon', hash = 1593441988, price = 5000, legality = 'illegal', quantity = 1, weight = 10, stock = math.random(0, 3), objectModel = "w_pi_combatpistol"},
       { name = "Glock Parts", price = 6000, type = "weaponParts", weight = 10.0, quantity = 1, stock = math.random(0, 3) },
+      { name = "Ceramic Pistol Parts", price = 6000, type = "weaponParts", weight = 10.0, quantity = 1, stock = math.random(0, 3) },
       {name = 'Switchblade', type = 'weapon', hash = -538741184, price = 1500, legality = 'illegal', quantity = 1, weight = 5, stock = math.random(0, 3)},
       {name = 'Brass Knuckles', type = 'weapon', hash = -656458692, price = 1100, legality = 'illegal', quantity = 1, weight = 5, stock = math.random(0, 5)},
       --{name = "Machine Pistol", type = "weapon", hash = -619010992, price = tonumber(tostring(math.random(22, 30)) .. "000"), legality = "illegal", quantity = 1, weight = 20, stock = math.random(0, 2) },
@@ -58,7 +62,9 @@ local markets = {
       { name = "Empty 12 Gauge Shells Mag [6]", type = "magazine", legality = "legal", price = 100, weight = 5, receives = "12 Gauge Shells", MAX_CAPACITY = 6, currentCapacity = 0 },
       { name = "Empty .45 Mag [6]", type = "magazine", legality = "legal", price = 100, weight = 5, receives = ".45", MAX_CAPACITY = 6, currentCapacity = 0, objectModel = "w_pi_combatpistol_mag1" },
       { name = "Empty 9mm Mag [12]", type = "magazine", legality = "legal", price = 70, weight = 5, receives = "9mm", MAX_CAPACITY = 12, currentCapacity = 0, objectModel = "w_pi_combatpistol_mag1" },
-      { name = "Katana", hash = GetHashKey("WEAPON_KATANAS"), type = "weapon", legality = "illegal", price = 650, weight = 10, quantity = 1, stock = math.random(1,4), objectModel = "w_me_katana_lr"}
+      { name = "Katana", hash = GetHashKey("WEAPON_KATANAS"), type = "weapon", legality = "illegal", price = 650, weight = 10, quantity = 1, stock = math.random(1,4), objectModel = "w_me_katana_lr"},
+      { name = "Bank Laptop", type = "misc",  quantity = 1,  legality = "legal", notStackable = true,  weight = 10, stock = math.random(2,4), price = tonumber(tostring(math.random(8, 12)) .. "000"), objectModel = "imp_prop_impexp_tablet" },
+
     },
     ["pedHash"] = -1773333796
   },
@@ -74,6 +80,7 @@ local markets = {
       { name = "Carbine Parts", price = tonumber(tostring(math.random(20, 40)) .. "000"), type = "weaponParts", weight = 45.0, quantity = 1, stock = math.random(0, 2) },
       --{ name = "Compact Rifle", type = "weapon", hash = 1649403952, price = tonumber(tostring(math.random(20, 30)) .. "000"), legality = "illegal", quantity = 1, weight = 45, stock = math.random(0, 2), objectModel = "w_ar_assaultrifle" },
       { name = "Compact Rifle Parts", price = tonumber(tostring(math.random(15, 25)) .. "000"), type = "weaponParts", weight = 40.0, quantity = 1, stock = math.random(0, 2) },
+      { name = "Military Rifle Parts", price = tonumber(tostring(math.random(25, 35)) .. "000"), type = "weaponParts", weight = 35.0, quantity = 1, stock = math.random(0, 2) },
       { name = "Empty .45 Mag [30]", type = "magazine", price = 150, weight = 5, receives = ".45", MAX_CAPACITY = 30, currentCapacity = 0, objectModel = "w_pi_heavypistol_mag2" },
       { name = "Empty 7.62mm Mag [30]", type = "magazine", price = 150, weight = 5, receives = "7.62mm", MAX_CAPACITY = 30, currentCapacity = 0, objectModel = "w_ar_carbinerifle_mag1" },
       { name = "Empty 5.56mm Mag [30]", type = "magazine", price = 150, weight = 5, receives = "5.56mm", MAX_CAPACITY = 30, currentCapacity = 0, objectModel = "w_ar_carbinerifle_mag1" },
@@ -106,8 +113,8 @@ local markets = {
 
 -- x = 113.21036529541, y = -1967.2863769531, z = 21.317756652832
 
-local openingHours = math.random(0, 4)
-local closingHours = math.random(5, 7)
+local openingHour = 19
+local closingHour = 4
 
 for store, info in pairs(markets) do
     for i = 1, #info["items"] do
@@ -124,7 +131,7 @@ end)
 
 RegisterServerEvent("blackMarket:openAndClosingHours")
 AddEventHandler("blackMarket:openAndClosingHours", function()
-    TriggerClientEvent("blackMarket:operatingHours", source, openingHours, closingHours)
+    TriggerClientEvent("blackMarket:operatingHours", source, openingHour, closingHour)
 end)
 
 RegisterServerEvent("blackMarket:requestPurchase")

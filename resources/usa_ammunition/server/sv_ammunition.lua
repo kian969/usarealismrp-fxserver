@@ -10,6 +10,7 @@ local WEPS_WITH_MAGS = {
     [GetHashKey("WEAPON_SNSPISTOL_MK2")] = { accepts = ".45", magAmmoCounts = {6, 12} },
     [GetHashKey("WEAPON_HEAVYPISTOL")] = { accepts = ".45", magAmmoCounts = {18, 36} },
     [GetHashKey("WEAPON_VINTAGEPISTOL")] = { accepts = "9mm", magAmmoCounts = {7, 14} },
+    [GetHashKey("WEAPON_CERAMICPISTOL")] = { accepts = "9mm", magAmmoCounts = {8, 12, 16} },
     -- smg --
     [GetHashKey("WEAPON_MICROSMG")] = { accepts = ".45", magAmmoCounts = {16, 30}},
     [GetHashKey("WEAPON_SMG")] = { accepts = "9mm", magAmmoCounts = {30, 60, 100} },
@@ -28,7 +29,8 @@ local WEPS_WITH_MAGS = {
     [GetHashKey("WEAPON_BULLPUPRIFLE")] = { accepts = "5.56mm", magAmmoCounts = {30, 60} },
     [GetHashKey("WEAPON_BULLPUPRIFLE_MK2")] = { accepts = "5.56mm", magAmmoCounts = {20, 30, 60} },
     [GetHashKey("WEAPON_COMPACTRIFLE")] = { accepts = "7.62mm", magAmmoCounts = {30, 60, 100} },
-    [GetHashKey("WEAPON_MILITARYRIFLE")] = { accepts = "5.56mm", magAmmoCounts = {30, 45} },
+    [GetHashKey("WEAPON_MILITARYRIFLE")] = { accepts = "5.56mm", magAmmoCounts = {20, 30} },
+    [GetHashKey("WEAPON_TACTICALRIFLE")] = { accepts = "5.56mm", magAmmoCounts = {30, 60, 100} },
     -- light machine guns --
     [GetHashKey("WEAPON_MG")] = { accepts = "7.62mm", magAmmoCounts = {54, 100} },
     [GetHashKey("WEAPON_COMBATMG")] = { accepts = "7.62mm", magAmmoCounts = {100, 200} },
@@ -42,7 +44,8 @@ local WEPS_WITH_MAGS = {
     [GetHashKey("WEAPON_MARKSMANRIFLE_MK2")] = { accepts = "7.62mm", magAmmoCounts = {8, 16} },
     -- shotguns --
     [GetHashKey("WEAPON_ASSAULTSHOTGUN")] = { accepts = "12 Gauge Shells", magAmmoCounts = {8, 32} },
-    [GetHashKey("WEAPON_HEAVYSHOTGUN")] = { accepts = "12 Gauge Shells", magAmmoCounts = {6, 12, 30} }
+    [GetHashKey("WEAPON_HEAVYSHOTGUN")] = { accepts = "12 Gauge Shells", magAmmoCounts = {6, 12, 30} },
+    [GetHashKey("WEAPON_DBSHOTGUN")] = { accepts = "12 Gauge Shells", magAmmoCounts = {2} },
 }
 
 local WEPS_NO_MAGS = {
@@ -63,8 +66,24 @@ local WEPS_NO_MAGS = {
         AMMO_NAME = ".45",
         MAX_CAPACITY = 6
     },
+    [GetHashKey("WEAPON_REVOLVER_MK2")] = {
+        AMMO_NAME = ".45",
+        MAX_CAPACITY = 6
+    },
+    [GetHashKey("WEAPON_DOUBLEACTION")] = {
+        AMMO_NAME = ".45",
+        MAX_CAPACITY = 6
+    },
+    [GetHashKey("WEAPON_NAVYREVOLVER")] = {
+        AMMO_NAME = ".45",
+        MAX_CAPACITY = 6
+    },
     [GetHashKey("WEAPON_STUNGUN")] = {
         AMMO_NAME = "Taser Cartridge",
+        MAX_CAPACITY = 1
+    },
+    [GetHashKey("WEAPON_MARKSMANPISTOL")] = {
+        AMMO_NAME = ".50",
         MAX_CAPACITY = 1
     },
     -- shotguns --
@@ -94,7 +113,6 @@ local THROWABLES = {
 	["Molotov"] = true,
 	["Flare"] = true,
 	["Tear Gas"] = true,
-	["Stun Gun"] = true,
 	["Sticky Bomb"] = true,
 	["Flashbang"] = true,
 	["Hand Grenade"] = true,
@@ -144,10 +162,13 @@ AddEventHandler("ammo:checkForMagazine", function(selectedIndex, vehiclePlate, s
         notStackable = true
     }
     local char = exports["usa-characters"]:GetCharacter(src)
-    if not selectedIndex then
+    if selectedIndex == nil then
         selectedIndex = char.get("currentlySelectedIndex")
     end
-    if selectedIndex then
+    if selectedIndex == nil then
+        selectedIndex = char.get("lastSelectedIndex")
+    end
+    if selectedIndex ~= nil then
         local curWep = char.getItemByIndex(selectedIndex)
         if curWep and curWep.type == "weapon" then
             curWep.hash = tonumber(curWep.hash) & 0xFFFFFFFF -- ensure hash key is an unsigned int to match our look up table
@@ -222,7 +243,8 @@ AddEventHandler("ammo:checkForMagazine", function(selectedIndex, vehiclePlate, s
                 if ammoCount > 0 then
                     local neededAmmo = max - ((curWep.magazine and curWep.magazine.currentCapacity) or 0)
                     local ammoCountToUse = math.min(neededAmmo, ammoCount)
-                    TriggerClientEvent("ammo:reloadMag", src, ammoCountToUse)
+                    local prevAmmo = ((curWep.magazine and curWep.magazine.currentCapacity) or 0)
+                    TriggerClientEvent("ammo:reloadMag", src, prevAmmo + ammoCountToUse)
                     -- modify weapon's ammo
                     local magToUse = nil
                     if curWep.magazine then
@@ -233,7 +255,10 @@ AddEventHandler("ammo:checkForMagazine", function(selectedIndex, vehiclePlate, s
                             type = "magazine",
                             receives = ammoName,
                             MAX_CAPACITY = max,
-                            currentCapacity = ammoCountToUse
+                            currentCapacity = ammoCountToUse,
+                            weight = 7,
+                            notStackable = true,
+                            quantity = 1
                         }
                     end
                     if not curWep.uuid then
@@ -255,6 +280,85 @@ AddEventHandler("ammo:checkForMagazine", function(selectedIndex, vehiclePlate, s
                     end
                 else
                     TriggerClientEvent("usa:notify", src, "No " .. ammoName .. " ammo found!")
+                end
+            end
+        end
+    end
+end)
+
+RegisterServerEvent("ammo:checkForAmmo")
+AddEventHandler("ammo:checkForAmmo", function(selectedIndex)
+    local char = exports["usa-characters"]:GetCharacter(source)
+    if selectedIndex == nil then
+        selectedIndex = char.get("currentlySelectedIndex")
+    end
+    if selectedIndex == nil then
+        selectedIndex = char.get("lastSelectedIndex")
+    end
+    if selectedIndex ~= nil then
+        local curWep = char.getItemByIndex(selectedIndex)
+        if curWep and curWep.type == "weapon" then
+            curWep.hash = tonumber(curWep.hash) & 0xFFFFFFFF -- ensure hash key is an unsigned int to match our look up table
+            if WEPS_WITH_MAGS[curWep.hash] then -- desired ammo quantity depends on currently equipped mag type (regular? extended? drum? box? etc)
+                local max = ((curWep.magazine and curWep.magazine.MAX_CAPACITY) or WEPS_WITH_MAGS[curWep.hash].magAmmoCounts[1])
+                local neededAmmo = max - ((curWep.magazine and curWep.magazine.currentCapacity) or 0)
+                local ammoItem = char.getItem(WEPS_WITH_MAGS[curWep.hash].accepts)
+                if ammoItem then
+                    local prevAmmo = ((curWep.magazine and curWep.magazine.currentCapacity) or 0)
+                    local ammoCountToUse = math.min(neededAmmo, ammoItem.quantity)
+                    char.modifyItemByUUID(ammoItem.uuid, { quantity = ammoItem.quantity - ammoCountToUse })
+                    if curWep.magazine then
+                        local updatedMag = curWep.magazine
+                        updatedMag.currentCapacity = updatedMag.currentCapacity + ammoCountToUse
+                        char.modifyItemByUUID(curWep.uuid, { magazine = updatedMag })
+                    else
+                        local newMag = {
+                            name = "Loaded " .. WEPS_WITH_MAGS[curWep.hash].accepts .. " Mag [ " .. WEPS_WITH_MAGS[curWep.hash].magAmmoCounts[1] .. "]",
+                            type = "magazine",
+                            receives = WEPS_WITH_MAGS[curWep.hash].accepts,
+                            MAX_CAPACITY = WEPS_WITH_MAGS[curWep.hash].magAmmoCounts[1],
+                            currentCapacity = ammoCountToUse,
+                            weight = 7,
+                            notStackable = true,
+                            quantity = 1
+                        }
+                        char.modifyItemByUUID(curWep.uuid, { magazine = newMag })
+                    end
+                    TriggerClientEvent("ammo:reloadMag", source, prevAmmo + ammoCountToUse)
+                else
+                    TriggerClientEvent("usa:notify", source, "No " .. WEPS_WITH_MAGS[curWep.hash].accepts .. " ammo found!")
+                end
+            elseif WEPS_NO_MAGS[curWep.hash] then -- desired ammo quantity has no variation
+                local max = WEPS_NO_MAGS[curWep.hash].MAX_CAPACITY
+                local neededAmmo = max - ((curWep.magazine and curWep.magazine.currentCapacity) or 0)
+                local ammoItem = char.getItem(WEPS_NO_MAGS[curWep.hash].AMMO_NAME)
+                if ammoItem then
+                    local prevAmmo = ((curWep.magazine and curWep.magazine.currentCapacity) or 0)
+                    local ammoCountToUse = math.min(neededAmmo, ammoItem.quantity)
+                    char.modifyItemByUUID(ammoItem.uuid, { quantity = ammoItem.quantity - ammoCountToUse })
+                    if curWep.magazine then
+                        local updatedMag = curWep.magazine
+                        updatedMag.currentCapacity = updatedMag.currentCapacity + ammoCountToUse
+                        char.modifyItemByUUID(curWep.uuid, { magazine = updatedMag })
+                    else
+                        local newMag = {
+                            name = "Loaded " .. WEPS_NO_MAGS[curWep.hash].AMMO_NAME .. " Mag [ " .. WEPS_NO_MAGS[curWep.hash].MAX_CAPACITY .. "]",
+                            type = "magazine",
+                            receives = WEPS_NO_MAGS[curWep.hash].AMMO_NAME,
+                            MAX_CAPACITY = WEPS_NO_MAGS[curWep.hash].MAX_CAPACITY,
+                            currentCapacity = ammoCountToUse,
+                            weight = 7,
+                            notStackable = true,
+                            quantity = 1
+                        }
+                        char.modifyItemByUUID(curWep.uuid, { magazine = newMag })
+                    end
+                    TriggerClientEvent("ammo:reloadMag", source, prevAmmo + ammoCountToUse)
+                    if curWep.name:find("Taser") or curWep.name:find("Stun Gun") then
+                        TriggerClientEvent("usa-taser:enable", source, true)
+                    end
+                else
+                    TriggerClientEvent("usa:notify", source, "No " .. WEPS_NO_MAGS[curWep.hash].AMMO_NAME .. " found!")
                 end
             end
         end
@@ -314,7 +418,8 @@ AddEventHandler("ammo:ejectMag", function(itemIndex)
             if char.canHoldItem(mag) then
                 char.giveItem(mag)
             else
-                TriggerClientEvent("usa:notify", source, "Inventory full!")
+                mag.coords = GetEntityCoords(GetPlayerPed(source))
+                TriggerEvent("interaction:addDroppedItem", mag)
             end
         else
             TriggerClientEvent("usa:notify", source, "No magazine!")
@@ -376,6 +481,7 @@ AddEventHandler("ammo:showHelpText", function(forWeapons)
 end)
 
 AddEventHandler("character:loaded", function(char)
+    -- tazer:
     local shouldHaveLoadedCartridge = false
     local tazer = char.getItem("Taser")
     local stunGun = char.getItem("Stun Gun")
@@ -391,6 +497,13 @@ AddEventHandler("character:loaded", function(char)
     if not shouldHaveLoadedCartridge then
         TriggerClientEvent("usa-taser:enable", char.get("source"), false)
     end
+    -- mag mode:
+    local doc = exports.essentialmode:getDocument("magmode-setting", char.get("_id"))
+    local magModeVal = true
+    if doc then
+        magModeVal = doc.value
+    end
+    TriggerClientEvent("ammo:setMagMode", char.get("source"), magModeVal)
 end)
 
 function FindMagToReloadWith(char, weaponHash)
@@ -461,3 +574,21 @@ function stringSplit(inputstr, sep)
     end
     return t
 end
+
+function getAmmoTypeByWeaponHash(wepHash)
+    return (WEPS_WITH_MAGS[wepHash].accepts or WEPS_NO_MAGS[wepHash].AMMO_NAME)
+end
+
+TriggerEvent('es:addCommand', 'magmode', function(source, args, char)
+    local newVal = nil
+    local doc = exports.essentialmode:getDocument("magmode-setting", char.get("_id"))
+    if doc then
+        newVal = not doc.value
+    else
+        newVal = false
+    end
+    TriggerClientEvent("ammo:setMagMode", source, newVal, true)
+    exports.essentialmode:updateDocument("magmode-setting", char.get("_id"), {value = newVal}, true)
+end, {help = "Toggle weapon magazine feature"})
+
+exports["globals"]:PerformDBCheck("usa_ammunition", "magmode-setting", nil)

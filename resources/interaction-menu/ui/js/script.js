@@ -37,6 +37,9 @@ NO_TOOLTIP_WEAPONS.add("Red Shoe");
 NO_TOOLTIP_WEAPONS.add("Blue Shoe");
 NO_TOOLTIP_WEAPONS.add("Ninja Star");
 NO_TOOLTIP_WEAPONS.add("Ninja Star 2");
+NO_TOOLTIP_WEAPONS.add("Megaphone");
+NO_TOOLTIP_WEAPONS.add("Mace");
+NO_TOOLTIP_WEAPONS.add("Plasma Pistol");
 
 var itemImages = {
     "Driver's License": "https://i.imgur.com/dy0SpFh.png",
@@ -99,7 +102,7 @@ var itemImages = {
     "Revolver": "https://i.imgur.com/2zbT7sf.png",
     "MK2": "https://i.imgur.com/nd3HR82.png",
     "Vintage Pistol": "https://i.imgur.com/uaawppt.png",
-    "Marksman Pistol": "https://i.imgur.com/13hsj4Q.png",
+    "Marksman Pistol": "https://i.imgur.com/dIR4duM.png",
     "Pump Shotgun": "https://i.imgur.com/V22a57g.png",
     "Bullpup Shotgun": "https://i.imgur.com/kHDyJpH.png",
     "Musket": "https://i.imgur.com/qbMlYhM.png",
@@ -162,7 +165,7 @@ var itemImages = {
     "Sawn-off": "https://i.imgur.com/iJsQmRs.png",
     "Micro SMG": "https://i.imgur.com/yGbb2l5.png",
     "Mini SMG": "https://i.imgur.com/Ebf4MY7.png",
-    "SMG": "https://i.imgur.com/XbTVfAB.png",
+    "SMG": "https://i.imgur.com/bWKE4O6.png",
     "Machine Pistol": "https://i.imgur.com/uQVOf2v.png",
     "Tommy Gun": "https://i.imgur.com/x2F3Pbt.png",
     "AK47": "https://i.imgur.com/zCxeR9m.png",
@@ -259,6 +262,7 @@ var itemImages = {
     "Iron Oxide": "https://i.imgur.com/pBhnwQl.png",
     "Vape": "https://i.imgur.com/d8BS61Q.png",
     "Black Powder": "https://i.imgur.com/Zct2dcM.png",
+    "Gun Powder": "https://i.imgur.com/Zct2dcM.png",
     "Large Firework": "https://i.imgur.com/XHhxRmG.png",
     "Spike Strips": "https://i.imgur.com/0iPbmxW.png",
     "Heavy Shotgun": "https://i.imgur.com/JRP4gPv.png",
@@ -301,9 +305,12 @@ var itemImages = {
     "Blue Shoe": "https://i.imgur.com/Y095wVA.png",
     "Red Shoe": "https://i.imgur.com/SG1z8y3.png",
     "Throwing Knife": "https://i.imgur.com/1AS5hrt.png",
+    "7.62mm Shell Casing": "https://i.imgur.com/JdD8Lf8.png",
+    "5.56mm Shell Casing": "https://i.imgur.com/JdD8Lf8.png",
+    "9x18mm Shell Casing": "https://i.imgur.com/pza2fXR.png",
     // begin card images
     "Narlee": "https://i.imgur.com/KrPw4gk.png",
-    "Red Eyes B. Dragon": "https://i.imgur.com/UWCQHC3.jpeg",
+    "Red Eyes B. Dragon": "https://i.imgur.com/tKEcju1.png",
     "Dark Magician": "https://i.imgur.com/1XmmhfW.png",
     "Blue Eyes White Dragon": "https://i.imgur.com/E036Ahh.png",
     "Dark Magician Girl": "https://i.imgur.com/g3W0TVm.png",
@@ -429,6 +436,12 @@ var itemImages = {
     "Richard_2": "https://i.imgur.com/WdvNYiF.png",
     "TJ": "https://i.imgur.com/v7CaiIj.png",
     "Tony_2": "https://i.imgur.com/P9maiLH.png",
+    "Manual Conversion Kit": "https://i.ibb.co/drjLyk0/a.png",
+    "Auto Conversion Kit": "https://i.ibb.co/drjLyk0/a.png",
+    "Metal Pipe": "https://i.imgur.com/HBZdfTz.png",
+    "Mace": "https://i.imgur.com/EJoWdJ8.png",
+    "Sheet Metal": "https://i.imgur.com/9ogIvE9.png",
+    "Metal Spring": "https://i.imgur.com/2zWRSLx.png",
     // begin ammo
     "9mm Bullets": "https://i.imgur.com/AWEjRpc.png",
     "9x18mm Bullets": "https://i.imgur.com/TFW3q4q.png",
@@ -486,6 +499,21 @@ var itemImages = {
     "GPS Removal Device": "https://i.imgur.com/k9wRbRx.png",
     "Tablet": "https://i.imgur.com/Ig7jl1m.png",
     "Racing Dongle": "https://i.imgur.com/zM8Qc4r.png",
+    "Megaphone": "https://i.imgur.com/C4ksHnA.png",
+    "Crumpled Paper": "https://i.imgur.com/DpUUSZ8.png",
+    "Bank Laptop": "https://i.imgur.com/5gefEBK.png",
+    "Metal Scraps": "https://i.imgur.com/08oQInE.png",
+    "Plasma Pistol": "https://i.imgur.com/a3D4tsI.png",
+    "Ceramic Pistol": "https://i.imgur.com/zhZJdBq.png",
+    "SNS Pistol Mk2": "https://i.imgur.com/kEiTXLt.png",
+    "Double Action Revolver": "https://i.imgur.com/zwIXqO3.png",
+    "Navy Revolver": "https://i.imgur.com/VSqkAPp.png",
+    "Revolver Mk2": "https://i.imgur.com/GGjioEw.png",
+    "Double Barrel Shotgun": "https://i.imgur.com/cSRrM0R.png",
+    "Assault SMG": "https://i.imgur.com/XbTVfAB.png",
+    "Combat PDW": "https://i.imgur.com/wHbb0V4.png",
+    "Tactical Carbine": "https://i.imgur.com/Z1OFXtU.png",
+    "Military Rifle": "https://i.imgur.com/5dInslW.png",
 }
 
 var menuItems = [{
@@ -1219,6 +1247,19 @@ $(function() {
             interactionMenu.nearestPlayer = nearest;
         } else if (event.data.type == "showSelectedItemPreview") {
             interactionMenu.selectedItemPreview.show(event.data.itemName, event.data.ammoCount);
+        } else if (event.data.type == "hotkeyLoadInv"){
+            $.post('http://interaction-menu/loadInventory', JSON.stringify({}));
+            /* Toggle veh inv */
+            if (event.data.target_vehicle_plate) {
+                interactionMenu.targetVehiclePlate = event.data.target_vehicle_plate
+                $.post("http://interaction-menu/loadVehicleInventory", JSON.stringify({
+                    plate: event.data.target_vehicle_plate
+                }));
+            }
+            /* Set page */
+            interactionMenu.currentPage = "Inventory";
+        } else if (event.data.type == "close") {
+            CloseMenu();
         }
     });
     /* Close Menu */

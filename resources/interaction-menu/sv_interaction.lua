@@ -100,6 +100,9 @@ AddEventHandler("interaction:giveItemToPlayer", function(item, targetPlayerId)
 			TriggerClientEvent("usa:notify", targetPlayerId, "Can't trade licenses. Sorry!")
 			return
 		end
+		if item.restrictedToThisOwner then -- assign new owner since item is being traded intentionally by the owner of it
+			item.restrictedToThisOwner = exports.essentialmode:getPlayerFromId(targetPlayerId).getIdentifier()
+		end
 		if item.type == "weapon" then
 			toChar.giveItem(item)
 			if item.uuid then
@@ -197,8 +200,8 @@ AddEventHandler("inventory:moveItem", function(data)
 				-- perform move --
 				TriggerEvent("vehicle:moveItemToPlayerInv", usource, data.plate, data.fromSlot, data.toSlot, quantity, char, function(inv)
 					if inv then
-						--TriggerClientEvent("interaction:sendNUIMessage", usource, { type = "updateBothInventories", inventory = { primary = char.get("inventory"), secondary = inv}})
-						TriggerClientEvent("interaction:sendNUIMessage", usource, { type = "inventoryLoaded", inventory = char.get("inventory")})
+						TriggerClientEvent("interaction:sendNUIMessage", usource, { type = "updateBothInventories", inventory = { primary = char.get("inventory"), secondary = inv}})
+						--TriggerClientEvent("interaction:sendNUIMessage", usource, { type = "inventoryLoaded", inventory = char.get("inventory")})
 						TriggerEvent("vehicle:updateForOthers", data.plate, inv)
 					end
 				end)
@@ -210,7 +213,7 @@ AddEventHandler("inventory:moveItem", function(data)
 			if isPlayerActive(data.searchedPersonSource) then
 				local fromChar = exports["usa-characters"]:GetCharacter(data.searchedPersonSource)
 				local item = fromChar.getItemByIndex(data.fromSlot)
-				if item.serviceWeapon or item.notTakeable then
+				if item.serviceWeapon or (item.restrictedToThisOwner and item.restrictedToThisOwner ~= exports.essentialmode:getPlayerFromId(usource).getIdentifier()) then
 					TriggerClientEvent("usa:notify", usource, "Can't take that")
 					return
 				end
@@ -334,3 +337,22 @@ function DroppedActionMessage(source, name)
 		--exports["globals"]:sendLocalActionMessage(source, msg)
 	end
 end
+
+RegisterServerEvent("interaction:InvLoadHotkey")
+AddEventHandler("interaction:InvLoadHotkey", function(plate)
+	local char = exports["usa-characters"]:GetCharacter(source)
+	local inventory = char.get("inventory")
+	-- print(plate)
+	TriggerClientEvent("interaction:openGUIAndSendNUIData", source, {
+		type = "hotkeyLoadInv",
+		target_vehicle_plate = plate
+	})
+end)
+
+RegisterServerEvent("civ:handsDown")
+AddEventHandler("civ:handsDown", function()
+	for id, isAccessing in pairs(inventoriesBeingAccessed[source]) do
+		TriggerClientEvent("interaction:sendNUIMessage", id, { type = "close" })
+		inventoriesBeingAccessed[source] = nil
+	end
+end)

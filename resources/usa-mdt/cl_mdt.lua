@@ -149,6 +149,21 @@ RegisterNUICallback("performPersonCheckByCharID", function(data, cb)
     cb('ok')
 end)
 
+RegisterNUICallback("saveNote", function(data, cb)
+    TriggerServerEvent("mdt:saveNote", data.targetCharId, data.targetCharFName, data.targetCharLName, data.value)
+    cb('ok')
+end)
+
+RegisterNUICallback("saveVehNote", function(data, cb)
+    TriggerServerEvent("mdt:saveVehNote", data.plate, data.value)
+    cb('ok')
+end)
+
+RegisterNUICallback("saveWepNote", function(data, cb)
+    TriggerServerEvent("mdt:saveWepNote", data.serial, data.value)
+    cb('ok')
+end)
+
 function ToggleGUI(explicit_status)
   if explicit_status ~= nil then
     isVisible = explicit_status

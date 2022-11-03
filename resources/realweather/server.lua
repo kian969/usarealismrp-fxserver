@@ -15,12 +15,13 @@ local WEATHER_TYPES = {
     "SNOW",
     "BLIZZARD",
     "SNOWLIGHT",
-    "XMAS"
+    "XMAS",
+    "Halloween"
 }
 
 local Data = nil
 
-local cityName = "Los Angeles"
+local cityName = "Los+Angeles"
 local apikey = "fac7afd04fe5b0747a2b7da0c8b4e2f2"
 local GetWeather = "http://api.openweathermap.org/data/2.5/weather?q="..cityName.."&lang=fr&units=metric&APPID="..apikey
 
@@ -138,6 +139,7 @@ AddEventHandler("meteo:sync",function(delay)
 end)
 
 TriggerEvent('es:addGroupCommand', 'weather', "admin", function(source, args, user)
+    if not Data then Data = {} end
     local type = args[2]
     local duration = args[3]
     if not isValidWeatherType(type) then

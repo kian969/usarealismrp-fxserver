@@ -58,5 +58,23 @@ PARTS = {
 		type = "mechanicPart",
 		notStackable = true,
 		objectModel = "sm_prop_smug_wall_radio_01"
+	},
+	["Manual Conversion Kit"] = {
+		name = "Manual Conversion Kit",
+		price = 15000,
+		quantity = 1,
+		weight = 30,
+		type = "mechanicPart",
+		notStackable = true,
+		objectModel = "imp_prop_impexp_engine_part_01a"
+	},
+	["Auto Conversion Kit"] = {
+		name = "Auto Conversion Kit",
+		price = 7500,
+		quantity = 1,
+		weight = 30,
+		type = "mechanicPart",
+		notStackable = true,
+		objectModel = "imp_prop_impexp_engine_part_01a"
 	}
 }

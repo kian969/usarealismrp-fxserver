@@ -77,7 +77,7 @@ svConfig = {
             minScratchPrice = 9000,
             maxScratchPrice = 17500,
             rewardCashMin = 50000,
-            rewardCashMax = 80000,
+            rewardCashMax = 95000,
             rewardCryptoMin = 1000,
             rewardCryptoMax = 1400,
             experiencePerJob = 12,
@@ -105,7 +105,7 @@ svConfig = {
             minScratchPrice = 2500,
             maxScratchPrice = 4500,
             rewardCashMin = 27500,
-            rewardCashMax = 37500,
+            rewardCashMax = 42000,
             rewardCryptoMin = 500,
             rewardCryptoMax = 700,
             experiencePerJob = 8,
@@ -133,7 +133,7 @@ svConfig = {
             rewardCashMax = 4000,
             rewardCryptoMin = 60,
             rewardCryptoMax = 90,
-            experiencePerJob = 3,
+            experiencePerJob = 4,
             tuningChance = 25,
             riskChances = {
                 doorsLocked = 100,
@@ -158,7 +158,7 @@ svConfig = {
             rewardCashMax = 2500,
             rewardCryptoMin = 6,
             rewardCryptoMax = 9,
-            experiencePerJob = 2,
+            experiencePerJob = 3,
             tuningChance = 25,
             riskChances = {
                 doorsLocked = 100,
@@ -255,6 +255,18 @@ svConfig = {
             receiveItemIds = {
                 [1] = 'Racing Dongle'
             }
+        },
+        ['laptop'] = {
+            cashRequired = 5750,
+            cryptoRequired = 30,
+            availablePerRestart = 15,
+            isSoldOut = false,
+            title = "Bank Laptop",
+            description = "Time for a world of hacker man himself.",
+            iconFile = 'laptop.png',
+            receiveItemIds = {
+                [1] = 'Bank Laptop'
+            }
         }
     }
 }
@@ -302,7 +314,6 @@ supportedVehicles = {
     { name = "Grotti Turismo R", model = "turismor", class = "S" },
     { name = "Obey 9F", model = "ninef", class = "S" },
     { name = "Obey 9F Cabrio", model = "ninef2", class = "S" },
-    { name = "Obey 8F Drafter", model = "drafter", class = "S" },
     { name = "Pfister Comet SR", model = "comet5", class = "S" },
     { name = "Pfister Comet S2", model = "comet6", class = "S" },
     { name = "Pfister Comet S2 Cabrio", model = "comet7", class = "S" },
@@ -327,6 +338,16 @@ supportedVehicles = {
     { name = "Lamborghini Sian", model = "rmodsianr", class = "S" },
     { name = "Porsche 911 Turbo S", model = "pts21", class = "S" },
     { name = "Porsche GT3", model = "pgt3", class = "S" },
+    { name = "Acura NSX Aimgain", model = "aimgainnsx", class = "S" },
+    { name = "McLaren Elva", model = "elva", class = "S" },
+    { name = "Lamborghini Huracan Evo 2", model = "evo2", class = "S" },
+    { name = "Lamborghini Gallardo LW", model = "gallardolw", class = "S" },
+    { name = "Lamborghini Murcielago LP-670", model = "lp670", class = "S" },
+    { name = "Lamborghini Murcielago LP-670 LW", model = "lwlp670", class = "S" },
+    { name = "Ferrari 458 LW", model = "lw458s", class = "S" },
+    { name = "Jaguar C-X75", model = "cx75", class = "S" },
+    { name = "Lamborghini Essenza", model = "rmodessenza", class = "S" },
+    { name = "Mercedes SLR Stirling Moss", model = "moss", class = "S" },
     -- A CLASS
     { name = "Sultan RS", model = "sultanrs", class = "A" },
     { name = "Annis Elegy Retro", model = "elegy", class = "A" },
@@ -337,6 +358,7 @@ supportedVehicles = {
     { name = "Primo ARD", model = "primoard", class = "A" },
     { name = "Emperor SHEAVA", model = "sheava", class = "A" },
     { name = "Overflod Autarch", model = "autarch", class = "A" },
+    { name = "Obey 8F Drafter", model = "drafter", class = "A" },
     { name = "Bravado Banshee", model = "banshee", class = "A" },
     { name = "Invetero Coquette", model = "coquette", class = "A" },
     { name = "Invetero Coquette D10", model = "coquette4", class = "A" },
@@ -472,7 +494,6 @@ supportedVehicles = {
     { name = "Gallivanter Baller ST", model = "baller7", class = "B" },
     { name = "Benefactor Dubsta Mandem", model = "dubsta2", class = "B" },
     { name = "Benefactor Dubsta", model = "dubsta", class = "B" },
-    { name = "Declasse Merryweather Granger", model = "mwgranger", class = "B" },
     { name = "Bravado Gresley", model = "gresley", class = "B" },
     { name = "Enus Huntley S", model = "huntley", class = "B" },
     { name = "Obey Rocoto", model = "rocoto", class = "B" },
@@ -483,7 +504,7 @@ supportedVehicles = {
     { name = "Rhinehart", model = "rhinehart", class = "B" },
     { name = "Imponte Ruiner ZZ-8", model = "ruiner4", class = "B" },
     { name = "Ubermacht Sentinel Classic Widebody", model = "sentinel4", class = "B" },
-    
+
     -- Custom B Class
     { name = "Toyota 4Runner", model = "4runner", class = "B" },
     { name = "2019 Mercedes-Benz S650 Maybach", model = "19S650", class = "B" },
@@ -542,6 +563,12 @@ supportedVehicles = {
     { name = "Dodge Ram TRX", model = "dodgetrx", class = "B" },
     { name = "Ford F100 Slammed", model = "slammedf100", class = "B" },
     { name = "Dababy Car", model = "dababy", class = "B" },
+    { name = "Ford F100 Trophy", model = "f100trophy", class = "B" },
+    { name = "Audi RSQ8 Mansory", model = "rsq8m", class = "B" },
+    { name = "Progen Proff", model = "proff", class = "B" },
+    { name = "Dodge Ram 1500 Custom", model = "gcram1500", class = "B" },
+    { name = "Spyker C8", model = "spyker", class = "B" },
+    { name = "Xpeng P7", model = "x3p720", class = "B" },
     -- C CLASS
     { name = "Dinka Blista Compact", model = "blista2", class = "C" },
     { name = "Karin Asterope", model = "asterope", class = "C" },
@@ -595,6 +622,7 @@ supportedVehicles = {
     { name = "1963 Volkswagon Type 2", model = "type263", class = "C" },
     { name = "1966 Volkswagon Type 2", model = "type266", class = "C" },
     { name = "2000 Ford F350 Dually", model = "00f350d", class = "C" },
+    { name = "Hummer H2", model = "H2", class = "C" },
     -- D CLASS
     { name = "Bravado Youga Classic 4x4", model = "youga3", class = "D" },
     { name = "Bravado Youga Custom", model = "youga4", class = "D" },
@@ -632,4 +660,7 @@ supportedVehicles = {
     { name = "Zirconium Journey", model = "journey", class = "D" },
     { name = "Bravado Youga Classic", model = "youga2", class = "D" },
     { name = "BF Weevil", model = "weevil", class = "D" },
+    -- Custom D Class
+    { name = "1932 Ford V-8 Coupé", model = "fordc32", class = "D" },
+    { name = "1980 Ford Bronco", model = "80bronco", class = "D" },
 }

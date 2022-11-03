@@ -28,7 +28,11 @@ function getPlayerIdentifier(playerId)
         return -1
     else
         local char = exports["usa-characters"]:GetCharacter(playerId)
-        return (char.get("_id") or nil)
+        if not char then
+            return
+        else
+            return char.get("_id")
+        end
     end
 end
 
@@ -96,6 +100,13 @@ function giveItem(playerId, itemId, amount)
             item.legality = "legal"
             item.weight = 1
             item.objectModel = "hei_prop_hst_usb_drive"
+        elseif itemId == "Bank Laptop" then
+            item.type = "misc"
+            item.quantity = 1
+            item.legality = "legal"
+            item.notStackable = true
+            item.weight = 10
+            item.objectModel = "imp_prop_impexp_tablet"
         end
         char.giveItem(item)
         TriggerClientEvent("usa:notify", "You have picked up your item!")

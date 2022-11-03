@@ -1,7 +1,7 @@
 MechanicHelper = {}
 
 MechanicHelper.LEVEL_2_RANK_THRESH = 70
-MechanicHelper.LEVEL_3_RANK_THRESH = 500
+MechanicHelper.LEVEL_3_RANK_THRESH = 350
 
 TriggerEvent("es:exposeDBFunctions", function(db)
     MechanicHelper.db = db
@@ -98,7 +98,7 @@ MechanicHelper.doesVehicleHaveUpgrades = function(plate, upgradesToLookFor)
     local result = nil
     plate = exports.globals:trim(plate)
     MechanicHelper.db.getDocumentById("vehicles", plate, function(doc)
-        if doc then
+        if doc and doc.upgrades then
             for i = #upgradesToLookFor, 1, -1 do
                 for j = 1, #doc.upgrades do
                     if doc.upgrades[j] == upgradesToLookFor[i] then
@@ -117,3 +117,21 @@ MechanicHelper.doesVehicleHaveUpgrades = function(plate, upgradesToLookFor)
     end
     return result
 end
+
+MechanicHelper.removeVehicleUpgrades = function(plate, upgrades)
+    plate = exports.globals:trim(plate)
+    MechanicHelper.db.getDocumentById("vehicles", plate, function(doc)
+        if doc and doc.upgrades then
+            for i = #doc.upgrades, 1, -1 do
+                for j = 1, #upgrades do
+                    if doc.upgrades[i] == upgrades[j] then
+                        table.remove(doc.upgrades, i)
+                    end
+                end
+            end
+            exports.essentialmode:updateDocument("vehicles", plate, { upgrades = doc.upgrades })
+        end
+    end)
+end
+
+exports("doesVehicleHaveUpgrades", MechanicHelper.doesVehicleHaveUpgrades)

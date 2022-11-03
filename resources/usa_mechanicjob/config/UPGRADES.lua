@@ -92,5 +92,23 @@ UPGRADES = {
         postInstall = function(vehPlate)
             exports.rcore_radiocar:GiveRadioToCar(vehPlate, function() print("added radio to car") end)
         end
+    },
+    ["manual-conversion-kit"] = {
+        id = "manual-conversion-kit",
+        displayName = "Manual Conversion Kit",
+        requiresItem = "Manual Conversion Kit",
+        postInstall = function(vehPlate)
+            print("car converted to manual!")
+        end
+    },
+    ["auto-conversion-kit"] = {
+        id = "auto-conversion-kit",
+        displayName = "Auto Conversion Kit",
+        requiresItem = "Auto Conversion Kit",
+        postInstall = function(vehPlate)
+            print("car converted to automatic!")
+            -- remove manual upgrade since it was converted to automatic and also auto conversion kit since it is no longer needed since auto is default
+            MechanicHelper.removeVehicleUpgrades(vehPlate, {"manual-conversion-kit", "auto-conversion-kit"})
+        end
     }
 }

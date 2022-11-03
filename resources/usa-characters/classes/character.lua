@@ -63,7 +63,13 @@ function CreateCharacter(data)
     if field == "money" then
       TriggerClientEvent("es:setMoneyDisplay", self.source, 1, data)
     elseif field == "job" then
+      if data == "ems" then
+        TriggerClientEvent("fire:setEMS", self.source, true)
+      else
+        TriggerClientEvent("fire:setEMS", self.source, false)
+      end
       self.adjustChatSuggestions(data)
+      TriggerClientEvent("usa_trains:setJob", self.source, data)
     end
   end
 
@@ -556,6 +562,9 @@ function CreateCharacter(data)
           for key, val in pairs(newVals) do
             self.inventory.items[tostring(i)][key] = val
           end
+          if self.inventory.items[tostring(i)].quantity <= 0 then
+            self.inventory.items[tostring(i)] = nil -- remove item if an update passed in was setting quantity to <= 0
+          end
           return
         end
       end
@@ -600,6 +609,13 @@ function CreateCharacter(data)
           self.inventory.items[from] = nil
         end
       else
+        -- make sure to remove weapon from client ped if the player moved their selected weapon out slot with it drawn (to prevent infinite ammo exploiting)
+        if self.inventory.items[from].type and self.inventory.items[from].type == "weapon" then
+          if (self.currentlySelectedIndex and self.currentlySelectedIndex == tonumber(from)) or (self.lastSelectedIndex and self.lastSelectedIndex == tonumber(from)) then -- only checking lastSelectedIndex here due to an issue with usa_holster
+            TriggerClientEvent("interaction:equipWeapon", self.source, self.inventory.items[from], false)
+          end
+        end
+        -- do the move!
         self.inventory.items[to] = inv.items[from]
         self.inventory.items[from] = nil
       end

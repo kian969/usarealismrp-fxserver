@@ -113,6 +113,12 @@ Config.Rewards = {
 			[1] = { name = "Pistol Parts", type = "weaponParts", weight = 10.0, quantity = 1 },
 			[2] = { name = "AP Pistol Parts", price = 20000, type = "weaponParts", weight = 15.0, quantity = 1 },
 			[3] = { name = "AK-47 Parts", type = "weaponParts", weight = 45.0, quantity = 1 },
+			[4] = { name = "Revolver Kit", type = "weaponParts", weight = 15.0, quantity = 1 },
+			[5] = { name = "Ceramic Pistol Parts", price = 3200, type = "weaponParts", weight = 10.0, quantity = 1 },
+			[6] = { name = "Marksman Pistol Parts", price = 3200, type = "weaponParts", weight = 10.0, quantity = 1 },
+			[7] = { name = "Double Barrel Shotgun Parts", price = 3200, type = "weaponParts", weight = 20.0, quantity = 1 },
+			[8] = { name = "Military Rifle Parts", price = 3200, type = "weaponParts", weight = 35.0, quantity = 1 },
+			[9] = { name = "Combat PDW Parts", price = 3200, type = "weaponParts", weight = 25.0, quantity = 1 },
 		}
 	},
 	[5] = {
@@ -249,6 +255,7 @@ Config.Rewards = {
 			[4] = { name = "Black Shoe", type = "weapon", hash = `WEAPON_THROWINGSHOEBLACK`, quantity = 3, weight = 8 },
 			[5] = { name = "Red Shoe", type = "weapon", hash = `WEAPON_THROWINGSHOERED`, quantity = 3, weight = 8 },
 			[6] = { name = "Blue Shoe", type = "weapon", hash = `WEAPON_THROWINGSHOEBLUE`, quantity = 3, weight = 8 },
+			[7] = { name = "Bank Laptop", type = "misc",  quantity = 1,  legality = "legal", notStackable = true,  weight = 10,  objectModel = "imp_prop_impexp_tablet" }
 		}
 	},
 }

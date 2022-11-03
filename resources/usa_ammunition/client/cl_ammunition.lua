@@ -1,6 +1,6 @@
-local FIREMODE_SELECTOR_KEY = 319 -- should be synced with Config.SelectorKey
+local RELOAD_TIME_MS = 2000
 
-local ranOutOfAmmo = false
+local FIREMODE_SELECTOR_KEY = 319 -- should be synced with Config.SelectorKey
 
 local FULL_AUTO_WEPS = {
     "WEAPON_MINISMG",
@@ -23,7 +23,10 @@ local FULL_AUTO_WEPS = {
     "WEAPON_BULLPUPRIFLE",
     "WEAPON_COMPACTRIFLE",
     "WEAPON_SPECIALCARBINE_MK2",
-    "WEAPON_BULLPUPRIFLE_MK2"
+    "WEAPON_BULLPUPRIFLE_MK2",
+    "WEAPON_MILITARYRIFLE",
+    "WEAPON_TACTICALRIFLE",
+    "WEAPON_ASSAULTSMG",
 }
 
 local MAGAZINE_LOAD_TIME = 13000
@@ -32,6 +35,20 @@ local MAGAZINE_LOAD_ANIM = {
     NAME = "reload_aim"
 }
 
+local MAGS_ENABLED = true
+
+RegisterNetEvent("ammo:setMagMode")
+AddEventHandler("ammo:setMagMode", function(val, notify)
+    MAGS_ENBALED = val
+    if notify then
+        if MAGS_ENBALED then
+            exports.globals:notify("Realistic mag mode enabled")
+        else
+            exports.globals:notify("Arcade mag mode enabled")
+        end
+    end
+end)
+
 RegisterNetEvent("ammo:playMagazineFillingAnimation")
 AddEventHandler("ammo:playMagazineFillingAnimation", function()
     playAnimation(MAGAZINE_LOAD_ANIM.DICT, MAGAZINE_LOAD_ANIM.NAME, MAGAZINE_LOAD_TIME, 48, "Loading Mag")
@@ -39,7 +56,7 @@ end)
 
 RegisterNetEvent("ammo:reloadMag")
 AddEventHandler("ammo:reloadMag", function(data)
-    if not exports["usa_stretcher"]:IsInStretcher() then
+    if not exports["usa_stretcher"]:IsInStretcher() and not exports["usa_trains"]:checkIsPassanger() then
         local myped = PlayerPedId()
         local currentWeaponHash = GetSelectedPedWeapon(myped)
         local ammoCountToUse = nil
@@ -49,7 +66,7 @@ AddEventHandler("ammo:reloadMag", function(data)
             ammoCountToUse = data
         end
         -- play reload animation --
-        playAnimation("cover@weapon@machinegun@combat_mg_str", "low_reload_left", 2000, 48, "Reloading")
+        --playAnimation("cover@weapon@machinegun@combat_mg_str", "low_reload_left", RELOAD_TIME_MS, 48, "Reloading")
         -- set / remove extended mag if applicable --
         if type(data) == "table" then
             if data.magComponent then
@@ -63,20 +80,50 @@ AddEventHandler("ammo:reloadMag", function(data)
                 end
             end
         end
-        -- fill currently equipped weapon with mag.currentCapacity (or +1 if not pistol)
-        --SetPedAmmo(myped, currentWeaponHash, ammoCountToUse)
-        SetAmmoInClip(myped, currentWeaponHash, ammoCountToUse)
-        if isFullAuto(currentWeaponHash) then
-            SetPedAmmo(myped, currentWeaponHash, ammoCountToUse + 1) -- give pseudo ammo so we don't auto store weapon
-        end
-        -- reset state var
-        ranOutOfAmmo = false
+        -- fill currently equipped weapon with mag.currentCapacity
+        -- for mag mode just set ped ammo to max cur capacity / for non mag mode same deal just set ped ammo to what it should be and see if game will handle reloading then for us
+        SetPedAmmo(myped, currentWeaponHash, ammoCountToUse)
+        MakePedReload(myped)
     end
 end)
 
-RegisterNetEvent("ammo:setRanOutOfAmmo")
-AddEventHandler("ammo:setRanOutOfAmmo", function(status)
-	ranOutOfAmmo = status
+RegisterCommand("getammo", function()
+    local me = PlayerPedId()
+    local currentWeaponHash = GetSelectedPedWeapon(me)
+    local _,clipAmmoCount = GetAmmoInClip(me, currentWeaponHash)
+    print("current clip ammo is: " .. clipAmmoCount)
+    print("current total wep ammo is: " .. GetAmmoInPedWeapon(me, currentWeaponHash))
+    print("max ammo for wep: " .. GetMaxAmmoInClip(me, currentWeaponHash, 1))
+end, false)
+
+RegisterNetEvent("ammo:ejectMag")
+AddEventHandler("ammo:ejectMag", function(data)
+    if MAGS_ENBALED then
+        local me = PlayerPedId()
+        TriggerServerEvent("ammo:ejectMag", data.inventoryItemIndex)
+        exports.globals:playAnimation("cover@weapon@machinegun@combat_mg_str", "low_reload_left", 2000, 48, "Unloading")
+        SetPedAmmo(me, GetSelectedPedWeapon(me), 0)
+        SetAmmoInClip(me, GetSelectedPedWeapon(me), 0)
+    else 
+        exports.globals:notify("Disabled in ammo only mode")
+    end
+end)
+
+RegisterNetEvent("ammo:reloadFromInventoryButton")
+AddEventHandler("ammo:reloadFromInventoryButton", function(data)
+    if MAGS_ENBALED then
+        local me = PlayerPedId()
+        local myveh = nil
+        local vehiclePlate = nil
+        if IsPedInAnyVehicle(me, false) then
+            myveh = GetVehiclePedIsIn(me, false)
+            vehiclePlate = GetVehicleNumberPlateText(myveh)
+            vehiclePlate = exports.globals:trim(vehiclePlate)
+        end
+        TriggerServerEvent("ammo:checkForMagazine", data.inventoryItemIndex, (vehiclePlate or false))
+    else
+        TriggerServerEvent("ammo:checkForAmmo", data.inventoryItemIndex)
+    end
 end)
 
 -- save ammo after shooting
@@ -84,13 +131,13 @@ Citizen.CreateThread(function()
     while true do
         local myped = PlayerPedId()
         if IsPedShooting(myped) then
-            Wait(50)
+            local start = GetGameTimer()
+            while GetGameTimer() - start < 300 do
+                Wait(1)
+            end
             if not IsPedShooting(myped) then
                 local w = GetSelectedPedWeapon(myped)
                 local b1, wa = GetAmmoInClip(myped, w)
-                if ranOutOfAmmo then
-                    wa = 0
-                end
                 TriggerServerEvent("ammo:save", wa)
             end
         end
@@ -112,53 +159,11 @@ Citizen.CreateThread(function()
             Wait(1)
         end
         if wasJustArmed then
-            if ranOutOfAmmo then
-                wa = 0
-            end
             TriggerServerEvent("ammo:weaponStored", wa)
-            ranOutOfAmmo = false
             wasJustArmed = false
-            TriggerEvent("Weapons:Client:resetAlreadyTriggeredOutOfAmmo")
         end
         Wait(1)
     end
-end)
-
--- disable shooting when out of ammo loop (since inferno-weapons resource puts a single bullet in the gun to prevent it from being auto stored by GTA when running out of ammo)
-Citizen.CreateThread(function()
-	while true do
-		while ranOutOfAmmo do
-            local p = PlayerPedId()
-
-			-- disable firing
-            local w = GetSelectedPedWeapon(p)
-
-            if w == `WEAPON_UNARMED` then
-                ranOutOfAmmo = false
-                break
-            end
-
-            local b1, wa = GetAmmoInClip(p, w)
-
-            if not (wa == 2 and isFullAuto(w)) then
-                DisablePlayerFiring(PlayerId(), true)
-            end
-
-			-- Disable fire mode selector key
-			DisableControlAction(0, FIREMODE_SELECTOR_KEY, true)
-
-			-- Disable reload and pistol whip
-			DisableControlAction(0, 45, true)
-			DisableControlAction(0, 140, true)
-			DisableControlAction(0, 141, true)
-			DisableControlAction(0, 142, true)
-			DisableControlAction(0, 257, true)
-			DisableControlAction(0, 263, true)
-			DisableControlAction(0, 264, true)
-			Wait(0)
-		end
-        Wait(0)
-	end
 end)
 
 -- remove weapon if holding right click to withdraw it when in a vehicle
@@ -229,3 +234,27 @@ function playAnimation(dict, name, duration, flag, timerBarText)
         TriggerEvent("interaction:setBusy", false)
     end)
 end
+
+Citizen.CreateThread(function()
+	--SetWeaponsNoAutoreload(true)
+	SetWeaponsNoAutoswap(true)
+end)
+
+Citizen.CreateThread(function()
+    local lastPressTime = GetGameTimer()
+	while true do
+        if IsDisabledControlJustPressed(1, 45) then -- 45 = R
+            if GetGameTimer() - lastPressTime >= RELOAD_TIME_MS then
+                lastPressTime = GetGameTimer()
+                if IsPedArmed(PlayerPedId(), 4 | 2) then
+                    if MAGS_ENBALED then
+                        TriggerServerEvent("ammo:checkForMagazine")
+                    else
+                        TriggerServerEvent("ammo:checkForAmmo")
+                    end
+                end
+            end
+        end
+        Wait(1)
+    end
+end)

@@ -11,6 +11,7 @@ const mdtApp = new Vue({
             }
         },
         person_check: {
+            _id: null,
             ssn: null,
             fname: null,
             lname: null,
@@ -24,18 +25,21 @@ const mdtApp = new Vue({
                 crimes: null,
                 tickets: null
             },
-            mugshot: "https://cpyu.org/wp-content/uploads/2016/09/mugshot.jpg"
+            mugshot: "https://cpyu.org/wp-content/uploads/2016/09/mugshot.jpg",
+            personNotes: null
         },
         plate_check: {
             search_input: null,
             registered_owner: null,
             flags: null,
             veh_name: null,
-            plate: null
+            plate: null,
+            vehicleNotes: null
         },
         weapon_check: {
             search_input: null,
-            weapon: null
+            weapon: null,
+            weaponNotes: null,
         },
         warrants: [],
         bolos: [],
@@ -76,11 +80,12 @@ const mdtApp = new Vue({
         mugshot_url: null,
         dnaModalInput: null,
         error: null,
-        personCheckNotification: null,
+        personCheckNotifications: [],
         notification: null,
         current_tab: "Person(s) Check", // default tab
         searchedPersonResults: [],
-        isLoadingAsyncData: false
+        isLoadingAsyncData: false,
+        lastTimeoutId: null
     },
     methods: {
         UpdatePhoto() {
@@ -161,7 +166,7 @@ const mdtApp = new Vue({
         changePage(new_page) {
             this.error = null;
             this.notification = null;
-            this.personCheckNotification = null;
+            this.personCheckNotifications = [];
             this.current_tab = new_page;
             /* Clear active nav tab */
             ClearActiveNavItem(new_page);
@@ -305,6 +310,41 @@ const mdtApp = new Vue({
             }));
             this.searchedPersonResults = [];
             this.name_search = "";
+        },
+        setNoteSaveTimeout() {
+            // save 2 seconds after done pressing keys
+            if (this.lastTimeoutId) window.clearTimeout(this.lastTimeoutId);
+            this.lastTimeoutId = window.setTimeout(() =>{
+                // send value to server script for saving in mdt-person-check-notes db
+                $.post("http://usa-mdt/saveNote", JSON.stringify({
+                    targetCharId: this.person_check._id,
+                    targetCharFName: this.person_check.fname,
+                    targetCharLName: this.person_check.lname,
+                    value: this.person_check.personNotes
+                }));
+            }, 2000);
+        },
+        setVehNoteSaveTimeout() {
+            // save 2 seconds after done pressing keys
+            if (this.lastTimeoutId) window.clearTimeout(this.lastTimeoutId);
+            this.lastTimeoutId = window.setTimeout(() =>{
+                // send value to server script for saving in mdt-person-check-notes db
+                $.post("http://usa-mdt/saveVehNote", JSON.stringify({
+                    plate: this.plate_check.plate,
+                    value: this.plate_check.vehicleNotes
+                }));
+            }, 2000);
+        },
+        setWepNoteSaveTimeout() {
+            // save 2 seconds after done pressing keys
+            if (this.lastTimeoutId) window.clearTimeout(this.lastTimeoutId);
+            this.lastTimeoutId = window.setTimeout(() =>{
+                // send value to server script for saving in mdt-person-check-notes db
+                $.post("http://usa-mdt/saveWepNote", JSON.stringify({
+                    serial: this.weapon_check.search_input,
+                    value: this.weapon_check.weaponNotes
+                }));
+            }, 2000);
         }
     },
     computed: {
@@ -369,6 +409,9 @@ document.onreadystatechange = () => {
                 }
             } else if (event.data.type == "personInfoLoaded") {
                 /* fill person info data */
+                if (!event.data.person_info.personNotes) {
+                    event.data.person_info.personNotes = "";
+                }
                 mdtApp.person_check = event.data.person_info;
                 /* hide error message */
                 mdtApp.error = null;
@@ -380,15 +423,23 @@ document.onreadystatechange = () => {
                 }));
             } else if (event.data.type == "plateInfoLoaded") {
                 /* fill plate info data */
+                if (!event.data.plate_info.vehicleNotes) {
+                    event.data.plate_info.vehicleNotes = "";
+                }
                 mdtApp.plate_check.registered_owner = event.data.plate_info.registered_owner;
                 mdtApp.plate_check.veh_name = event.data.plate_info.veh_name;
                 mdtApp.plate_check.plate = event.data.plate_info.plate;
                 mdtApp.plate_check.flags = event.data.plate_info.flags;
+                mdtApp.plate_check.vehicleNotes = event.data.plate_info.vehicleNotes;
                 /* hide error message */
                 mdtApp.error = null;
             } else if (event.data.type == "weaponInfoLoaded") {
                 /* fill plate info data */
+                if (!event.data.weapon_info.weaponNotes) {
+                    event.data.weapon_info.weaponNotes = "";
+                }
                 mdtApp.weapon_check.weapon = event.data.weapon_info;
+                mdtApp.weapon_check.weaponNotes = event.data.weapon_info.weaponNotes;
                 /* hide error message */
                 mdtApp.error = null;
             } else if (event.data.type == "warrantsLoaded") {
@@ -416,30 +467,34 @@ document.onreadystatechange = () => {
                 /* clear fields */
                 if  (mdtApp.current_tab == "Person(s) Check") {
                     mdtApp.person_check = {
-                            ssn: null,
-                            fname: null,
-                            lname: null,
-                            dob: null,
-                            licenses: null,
-                            insurance: null,
-                            criminal_history: {
-                                crimes: null,
-                                tickets: null
-                            },
-                            mugshot: "https://cpyu.org/wp-content/uploads/2016/09/mugshot.jpg"
-                        }
+                        _id: null,
+                        ssn: null,
+                        fname: null,
+                        lname: null,
+                        dob: null,
+                        licenses: null,
+                        insurance: null,
+                        criminal_history: {
+                            crimes: null,
+                            tickets: null
+                        },
+                        mugshot: "https://cpyu.org/wp-content/uploads/2016/09/mugshot.jpg",
+                        personNotes: null
+                    }
                 } else if (mdtApp.current_tab == "Plate Check") {
                     mdtApp.plate_check = {
                         search_input: null,
                         registered_owner: null,
                         flags: null,
                         veh_name: null,
-                        plate: null
+                        plate: null,
+                        vehicleNotes: null
                     }
                 } else if (mdtApp.current_tab == "Weapon Check") {
                     mdtApp.weapon_check = {
                         search_input: null,
-                        weapon: null
+                        weapon: null,
+                        weaponNotes: null
                     }
                 }
             } else if (event.data.type == "warrantDeleteFinish") {
@@ -481,7 +536,7 @@ document.onreadystatechange = () => {
                 }
                 mdtApp.current_tab = "Police Reports"
             } else if (event.data.type == "personCheckNotification") {
-                mdtApp.personCheckNotification = event.data.message
+                mdtApp.personCheckNotifications.push(event.data.message)
             } else if (event.data.type == "addressInfoLoaded") {
                 let s = "";
                 for (let i = 0; i < event.data.info.length; i++) {
@@ -502,10 +557,6 @@ document.onreadystatechange = () => {
 document.onkeydown = function (data) {
     if (data.which == 27 || data.which == 112) { // ESC or F1
         $.post('http://usa-mdt/close', JSON.stringify({}));
-    } else if (data.which == 13) { // enter
-        /* prevent enter key from closing MDT for some reason */
-        if (!$("textarea").hasFocus())
-            return false;
     }
 };
 
