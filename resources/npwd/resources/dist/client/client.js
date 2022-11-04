@@ -217,9 +217,10 @@
         images: {
           url: "https://api.projecterror.dev/image",
           type: "pe_image",
-          imageEncoding: "jpg",
+          imageEncoding: "webp",
           contentType: "multipart/form-data",
           useContentType: false,
+          useWebhook: false,
           authorizationHeader: "PE-Secret",
           authorizationPrefix: "",
           useAuthorization: true,
@@ -271,7 +272,13 @@
           enabled: true,
           sentryEnabled: true
         },
-        apps: []
+        apps: [],
+        voiceMessage: {
+          enabled: false,
+          authorizationHeader: "PE-Secret",
+          url: "",
+          returnedDataIndexes: ["url"]
+        }
       };
     }
   });
@@ -805,6 +812,10 @@
           }
         }, 100);
       }
+      setInterval(() => {
+        const time = getCurrentGameTime();
+        sendMessage("PHONE", "npwd:setGameTime" /* SET_TIME */, time);
+      }, 2e3);
     }
   });
 
@@ -911,17 +922,8 @@
       init_messages();
       init_phone();
       init_client();
-      init_cl_config();
       init_animation_controller();
       init_cl_utils();
-      var SCREENSHOT_BASIC_TOKEN;
-      setImmediate(() => {
-        ClUtils.emitNetPromise("npwd:getAuthToken" /* GET_AUTHORISATION_TOKEN */).then(
-          ({ data }) => {
-            SCREENSHOT_BASIC_TOKEN = data;
-          }
-        );
-      });
       var exp2 = global.exports;
       var inCameraMode = false;
       function closePhoneTemp() {
@@ -982,7 +984,7 @@
           animationService.openPhone();
           emit("npwd:disableControlActions", true);
         }, 200);
-        const resp = yield takePhoto();
+        const resp = yield ClUtils.emitNetPromise("npwd:UploadPhoto" /* UPLOAD_PHOTO */);
         inCameraMode = false;
         return resp;
       });
@@ -995,33 +997,6 @@
         CellCamActivate(false, false);
         openPhoneTemp();
         inCameraMode = false;
-      });
-      var takePhoto = () => new Promise((res, rej) => {
-        if (SCREENSHOT_BASIC_TOKEN === "none" && config.images.useAuthorization) {
-          return console.error("Screenshot basic token not found. Please set in server.cfg");
-        }
-        exp2["screenshot-basic"].requestScreenshotUpload(
-          config.images.url,
-          config.images.type,
-          {
-            encoding: config.images.imageEncoding,
-            headers: {
-              [config.images.useAuthorization && config.images.authorizationHeader]: `${config.images.authorizationPrefix} ${SCREENSHOT_BASIC_TOKEN}`,
-              [config.images.useContentType && "Content-Type"]: config.images.contentType
-            }
-          },
-          (data) => __async(exports, null, function* () {
-            try {
-              let parsedData = JSON.parse(data);
-              for (const index of config.images.returnedDataIndexes)
-                parsedData = parsedData[index];
-              const resp = yield ClUtils.emitNetPromise("npwd:UploadPhoto" /* UPLOAD_PHOTO */, parsedData);
-              res(resp);
-            } catch (e) {
-              rej(e.message);
-            }
-          })
-        );
       });
       RegisterNuiProxy("npwd:FetchPhotos" /* FETCH_PHOTOS */);
       RegisterNuiProxy("npwd:deletePhoto" /* DELETE_PHOTO */);
@@ -1404,8 +1379,68 @@
         sendMessage("DARKCHAT", "npwd:darkchatTransferOwnershipSuccess" /* TRANSFER_OWNERSHIP_SUCCESS */, dto);
       });
       onNet("npwd:darkchatDeleteChannelSuccess" /* DELETE_CHANNEL_SUCCESS */, (dto) => {
-        console.log("delete dto", dto);
         sendMessage("DARKCHAT", "npwd:darkchatDeleteChannelSuccess" /* DELETE_CHANNEL_SUCCESS */, dto);
+      });
+    }
+  });
+
+  // ../typings/audio.ts
+  var init_audio = __esm({
+    "../typings/audio.ts"() {
+    }
+  });
+
+  // client/client-audio.ts
+  var init_client_audio = __esm({
+    "client/client-audio.ts"() {
+      init_cl_utils();
+      init_audio();
+      RegisterNuiProxy("npwd:audio:uploadAudio" /* UPLOAD_AUDIO */);
+    }
+  });
+
+  // ../typings/notifications.ts
+  var init_notifications = __esm({
+    "../typings/notifications.ts"() {
+    }
+  });
+
+  // ../typings/alerts.ts
+  var init_alerts = __esm({
+    "../typings/alerts.ts"() {
+    }
+  });
+
+  // client/cl_notifications.ts
+  var NotificationFuncRefs;
+  var init_cl_notifications = __esm({
+    "client/cl_notifications.ts"() {
+      init_cl_utils();
+      init_alerts();
+      init_client_kvp_service();
+      init_settings();
+      init_client_sound_class();
+      NotificationFuncRefs = /* @__PURE__ */ new Map();
+      RegisterNuiCB("npwd:playAlert" /* PLAY_ALERT */, () => {
+        const notifSoundset = client_kvp_service_default.getKvpString("npwd-notification" /* NPWD_NOTIFICATION */);
+        const sound = new Sound("Text_Arrive_Tone", notifSoundset);
+        sound.play();
+      });
+      RegisterNuiCB("npwd:onNotificationConfirm", (notisId, cb) => {
+        const funcRef = NotificationFuncRefs.get(`${notisId}:confirm`);
+        if (!funcRef)
+          return console.log(`NPWD could not find any function ref for notification: ${notisId}`);
+        funcRef();
+        NotificationFuncRefs.delete(`${notisId}:confirm`);
+        cb({});
+      });
+      RegisterNuiCB("npwd:onNotificationCancel", (notisId, cb) => {
+        const funcRef = NotificationFuncRefs.get(`${notisId}:cancel`);
+        if (!funcRef)
+          return console.log(`NPWD could not find any function ref for notification: ${notisId}`);
+        funcRef();
+        NotificationFuncRefs.delete(`${notisId}:cancel`);
+        cb({});
       });
     }
   });
@@ -1424,6 +1459,8 @@
       init_cl_calls_service();
       init_animation_controller();
       init_call();
+      init_notifications();
+      init_cl_notifications();
       var exps2 = global.exports;
       exps2("openApp", (app) => {
         verifyExportArgType("openApp", app, ["string"]);
@@ -1480,6 +1517,29 @@
       exps2("sendUIMessage", (action) => {
         SendNUIMessage(action);
       });
+      exps2("createNotification", (dto) => {
+        verifyExportArgType("createSystemNotification", dto, ["object"]);
+        verifyExportArgType("createSystemNotification", dto.notisId, ["string"]);
+        sendMessage("PHONE", "npwd:createNotification" /* CREATE_NOTIFICATION */, dto);
+      });
+      exps2("createSystemNotification", (dto) => {
+        verifyExportArgType("createSystemNotification", dto, ["object"]);
+        verifyExportArgType("createSystemNotification", dto.uniqId, ["string"]);
+        const actionSet = dto.onConfirm || dto.onCancel;
+        if (dto.controls && !dto.keepOpen)
+          return console.log("Notification must be set to keepOpen in order to use notifcation actions");
+        if (!dto.controls && actionSet)
+          return console.log("Controls must be set to true in order to use notifcation actions");
+        if (dto.controls) {
+          NotificationFuncRefs.set(`${dto.uniqId}:confirm`, dto.onConfirm);
+          NotificationFuncRefs.set(`${dto.uniqId}:cancel`, dto.onCancel);
+        }
+        sendMessage("SYSTEM", "npwd:createSystemNotification" /* CREATE_SYSTEM_NOTIFICATION */, dto);
+      });
+      exps2("removeSystemNotification", (uniqId) => {
+        verifyExportArgType("createSystemNotification", uniqId, ["string"]);
+        sendMessage("SYSTEM", "npwd:removeSystemNotification" /* REMOVE_SYSTEM_NOTIFICATION */, { uniqId });
+      });
     }
   });
 
@@ -1516,28 +1576,6 @@
     }
   });
 
-  // ../typings/alerts.ts
-  var init_alerts = __esm({
-    "../typings/alerts.ts"() {
-    }
-  });
-
-  // client/cl_notifications.ts
-  var init_cl_notifications = __esm({
-    "client/cl_notifications.ts"() {
-      init_cl_utils();
-      init_alerts();
-      init_client_kvp_service();
-      init_settings();
-      init_client_sound_class();
-      RegisterNuiCB("npwd:playAlert" /* PLAY_ALERT */, () => {
-        const notifSoundset = client_kvp_service_default.getKvpString("npwd-notification" /* NPWD_NOTIFICATION */);
-        const sound = new Sound("Text_Arrive_Tone", notifSoundset);
-        sound.play();
-      });
-    }
-  });
-
   // client/client.ts
   var import_cl_photo, import_cl_exports, ClUtils;
   var init_client = __esm({
@@ -1554,6 +1592,7 @@
       init_cl_calls_controller();
       init_cl_match();
       init_darkchat_client();
+      init_client_audio();
       init_functions();
       import_cl_exports = __toESM(require_cl_exports());
       init_client_settings();
