@@ -16,3 +16,8 @@ exports.npwd:onMessage('911', function(ctx)
     local coords = GetEntityCoords(GetPlayerPed(ctx.source))
     TriggerEvent('911:call', coords.x, coords.y, coords.z, "[" .. charPhoneNumber .. "] " .. ctx.data.message, "Call for service")
 end)
+
+RegisterServerEvent("npwd-phone:unloadPlayer")
+AddEventHandler("npwd-phone:unloadPlayer", function()
+    exports.npwd:unloadPlayer(source)
+end)
