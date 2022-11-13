@@ -1756,3 +1756,20 @@
 {"level":"info","message":"Executed query (SELECT id FROM npwd_marketplace_listings WHERE identifier = ? [\"4deac32f459b392df55a9fc1a2001bf4\"]) in 15.9566ms'","module":"DBInterface","timestamp":"2022-11-04T05:19:08.728Z"}
 {"level":"info","message":"Executed query (DELETE FROM npwd_marketplace_listings WHERE identifier = ? AND reported = 0 [\"4deac32f459b392df55a9fc1a2001bf4\"]) in 0.9426ms'","module":"DBInterface","timestamp":"2022-11-04T05:19:08.729Z"}
 {"level":"info","message":"Unloaded NPWD Player, source: (1)","module":"player","timestamp":"2022-11-04T05:19:08.730Z"}
+{"level":"debug","message":"Boot service started","module":"boot","timestamp":"2022-11-13T20:18:55.289Z"}
+{"level":"debug","message":"Marketplace service started","module":"marketplace","timestamp":"2022-11-13T20:18:55.295Z"}
+{"level":"debug","message":"Player Service started","module":"player","timestamp":"2022-11-13T20:18:55.295Z"}
+{"level":"debug","message":"Call service started","module":"calls","timestamp":"2022-11-13T20:18:55.297Z"}
+{"level":"debug","message":"Messages service started","module":"messages","timestamp":"2022-11-13T20:18:55.297Z"}
+{"level":"debug","message":"Notes service started","module":"notes","timestamp":"2022-11-13T20:18:55.297Z"}
+{"level":"debug","message":"Contacts service started","module":"contact","timestamp":"2022-11-13T20:18:55.298Z"}
+{"level":"debug","message":"Photo service started","module":"photo","timestamp":"2022-11-13T20:18:55.313Z"}
+{"level":"debug","message":"Twitter service started","module":"twitter","timestamp":"2022-11-13T20:18:55.313Z"}
+{"level":"debug","message":"Match service started","module":"match","timestamp":"2022-11-13T20:18:55.314Z"}
+{"level":"debug","message":"Beginning database schema validation","module":"boot","timestamp":"2022-11-13T20:19:01.584Z"}
+{"level":"info","message":"Successfully started","timestamp":"2022-11-13T20:19:01.594Z"}
+{"level":"info","message":"Executed query (SHOW TABLES WHERE `Tables_in_fivem`LIKE ? [\"users\"]) in 357.9731ms'","module":"DBInterface","timestamp":"2022-11-13T20:19:01.944Z"}
+{"level":"info","message":"Executed query (SHOW COLUMNS IN users []) in 6.6479ms'","module":"DBInterface","timestamp":"2022-11-13T20:19:01.951Z"}
+{"level":"debug","message":"Database schema successfully validated","module":"boot","timestamp":"2022-11-13T20:19:01.951Z"}
+{"level":"debug","message":"Checking for missing framework dependencies","module":"boot","timestamp":"2022-11-13T20:19:01.952Z"}
+{"level":"debug","message":"No missing dependencies were detected","module":"boot","timestamp":"2022-11-13T20:19:01.955Z"}

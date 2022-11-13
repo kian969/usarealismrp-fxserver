@@ -27,6 +27,8 @@
     "enabled": true,
     "sentryEnabled": true
   },
+  "defaultContacts": [],
+  "disabledApps": [],
   "apps": ["pefcl"],
   "voiceMessage": {
     "enabled": false,
