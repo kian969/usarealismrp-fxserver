@@ -165,7 +165,6 @@ AddEventHandler("character:swap--check-distance", function()
 			TriggerEvent("radio:unsubscribe")
 			TriggerServerEvent("character:getCharactersAndOpenMenu", "home")
 			TriggerServerEvent("spawn:setCharLastLocation", mycoords)
-			TriggerServerEvent("npwd-phone:unloadPlayer")
 			SendNUIMessage({
 				type = "displayGUI"
 			})
