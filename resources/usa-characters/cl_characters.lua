@@ -12,3 +12,14 @@ AddEventHandler("character:setCoords", function(coords)
         end
     end
 end)
+
+exports("charHasItem", function()
+    local hasPhoneItem = TriggerServerCallback {
+        eventName = "char:doesHaveItem",
+        args = {"Cell Phone"}
+    }
+    if not hasPhoneItem then
+        exports.globals:notify("Need a phone!", "^3INFO: ^0You must buy a cell phone from the GENERAL STORE")
+    end
+    return hasPhoneItem
+end)

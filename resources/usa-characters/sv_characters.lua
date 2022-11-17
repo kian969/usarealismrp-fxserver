@@ -274,3 +274,11 @@ AddEventHandler('rconCommand', function(commandName, args)
         end
     end
 end)
+
+RegisterServerCallback {
+  eventName = "char:doesHaveItem",
+  eventCallback = function(source, itemName)
+    local char = GetCharacter(source)
+    return char.hasItem(itemName)
+  end
+}
