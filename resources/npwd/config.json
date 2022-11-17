@@ -12,7 +12,7 @@
   },
   "profanityFilter": {
     "enabled": false,
-    "badWords": ["esx"]
+    "badWords": ["esx", "nigger", "faggot"]
   },
   "database": {
     "useIdentifierPrefix": true,
@@ -27,9 +27,22 @@
     "enabled": true,
     "sentryEnabled": true
   },
-  "defaultContacts": [],
-  "disabledApps": [],
-  "apps": ["pefcl"],
+  "defaultContacts": [
+    {
+      "display": "911",
+      "number": "911"
+    },
+    {
+      "display": "Mechanic",
+      "number": "811"
+    },
+    {
+      "display": "Uber",
+      "number": "711"
+    }
+  ],
+  "disabledApps": ["pefcl"],
+  "apps": [],
   "voiceMessage": {
     "enabled": false,
     "authorizationHeader": "PE-Secret",
