@@ -17,7 +17,8 @@ lua54 'yes'
 
 shared_scripts {
 	'config.lua',
-	'functions/*.lua'
+	'functions/*.lua',
+	'@pmc-callbacks/import.lua'
 }
 
 client_scripts {

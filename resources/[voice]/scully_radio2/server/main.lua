@@ -86,3 +86,11 @@ RegisterNetEvent('scully_radio:setTalkingOnRadio', function(player, talking)
     local _source = source
     TriggerClientEvent('scully_radio:setTalkingOnRadio', _source, player, talking)
 end)
+
+RegisterServerCallback {
+    eventName = "radio:hasItem",
+    eventCallback = function(source)
+        local char = exports["usa-characters"]:GetCharacter(source)
+        return char.hasItem("Radio")
+    end
+}

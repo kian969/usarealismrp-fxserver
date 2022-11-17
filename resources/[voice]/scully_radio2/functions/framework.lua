@@ -315,7 +315,11 @@ else
                 return isAllowed
             end,
             HasItem = function(item, cb)
-                cb(true)
+                local hasItem = TriggerServerCallback {
+                    eventName = "radio:hasItem",
+                    args = {}
+                }
+                cb(hasItem)
             end,
             ShowNotification = function(text)
                 SetNotificationTextEntry('STRING')

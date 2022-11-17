@@ -1195,7 +1195,7 @@ function interactionMenuUse(index, itemName, wholeItem)
 		TriggerEvent("usa:playAnimation", "anim@move_m@trash", "pickup", -8, 1, -1, 48, 0, 0, 0, 0)
 		TriggerServerEvent("inventory:dropItem", itemName, index, pos.x, pos.y, pos.z)
 	elseif itemName == "Radio" or itemName == "EMS Radio" or itemName == "Police Radio" then
-		TriggerServerEvent("rp-radio:checkForRadioItem")
+		TriggerEvent('scully_radio:openRadio', "default")
 	elseif itemName == "Scuba Gear" then
 		TriggerEvent("scuba:useGear")
 	elseif itemName == "Speaker" then
