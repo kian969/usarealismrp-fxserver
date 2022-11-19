@@ -96,7 +96,7 @@ end
 RegisterNetEvent("usa_death:epi")
 AddEventHandler("usa_death:epi", function(bool)
 	if IsEntityDead(PlayerPedId()) then
-		TriggerEvent("mumble:setDead", not bool)
+		TriggerEvent("pma-voice:setDead", not bool)
 	end 
 end)
 
@@ -125,7 +125,7 @@ Citizen.CreateThread(function()
             if not wasDead then
 				wasDead = true
 				if not injuryScript:isConscious(PlayerPedId()) then
-					TriggerEvent("mumble:setDead", true)
+					TriggerEvent("pma-voice:setDead", true)
 				end
             end
 			if triggerDeadEvents then
@@ -225,7 +225,7 @@ Citizen.CreateThread(function()
 		else
 			if wasDead then 
 				wasDead = false
-				TriggerEvent("mumble:setDead", false)
+				TriggerEvent("pma-voice:setDead", false)
 				TriggerEvent("usa_injury:epi", false)
 			end
 			emscalled = false

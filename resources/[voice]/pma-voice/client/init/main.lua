@@ -168,6 +168,14 @@ function toggleMutePlayer(source)
 end
 exports('toggleMutePlayer', toggleMutePlayer)
 
+RegisterNetEvent("pma-voice:setDead")
+AddEventHandler("pma-voice:setDead", function(muted_bool)
+	TriggerServerEvent("pma-voice:setMutedServer", muted_bool)
+	sendUIMessage({
+			muted = muted_bool
+		})
+end)
+
 --- function setVoiceProperty
 --- sets the specified voice property
 ---@param type string what voice property you want to change (only takes 'radioEnabled' and 'micClicks')

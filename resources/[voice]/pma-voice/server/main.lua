@@ -137,3 +137,8 @@ function getPlayersInRadioChannel(channel)
 end
 exports('getPlayersInRadioChannel', getPlayersInRadioChannel)
 exports('GetPlayersInRadioChannel', getPlayersInRadioChannel)
+
+RegisterServerEvent("pma-voice:setMutedServer")
+AddEventHandler("pma-voice:setMutedServer", function(muted_bool)
+	MumbleSetPlayerMuted(source, muted_bool)
+end)
