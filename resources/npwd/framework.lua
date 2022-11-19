@@ -17,3 +17,13 @@ exports.npwd:onMessage('911', function(ctx)
     local coords = GetEntityCoords(GetPlayerPed(ctx.source))
     TriggerEvent('911:call', coords.x, coords.y, coords.z, "[" .. charPhoneNumber .. " / #" .. ctx.source .. "] " .. ctx.data.message, "Call for service")
 end)
+
+exports.npwd:onMessage('811', function(ctx)
+    local charPhoneNumber = exports["usa-characters"]:GetCharacter(ctx.source).get("phoneNumber")
+    exports.globals:notifyPlayersWithJob("mechanic", "[^3MECHANIC REQUEST^0]" .. "[" .. charPhoneNumber .. " / #" .. ctx.source .. "] " .. ctx.data.message)
+end)
+
+exports.npwd:onMessage('711', function(ctx)
+    local charPhoneNumber = exports["usa-characters"]:GetCharacter(ctx.source).get("phoneNumber")
+    exports.globals:notifyPlayersWithJob("taxi", "[^3PICKUP REQUEST^0]" .. "[" .. charPhoneNumber .. " / #" .. ctx.source .. "] " .. ctx.data.message)
+end)
