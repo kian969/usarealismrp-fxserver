@@ -896,7 +896,7 @@ RegisterNUICallback("dropItem", function(data, cb)
 		TriggerEvent("usa:playAnimation", "anim@move_m@trash", "pickup", -8, 1, -1, 48, 0, 0, 0, 0)
 		TriggerServerEvent("inventory:dropItem", data.itemName, data.index, finalPos.x, finalPos.y, finalPos.z)
 		if data.itemName:find("Radio") then
-			TriggerEvent("Radio.Set", false, {})
+			exports.scully_radio2:LeaveChannel(true)
 		end
 		if data.itemName:find("Wheelchair") then
 			local handle = CreateObject(GetHashKey("prop_wheelchair_01"), finalPos.x, finalPos.y, finalPos.z, true, true, true)

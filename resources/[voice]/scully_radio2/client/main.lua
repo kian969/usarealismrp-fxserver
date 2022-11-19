@@ -312,3 +312,5 @@ if Scully.EnableList then
         })
     end)
 end
+
+exports("LeaveChannel", Scully.Radio.LeaveChannel)
