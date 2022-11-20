@@ -7,7 +7,7 @@ Scully = {
     EnableList = false, -- Set to false to disable the player list
     HideListCommand = 'rlist', -- Set to '' if you don't want to allow hiding the list with a command, command is /rlist
     ShowSelf = true, -- Enable if you want your own name to be shown on the radio list
-    EnableEditing = true, -- Disable if you don't want to allow players to change their names and callsigns on the radio, keep in mind if this is enabled they need to manually change the name back unless you update the KVPHandle above.
+    EnableEditing = false, -- Disable if you don't want to allow players to change their names and callsigns on the radio, keep in mind if this is enabled they need to manually change the name back unless you update the KVPHandle above.
     MicClicks = true, -- Disable if you don't want mic clicks
     RadioAnims = true, -- Disable if you don't want to use radio animations for holding and talking on the radio
     UseItem = true, -- Enable if you want to use the radio as an item, will only work for QBCore and ESX
@@ -20,11 +20,13 @@ Scully = {
     },
     WhitelistedAccess = { -- What channels should be whitelisted and what jobs should have access to them?
         [1] = {
-            ['police'] = true,
+            ['sheriff'] = true,
+            corrections = true,
             ['ems'] = true
         },
         [2] = {
-            ['police'] = true,
+            ['sheriff'] = true,
+            corrections = true,
             ['ems'] = true
         }
     },

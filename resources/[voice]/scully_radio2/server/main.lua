@@ -94,3 +94,12 @@ RegisterServerCallback {
         return char.hasItem("Radio")
     end
 }
+
+RegisterServerCallback {
+    eventName = "radio:canAccessChannel",
+    eventCallback = function(source, channel)
+        local char = exports["usa-characters"]:GetCharacter(source)
+        local job = char.get("job")
+        return Scully.WhitelistedAccess[channel][job]
+    end
+}

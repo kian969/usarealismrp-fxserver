@@ -306,13 +306,11 @@ else
 
         Scully.Functions = {
             HasAccess = function(channel)
-                local isAllowed = false
-                for permission, _ in pairs(Scully.WhitelistedAccess[channel]) do
-                    if PlayerData.permissions[permission] then
-                        isAllowed = true
-                    end
-                end
-                return isAllowed
+                local canAccess = TriggerServerCallback {
+                    eventName = "radio:canAccessChannel",
+                    args = {channel}
+                }
+                return canAccess
             end,
             HasItem = function(item, cb)
                 local hasItem = TriggerServerCallback {
