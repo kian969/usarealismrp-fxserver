@@ -159,7 +159,7 @@ AddEventHandler("character:swap--check-distance", function()
 		local location = swap_locations[i]
 		if GetDistanceBetweenCoords(location.x, location.y, location.z, mycoords) < 8 then
 			TriggerServerEvent("high_callback:drop", GetPlayerServerId(PlayerId()))
-			TriggerEvent("Radio.Set", false, {})
+			exports.scully_radio2:LeaveChannel(true)
 			TriggerEvent("hotkeys:setCurrentSlotPassive", nil)
 			TriggerEvent("gcPhone:twitter_Logout")
 			TriggerEvent("radio:unsubscribe")
