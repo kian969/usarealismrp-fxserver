@@ -57,7 +57,7 @@ AddEventHandler("vehicle:storeItem", function(src, vehicle_plate, item, quantity
                         TriggerClientEvent("interaction:equipWeapon", usource, item, false) -- remove weapon
                     end
                     if item.name:find("Radio") then
-                        TriggerClientEvent("Radio.Set", usource, false, {})
+                        TriggerClientEvent("scully_radio:leaveChannel", usource, true)
                     end
                     TriggerClientEvent("usa:playAnimation", usource, "anim@move_m@trash", "pickup", -8, 1, -1, 53, 0, 0, 0, 0, 3)
                 end
@@ -84,7 +84,7 @@ AddEventHandler("vehicle:storeItemInFirstFreeSlot", function(src, vehicle_plate,
                         TriggerClientEvent("interaction:equipWeapon", usource, item, false) -- remove weapon
                     end
                     if item.name:find("Radio") then
-                        TriggerClientEvent("Radio.Set", usource, false, {})
+                        TriggerClientEvent("scully_radio:leaveChannel", usource, true)
                     end
                     TriggerClientEvent("usa:playAnimation", usource, "anim@move_m@trash", "pickup", -8, 1, -1, 53, 0, 0, 0, 0, 3)
                 end

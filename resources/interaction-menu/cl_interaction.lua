@@ -835,7 +835,7 @@ RegisterNUICallback('inventoryActionItemClicked', function(data, cb)
 				if not string.find(itemName, "Driver") and not string.find(itemName, "Firearm") and not string.find(itemName, 'License') and not string.find(itemName, 'Certificate') then
 					TriggerServerEvent("interaction:giveItemToPlayer", wholeItem, targetPlayerId)
 					if itemName:find("Radio") then
-						TriggerEvent("Radio.Set", false, {})
+						exports.scully_radio2:LeaveChannel(true)
 					end
 				end
 			else
