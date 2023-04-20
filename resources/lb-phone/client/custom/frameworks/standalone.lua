@@ -9,6 +9,11 @@ CreateThread(function()
 
     loaded = true
 
+    RegisterNetEvent("character:loaded", function()
+        LogOut()
+        FetchPhone()
+    end)
+
     function HasPhoneItem(number)
         if not Config.Item.Require then
             return true
