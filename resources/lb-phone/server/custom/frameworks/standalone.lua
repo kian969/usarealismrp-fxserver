@@ -65,7 +65,7 @@ CreateThread(function()
     ---@param source any
     ---@param amount integer
     ---@return boolean # Success
-    function AddMoney(source, amount)
+    function AddMoney(source, amount) -- todo: MAKE SURE THIS WORKS IF THE PLAYER IS OFFLINE TOO (aka use db docs instead of char object)
         local char = exports["usa-characters"]:GetCharacter(source)
         return char.addBank(amount)
     end
