@@ -1,16 +1,10 @@
-local taxi_duty_locations = {
+local uber_duty_locations = {
 	["Los Santos"] = {
 			duty = {
 				x = 894.74,
 				y = -180.43,
 				z = 73.8,
 				heading = 260.0
-			},
-			spawn = {
-				x = 899.63,
-				y = -180.77,
-				z = 73.79,
-				heading = 236.0
 			}
 	}
 }
@@ -18,7 +12,6 @@ local taxi_duty_locations = {
 local NPC_REQUESTS_ENABLED = true
 
 local JOB = {
-	taxi = nil,
 	isOnJob = false,
 	start = nil,
 	destination = nil,
@@ -124,7 +117,7 @@ AddEventHandler("taxi:toggleNPCRequests", function()
 	if NPC_REQUESTS_ENABLED then
 		exports.globals:notify('You are now ~g~accepting~s~ taxi requests from locals!')
 	else
-		exports.globals:notify('Taxi requests from locals have been temporarily ~y~muted~s~!')
+		exports.globals:notify('Ride requests from locals have been temporarily ~y~muted~s~!')
 	end
 end)
 
@@ -132,15 +125,12 @@ end)
 RegisterNetEvent("taxiJob:onDuty")
 AddEventHandler("taxiJob:onDuty", function()
 	keypressOnHold = true
-	TriggerEvent("chatMessage", "", {}, "Use ^3/dispatch [id] [msg]^0 to respond to a player taxi request!")
+	TriggerEvent("chatMessage", "", {}, "Welcome! Use your own vehicle to pickup people who request a ride through the 'services' app! Charge them what you want!")
+	Wait(3000)
+	TriggerEvent("chatMessage", "", {}, "Locals can also randomly call you while you are on duty. Use ^3/togglerequests^0 to stop or start receiving requests from locals.")
 	Citizen.Wait(3000)
-	TriggerEvent("chatMessage", "", {}, "Use ^3/togglerequests^0 to allow or deny local taxi requests.")
-	Citizen.Wait(3000)
-	TriggerEvent("chatMessage", "", {}, "Use ^3/ping [id]^0 to request a person\'s location.")
-	Citizen.Wait(3000)
-	TriggerEvent("chatMessage", "", {}, "A taxi is waiting for you, use this vehicle while working.")
-	DrawCoolLookingNotificationWithTaxiPic("Here's your cab! Have a good shift!")
-	SpawnTaxi()
+	TriggerEvent("chatMessage", "", {}, "Use your cell phone to communicate with customers and/or type ^3/ping [id]^0 to request a person\'s location.")
+	DrawCoolLookingNotificationWithTaxiPic("Have a good shift!")
 	keypressOnHold = false
 end)
 
@@ -148,14 +138,11 @@ RegisterNetEvent("taxiJob:offDuty")
 AddEventHandler("taxiJob:offDuty", function()
 	DrawCoolLookingNotificationWithTaxiPic("You have clocked out! Have a good one!")
 	if JOB.isOnJob then
-		TaskLeaveVehicle(JOB.customer_ped, JOB.taxi, 1)
+		TaskLeaveVehicle(JOB.customer_ped, GetVehiclePedIsIn(PlayerPedId(), true), 1)
 		JOB.isOnJob = false
 		JOB.end_time = GetGameTimer()
 		TriggerEvent("swayam:RemoveWayPoint")
 	end
-	--print('taxi:' .. JOB.taxi)
-	DelVehicle(JOB.taxi)
-	JOB.taxi = nil
 end)
 
 --------------------------------------
@@ -175,7 +162,7 @@ Citizen.CreateThread(function()
 		end
 		TriggerEvent("chatMessage", "", {}, "^3^*[DISPATCH] ^r^7A pickup has been requested at ^3" .. start_location.name .. "^7, please respond as soon as possible!")
 		TriggerServerEvent('InteractSound_SV:PlayOnSource', 'demo', 0.1)
-		TriggerEvent("swayam:SetWayPointWithAutoDisable", start_location.x, start_location.y, start_location.z, 280, 60, "Taxi Request")
+		TriggerEvent("swayam:SetWayPointWithAutoDisable", start_location.x, start_location.y, start_location.z, 280, 60, "Ride Request")
 
 		-- set as on job
 		JOB.isOnJob = true
@@ -183,6 +170,7 @@ Citizen.CreateThread(function()
 		JOB.destination = end_location
 		JOB.destination.arrived = false
 		JOB.start.arrived = false
+		JOB.pickupDist = #(vector3(JOB.start.x, JOB.start.y, JOB.start.z) - GetEntityCoords(PlayerPedId()))
 
 		-- spawn ped and start job when close to pick up point since there are problems with the ped despawning and ending the job prematurely, hopeful fix
 		Citizen.CreateThread(function()
@@ -198,12 +186,11 @@ Citizen.CreateThread(function()
 							Wait(100)
 						end
 						JOB.customer_ped = CreatePed(4, model, start_location.x, start_location.y, start_location.z, 0.0, true, false)
-						-- TODO: make ped start random scenario
 						SetEntityAsMissionEntity(JOB.customer_ped, true, true)
 						hasMissionPedSpawned = true
 						return
 					elseif GetGameTimer() - startedWaitingTime >= NPC_CALL_WAIT_MIN * 60 * 1000 then
-						exports.globals:notify("Call canceled!", "^3INFO: ^0Taxi call canceled!")
+						exports.globals:notify("Call canceled!", "^3INFO: ^0Ride cancelled!")
 						JOB.isOnJob = false
 						return
 					end
@@ -230,7 +217,7 @@ Citizen.CreateThread(function()
 		-- NOT ON JOB --
 		----------------
 		if NPC_REQUESTS_ENABLED then
-			if not JOB.isOnJob and GetVehiclePedIsIn(playerPed, false) == JOB.taxi then
+			if not JOB.isOnJob then
 				if JOB.end_time then -- had previous job
 					if GetGameTimer() - JOB.end_time >= AUTO_JOB_TIME_DELAY then
 						GenerateNPCJob()
@@ -244,24 +231,24 @@ Citizen.CreateThread(function()
 		----------------------
 		-- ON JOB -- PICKUP --
 		----------------------
-		if JOB.isOnJob and GetVehiclePedIsIn(playerPed, false) == JOB.taxi then
+		if JOB.isOnJob then
 			local playerCoords = GetEntityCoords(playerPed)
 			if Vdist(playerCoords, JOB.start.x, JOB.start.y, JOB.start.z) < 8.5 and not JOB.start.arrived then
-				TaskEnterVehicle(JOB.customer_ped, JOB.taxi, 10000, 1, 1.0, 1, 0)
+				TaskEnterVehicle(JOB.customer_ped, GetVehiclePedIsIn(PlayerPedId(), true), 10000, 1, 1.0, 1, 0)
 				JOB.start.arrived = true
 				--ClearGpsPlayerWaypoint()
 				--SetNewWaypoint(JOB.destination.x, JOB.destination.y)
-				TriggerEvent("swayam:SetWayPointWithAutoDisable", JOB.destination.x, JOB.destination.y, JOB.destination.z, 1, 60, "Taxi Destination")
+				TriggerEvent("swayam:SetWayPointWithAutoDisable", JOB.destination.x, JOB.destination.y, JOB.destination.z, 1, 60, "Ride Destination")
 				TriggerEvent("usa:notify", "Take the customer safely to ~y~" .. JOB.destination.name .. '~s~.')
 			end
 		end
 		---------------------
 		-- ON JOB -- ROUTE --
 		---------------------
-		if JOB.isOnJob and GetVehiclePedIsIn(playerPed, false) == JOB.taxi then
+		if JOB.isOnJob then
 			local playerCoords = GetEntityCoords(playerPed)
 			if Vdist(playerCoords, JOB.destination.x, JOB.destination.y, JOB.destination.z) < 8 and not JOB.destination.arrived then
-				TaskLeaveVehicle(JOB.customer_ped, JOB.taxi, 1)
+				TaskLeaveVehicle(JOB.customer_ped, GetVehiclePedIsIn(PlayerPedId(), true), 0)
 				TaskWanderStandard(JOB.customer_ped, 10.0, 10)
 				JOB.destination.arrived = true
 				JOB.isOnJob = false
@@ -270,9 +257,11 @@ Citizen.CreateThread(function()
 				while securityToken == nil do
 					Wait(1)
 				end
-				TriggerServerEvent("taxiJob:payDriver", Vdist(JOB.start.x, JOB.start.y, JOB.start.z, JOB.destination.x, JOB.destination.y, JOB.destination.z), securityToken)
-				Wait(1200)
-				SetVehicleDoorShut(JOB.taxi, 2, false)
+				TriggerServerEvent("taxiJob:payDriver", Vdist(JOB.start.x, JOB.start.y, JOB.start.z, JOB.destination.x, JOB.destination.y, JOB.destination.z), JOB.pickupDist, securityToken)
+				Wait(2000)
+				for i = 0, 4 do
+					SetVehicleDoorShut(GetVehiclePedIsIn(PlayerPedId(), true), i, true)
+				end
 			end
 		end
 		---------------------------------
@@ -304,11 +293,11 @@ Citizen.CreateThread(function()
 	EnumerateBlips()
 	local timeout = 0
 	while true do
-		for name, data in pairs(taxi_duty_locations) do
-			DrawText3D(data.duty.x, data.duty.y, (data.duty.z + 1.0), 20, '[E] - On/Off Duty (~y~Taxi~s~)')
+		for name, data in pairs(uber_duty_locations) do
+			DrawText3D(data.duty.x, data.duty.y, (data.duty.z + 1.0), 20, '[E] - On/Off Duty (~y~Uber~s~)')
 		end
 		if IsControlJustPressed(0, 38) and not keypressOnHold then
-			for name, data in pairs(taxi_duty_locations) do
+			for name, data in pairs(uber_duty_locations) do
 		        local playerCoords = GetEntityCoords(PlayerPedId(), false)
 			    if GetDistanceBetweenCoords(playerCoords, data.duty.x, data.duty.y, data.duty.z, true) < 3 then
 			    	if timeout > 3 then
@@ -336,38 +325,6 @@ Citizen.CreateThread(function()
 		Wait(1)
 	end
 end)
-
-function SpawnTaxi()
-	local numberHash = -956048545
-	Citizen.CreateThread(function()
-		RequestModel(numberHash)
-		while not HasModelLoaded(numberHash) do
-			Wait(100)
-		end
-		JOB.taxi = CreateVehicle(numberHash, closest_location.spawn.x, closest_location.spawn.y, closest_location.spawn.z, closest_location.spawn.heading, true, false)
-		local plate = GetVehicleNumberPlateText(JOB.taxi)
-		TriggerEvent('persistent-vehicles/register-vehicle', JOB.taxi)
-		TriggerServerEvent("fuel:setFuelAmount", plate, 100)
-		SetVehicleOnGroundProperly(JOB.taxi)
-		SetVehRadioStation(JOB.taxi, "OFF")
-		SetEntityAsMissionEntity(JOB.taxi, true, true)
-		SetVehicleExplodesOnHighExplosionDamage(JOB.taxi, true)
-
-		local vehicle_key = {
-			name = "Key -- " .. GetVehicleNumberPlateText(JOB.taxi),
-			quantity = 1,
-			type = "key",
-			owner = "Downtown Taxi Co.",
-			make = "Vapid",
-			model = "Stanier",
-			plate = GetVehicleNumberPlateText(JOB.taxi)
-		}
-
-		-- give key to owner
-		TriggerServerEvent("garage:giveKey", vehicle_key)
-		TriggerServerEvent('mdt:addTempVehicle', 'Vapid Stainer (Taxi)', "Downtown Cab Co.", plate)
-	end)
-end
 
 RegisterNetEvent('character:setCharacter')
 AddEventHandler('character:setCharacter', function()
@@ -399,22 +356,16 @@ function DrawText3D(x, y, z, distance, text)
   end
 end
 
--- Delete car function borrowed frtom Mr.Scammer's model blacklist, thanks to him!
-function DelVehicle(entity)
-	TriggerEvent('persistent-vehicles/forget-vehicle', entity)
-    Citizen.InvokeNative( 0xEA386986E786A54F, Citizen.PointerValueIntInitialized( entity ) )
-end
-
 function EnumerateBlips()
-	for name, data in pairs(taxi_duty_locations) do
+	for name, data in pairs(uber_duty_locations) do
       	local blip = AddBlipForCoord(data.duty.x, data.duty.y, data.duty.z)
 		SetBlipSprite(blip, 198)
 		SetBlipDisplay(blip, 4)
 		SetBlipScale(blip, 0.75)
 		SetBlipAsShortRange(blip, true)
-		SetBlipColour(blip, 33)
+		SetBlipColour(blip, 39)
 		BeginTextCommandSetBlipName("STRING")
-		AddTextComponentString('Downtown Cab Co.')
+		AddTextComponentString('Uber HQ')
 		EndTextCommandSetBlipName(blip)
     end
 end
@@ -422,9 +373,6 @@ end
 function IsMissionPedWell(JOB)
 	if DoesEntityExist(JOB.customer_ped) then 
 		if IsPedDeadOrDying(JOB.customer_ped, 1) then
-			return false
-		end
-		if JOB.start.arrived == true and Vdist(GetEntityCoords(JOB.customer_ped), GetEntityCoords(JOB.taxi)) > 10.0 then
 			return false
 		end
 	else

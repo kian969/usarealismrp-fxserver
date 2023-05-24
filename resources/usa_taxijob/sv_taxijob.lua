@@ -1,18 +1,15 @@
-local DUTY_FEE = 100
-local BASE_PAY = 150
-
+-- todo: replace securityToken stuff with checks to make sure 1) player was in a taxi driver seat, 2) last trigger was a reasonable time ago, and 3) distance is reasonable
 RegisterServerEvent("taxiJob:payDriver")
-AddEventHandler("taxiJob:payDriver", function(distance, securityToken)
+AddEventHandler("taxiJob:payDriver", function(routeDist, pickupDist, securityToken)
 	local src = source
 	if not exports['salty_tokenizer']:secureServerEvent(GetCurrentResourceName(), src, securityToken) then
 		return false
 	end
 	local char = exports["usa-characters"]:GetCharacter(src)
-	if char.get("job") == "taxi" then
-		local amountRewarded = math.ceil(BASE_PAY + (0.095 * distance))
+	if char.get("job") == "uber" then
+		local amountRewarded = math.ceil((0.65 * routeDist) + (0.25 * pickupDist))
 		char.giveMoney(amountRewarded)
-		TriggerClientEvent('usa:notify', src, 'Request completed, you have received: ~g~$'..amountRewarded..'.00')
-		print("TAXI: " .. GetPlayerName(src) .. "["..GetPlayerIdentifier(src).."] has received amount["..amountRewarded..'] after distance['..distance..'] for taxi request!')
+		TriggerClientEvent('usa:notify', src, 'Request completed, you have received: ~g~$'..exports.globals:comma_value(amountRewarded), '^3INFO: ^0Request completed, you have received: ^2$'..exports.globals:comma_value(amountRewarded))
 	else
 		print("TAXI: SKETCHY TAXI payDriver event trigged by source " .. src .. "!!")
 	end
@@ -21,36 +18,30 @@ end)
 RegisterServerEvent("taxiJob:setJob")
 AddEventHandler("taxiJob:setJob", function()
 	local char = exports["usa-characters"]:GetCharacter(source)
-	if char.get("job") == "taxi" then
+	if char.get("job") == "uber" then
 		TriggerClientEvent("taxiJob:offDuty", source)
 		char.set("job", "civ")
 	else
 		local money = char.get("money")
-		if money <= DUTY_FEE then
-			TriggerClientEvent("usa:notify", source, "You don't have enough money to pay the security fee!")
-			return
-		else
-			local drivers_license = char.getItem("Driver's License")
-			if drivers_license then
-				if drivers_license.status == "valid" then
-					char.removeMoney(DUTY_FEE)
-					char.set("job", "taxi")
-					TriggerClientEvent("taxiJob:onDuty", source)
-					return
-				else
-					TriggerClientEvent("usa:notify", source, "Your driver's license is ~y~suspended~s~!")
-					return
-				end
+		local drivers_license = char.getItem("Driver's License")
+		if drivers_license then
+			if drivers_license.status == "valid" then
+				char.set("job", "uber")
+				TriggerClientEvent("taxiJob:onDuty", source)
+				return
 			else
-				TriggerClientEvent("usa:notify", source, "You do not have a driver's license!")
+				TriggerClientEvent("usa:notify", source, "Your driver's license is ~y~suspended~s~!")
 				return
 			end
+		else
+			TriggerClientEvent("usa:notify", source, "You do not have a driver's license!")
+			return
 		end
 	end
 end)
 
-TriggerEvent('es:addJobCommand', 'togglerequests', {'taxi'}, function(source, args, char)
+TriggerEvent('es:addJobCommand', 'togglerequests', {'uber'}, function(source, args, char)
 	TriggerClientEvent("taxi:toggleNPCRequests", source)
 end, {
-	help = "Toggle receiving local taxi requests"
+	help = "Toggle receiving local ride requests"
 })
