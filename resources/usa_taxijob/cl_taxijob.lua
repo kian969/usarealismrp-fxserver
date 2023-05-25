@@ -25,6 +25,8 @@ local NPC_CALL_WAIT_MIN = 20
 
 local hasMissionPedSpawned = false
 
+local onDuty = false
+
 --------------------
 -- list of models --
 --------------------
@@ -132,6 +134,7 @@ AddEventHandler("taxiJob:onDuty", function()
 	TriggerEvent("chatMessage", "", {}, "Use your cell phone to communicate with customers and/or type ^3/ping [id]^0 to request a person\'s location.")
 	DrawCoolLookingNotificationWithTaxiPic("Have a good shift!")
 	keypressOnHold = false
+	onDuty = true
 end)
 
 RegisterNetEvent("taxiJob:offDuty")
@@ -142,6 +145,7 @@ AddEventHandler("taxiJob:offDuty", function()
 		JOB.isOnJob = false
 		JOB.end_time = GetGameTimer()
 		TriggerEvent("swayam:RemoveWayPoint")
+		onDuty = false
 	end
 end)
 
@@ -216,7 +220,7 @@ Citizen.CreateThread(function()
 		----------------
 		-- NOT ON JOB --
 		----------------
-		if NPC_REQUESTS_ENABLED then
+		if NPC_REQUESTS_ENABLED and onDuty then
 			if not JOB.isOnJob then
 				if JOB.end_time then -- had previous job
 					if GetGameTimer() - JOB.end_time >= AUTO_JOB_TIME_DELAY then
