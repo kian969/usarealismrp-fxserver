@@ -7,7 +7,7 @@ AddEventHandler("taxiJob:payDriver", function(routeDist, pickupDist, securityTok
 	end
 	local char = exports["usa-characters"]:GetCharacter(src)
 	if char.get("job") == "uber" then
-		local amountRewarded = math.ceil((0.65 * routeDist) + (0.25 * pickupDist))
+		local amountRewarded = math.ceil((0.62 * routeDist) + (0.22 * pickupDist))
 		char.giveBank(amountRewarded)
 		TriggerClientEvent('usa:notify', src, 'Request completed, you have received: ~g~$'..exports.globals:comma_value(amountRewarded), '^3INFO: ^0Request completed, you have received: ^2$'..exports.globals:comma_value(amountRewarded))
 	else

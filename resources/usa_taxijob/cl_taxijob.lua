@@ -238,7 +238,13 @@ Citizen.CreateThread(function()
 		if JOB.isOnJob then
 			local playerCoords = GetEntityCoords(playerPed)
 			if Vdist(playerCoords, JOB.start.x, JOB.start.y, JOB.start.z) < 8.5 and not JOB.start.arrived then
-				TaskEnterVehicle(JOB.customer_ped, GetVehiclePedIsIn(PlayerPedId(), true), 10000, 1, 1.0, 1, 0)
+				local curVeh = GetVehiclePedIsIn(playerPed)
+				for i = 2, 0, -1 do
+					if IsVehicleSeatFree(curVeh, i) then
+						TaskEnterVehicle(JOB.customer_ped, curVeh, 10000, i, 1.0, 1, 0)
+						break
+					end
+				end
 				JOB.start.arrived = true
 				--ClearGpsPlayerWaypoint()
 				--SetNewWaypoint(JOB.destination.x, JOB.destination.y)
