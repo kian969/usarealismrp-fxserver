@@ -268,7 +268,7 @@ Citizen.CreateThread(function()
 					Wait(1)
 				end
 				TriggerServerEvent("taxiJob:payDriver", Vdist(JOB.start.x, JOB.start.y, JOB.start.z, JOB.destination.x, JOB.destination.y, JOB.destination.z), JOB.pickupDist, securityToken)
-				Wait(2000)
+				Wait(3000)
 				for i = 0, 4 do
 					SetVehicleDoorShut(GetVehiclePedIsIn(PlayerPedId(), true), i, true)
 				end
@@ -304,7 +304,7 @@ Citizen.CreateThread(function()
 	local timeout = 0
 	while true do
 		for name, data in pairs(uber_duty_locations) do
-			DrawText3D(data.duty.x, data.duty.y, (data.duty.z + 1.0), 20, '[E] - On/Off Duty (~y~Uber~s~)')
+			DrawText3D(data.duty.x, data.duty.y, (data.duty.z + 1.0), 20, '[E] - On/Off Duty (~y~Uber~s~) | [L] - Leaderboard')
 		end
 		if IsControlJustPressed(0, 38) and not keypressOnHold then
 			for name, data in pairs(uber_duty_locations) do
@@ -392,3 +392,16 @@ function IsMissionPedWell(JOB)
 	end
 	return true
 end
+
+RegisterCommand('showLeaderboard', function()
+	local mycoords = GetEntityCoords(PlayerPedId())
+	for locName, info in pairs(uber_duty_locations) do
+		if #(mycoords - vector3(info.duty.x, info.duty.y, info.duty.z)) < 3 then
+			print("fetching leaderboard")
+			TriggerServerEvent("uber:fetchLeaderboard")
+			break
+		end
+	end
+end, false)
+
+RegisterKeyMapping('showLeaderboard', 'Show Leaderboard', 'keyboard', 'l')
