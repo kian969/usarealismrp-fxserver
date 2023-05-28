@@ -161,7 +161,7 @@ Citizen.CreateThread(function()
 
 		local start_location = LOCATIONS[math.random(#LOCATIONS)]
 		local end_location = LOCATIONS[math.random(#LOCATIONS)]
-		while end_location == start_location do
+		while end_location == start_location or #(exports.globals:tableToVector3(end_location) - exports.globals:tableToVector3(start_location)) <= 500 do
 			end_location = LOCATIONS[math.random(#LOCATIONS)]
 		end
 		TriggerEvent("chatMessage", "", {}, "^3^*[DISPATCH] ^r^7A pickup has been requested at ^3" .. start_location.name .. "^7, please respond as soon as possible!")

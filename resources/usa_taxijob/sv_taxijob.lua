@@ -10,13 +10,14 @@ AddEventHandler("taxiJob:payDriver", function(routeDist, pickupDist, securityTok
 		local amountRewarded = math.ceil((0.62 * routeDist) + (0.22 * pickupDist))
 		char.giveBank(amountRewarded)
 		TriggerClientEvent('usa:notify', src, 'Request completed, you have received: ~g~$'..exports.globals:comma_value(amountRewarded), '^3INFO: ^0Request completed, you have received: ^2$'..exports.globals:comma_value(amountRewarded))
-		local prev = exports.essentialmode:getDocument("uber-rides-completed", char.get("_id"))
+		local prev = exports.essentialmode:getDocument("uber-driver-stats", char.get("_id"))
 		if not prev then
 			prev = 0
 		else
 			prev = prev.ridesCompleted
 		end
-		exports.essentialmode:updateDocument("uber-driver-stats", char.get("_id"), { name = char.getName(), ridesCompleted = prev + 1 }, true)
+		local new = prev + 1
+		exports.essentialmode:updateDocument("uber-driver-stats", char.get("_id"), { name = char.getName(), ridesCompleted = new }, true)
 	else
 		print("TAXI: SKETCHY TAXI payDriver event trigged by source " .. src .. "!!")
 	end
@@ -54,7 +55,6 @@ AddEventHandler("uber:fetchLeaderboard", function()
 	table.sort(allDocs, function(a, b)
 		return a.ridesCompleted > b.ridesCompleted
 	end)
-	local only50 = {}
 	TriggerClientEvent("usa:notify", src, false, "^3INFO: ^0Top 10 Uber Drivers:")
 	for i = 1, 10 do
 		if allDocs[i] then
