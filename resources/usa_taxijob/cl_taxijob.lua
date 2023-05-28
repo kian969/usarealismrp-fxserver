@@ -174,8 +174,8 @@ AddEventHandler("taxiJob:offDuty", function()
 		JOB.isOnJob = false
 		JOB.end_time = GetGameTimer()
 		TriggerEvent("swayam:RemoveWayPoint")
-		onDuty = false
 	end
+	onDuty = false
 end)
 
 --------------------------------------
