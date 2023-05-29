@@ -441,5 +441,3 @@ RegisterClientCallback {
 		return false
 	end
 }
-
-TriggerServerEvent("taxiJob:payDriver", 10294, 10294)
