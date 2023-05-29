@@ -1,9 +1,30 @@
--- todo: replace securityToken stuff with checks to make sure 1) player was in a taxi driver seat, 2) last trigger was a reasonable time ago, and 3) distance is reasonable
+local MINIMUM_MINUTES_BETWEEN_REASONABLE_PAY = 2
+local MAX_ROUTE_OR_PICKUP_DIST = 15294
+
+local lastPayTimes = {}
+
 RegisterServerEvent("taxiJob:payDriver")
-AddEventHandler("taxiJob:payDriver", function(routeDist, pickupDist, securityToken)
+AddEventHandler("taxiJob:payDriver", function(routeDist, pickupDist)
 	local src = source
-	if not exports['salty_tokenizer']:secureServerEvent(GetCurrentResourceName(), src, securityToken) then
-		return false
+	if lastPayTimes[src] then
+		if os.difftime(os.time(), lastPayTimes[src]) < MINIMUM_MINUTES_BETWEEN_REASONABLE_PAY * 60 then
+			print("sus uber pay")
+			return
+		end
+	end
+	lastPayTimes[src] = os.time()
+	if routeDist >= MAX_ROUTE_OR_PICKUP_DIST or pickupDist >= MAX_ROUTE_OR_PICKUP_DIST then
+		print("sus route or pickup dist")
+		return
+	end
+	local isClientNearDropOff = TriggerClientCallback {
+		source = src,
+		eventName = "uber:isNearDropOff",
+		args = {}
+	}
+	if not isClientNearDropOff then
+		print("not near drop off!")
+		return
 	end
 	local char = exports["usa-characters"]:GetCharacter(src)
 	if char.get("job") == "uber" then
@@ -18,8 +39,6 @@ AddEventHandler("taxiJob:payDriver", function(routeDist, pickupDist, securityTok
 		end
 		local new = prev + 1
 		exports.essentialmode:updateDocument("uber-driver-stats", char.get("_id"), { name = char.getName(), ridesCompleted = new }, true)
-	else
-		print("TAXI: SKETCHY TAXI payDriver event trigged by source " .. src .. "!!")
 	end
 end)
 
