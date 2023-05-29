@@ -89,3 +89,9 @@ end, {
 })
 
 exports["globals"]:PerformDBCheck("usa_taxijob", "uber-driver-stats", CheckBusinessLeases)
+
+AddEventHandler("playerDropped", function(reason)
+	if lastPayTimes[source] then
+		lastPayTimes[source] = nil
+	end
+end)
