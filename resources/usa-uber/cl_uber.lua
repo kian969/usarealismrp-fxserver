@@ -137,8 +137,8 @@ local LOCATIONS = {
 	{x = -1992.3309326172, y = 451.70986938477, z = 101.79264068604, name = "North Rockford Dr"},
 }
 
-RegisterNetEvent("taxi:toggleNPCRequests")
-AddEventHandler("taxi:toggleNPCRequests", function()
+RegisterNetEvent("uber:toggleNPCRequests")
+AddEventHandler("uber:toggleNPCRequests", function()
 	if NPC_REQUESTS_ENABLED and JOB.isOnJob then
 		JOB.isOnJob = false
 		JOB.end_time = GetGameTimer()
@@ -153,8 +153,8 @@ AddEventHandler("taxi:toggleNPCRequests", function()
 end)
 
 
-RegisterNetEvent("taxiJob:onDuty")
-AddEventHandler("taxiJob:onDuty", function()
+RegisterNetEvent("uber:onDuty")
+AddEventHandler("uber:onDuty", function()
 	keypressOnHold = true
 	TriggerEvent("chatMessage", "", {}, "Welcome! Use your own vehicle to pickup people who request a ride through the 'services' app! Charge them what you want!")
 	Wait(3000)
@@ -168,8 +168,8 @@ AddEventHandler("taxiJob:onDuty", function()
 	onDuty = true
 end)
 
-RegisterNetEvent("taxiJob:offDuty")
-AddEventHandler("taxiJob:offDuty", function()
+RegisterNetEvent("uber:offDuty")
+AddEventHandler("uber:offDuty", function()
 	DrawCoolLookingNotificationWithTaxiPic("You have clocked out! Have a good one!")
 	if JOB.isOnJob then
 		TaskLeaveVehicle(JOB.customer_ped, GetVehiclePedIsIn(PlayerPedId(), true), 1)
@@ -295,7 +295,7 @@ Citizen.CreateThread(function()
 				JOB.isOnJob = false
 				JOB.end_time = GetGameTimer()
 				JOB.customer_ped = nil
-				TriggerServerEvent("taxiJob:payDriver", Vdist(JOB.start.x, JOB.start.y, JOB.start.z, JOB.destination.x, JOB.destination.y, JOB.destination.z), JOB.pickupDist)
+				TriggerServerEvent("uber:payDriver", Vdist(JOB.start.x, JOB.start.y, JOB.start.z, JOB.destination.x, JOB.destination.y, JOB.destination.z), JOB.pickupDist)
 				Wait(3000)
 				for i = 0, 4 do
 					SetVehicleDoorShut(GetVehiclePedIsIn(PlayerPedId(), true), i, true)
@@ -351,7 +351,7 @@ Citizen.CreateThread(function()
 								timeout = 0
 							end)
 						end
-						TriggerServerEvent("taxiJob:setJob")
+						TriggerServerEvent("uber:setJob")
 						JOB.isOnJob = false
 						JOB.end_time = GetGameTimer()
 						TriggerEvent("swayam:RemoveWayPoint")

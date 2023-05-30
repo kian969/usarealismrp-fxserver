@@ -3,8 +3,8 @@ local MAX_ROUTE_OR_PICKUP_DIST = 15294
 
 local lastPayTimes = {}
 
-RegisterServerEvent("taxiJob:payDriver")
-AddEventHandler("taxiJob:payDriver", function(routeDist, pickupDist)
+RegisterServerEvent("uber:payDriver")
+AddEventHandler("uber:payDriver", function(routeDist, pickupDist)
 	local src = source
 	if lastPayTimes[src] then
 		if os.difftime(os.time(), lastPayTimes[src]) < MINIMUM_MINUTES_BETWEEN_REASONABLE_PAY * 60 then
@@ -42,11 +42,11 @@ AddEventHandler("taxiJob:payDriver", function(routeDist, pickupDist)
 	end
 end)
 
-RegisterServerEvent("taxiJob:setJob")
-AddEventHandler("taxiJob:setJob", function()
+RegisterServerEvent("uber:setJob")
+AddEventHandler("uber:setJob", function()
 	local char = exports["usa-characters"]:GetCharacter(source)
 	if char.get("job") == "uber" then
-		TriggerClientEvent("taxiJob:offDuty", source)
+		TriggerClientEvent("uber:offDuty", source)
 		char.set("job", "civ")
 	else
 		local money = char.get("money")
@@ -54,7 +54,7 @@ AddEventHandler("taxiJob:setJob", function()
 		if drivers_license then
 			if drivers_license.status == "valid" then
 				char.set("job", "uber")
-				TriggerClientEvent("taxiJob:onDuty", source)
+				TriggerClientEvent("uber:onDuty", source)
 				return
 			else
 				TriggerClientEvent("usa:notify", source, "Your driver's license is ~y~suspended~s~!")
@@ -77,13 +77,13 @@ AddEventHandler("uber:fetchLeaderboard", function()
 	TriggerClientEvent("usa:notify", src, false, "^3INFO: ^0Top 10 Uber Drivers:")
 	for i = 1, 10 do
 		if allDocs[i] then
-			TriggerClientEvent("usa:notify", src, false, allDocs[i].name .. ": " .. allDocs[i].ridesCompleted)
+			TriggerClientEvent("usa:notify", src, false, i .. ": " .. allDocs[i].name .. ": " .. allDocs[i].ridesCompleted)
 		end
 	end
 end)
 
 TriggerEvent('es:addJobCommand', 'togglerequests', {'uber'}, function(source, args, char)
-	TriggerClientEvent("taxi:toggleNPCRequests", source)
+	TriggerClientEvent("uber:toggleNPCRequests", source)
 end, {
 	help = "Toggle receiving local ride requests"
 })
@@ -120,7 +120,7 @@ end, {
 	}
 })
 
-exports["globals"]:PerformDBCheck("usa_taxijob", "uber-driver-stats", CheckBusinessLeases)
+exports["globals"]:PerformDBCheck("usa-uber", "uber-driver-stats", CheckBusinessLeases)
 
 AddEventHandler("playerDropped", function(reason)
 	if lastPayTimes[source] then

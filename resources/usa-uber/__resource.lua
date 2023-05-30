@@ -3,8 +3,8 @@ shared_scripts {
 }
 
 client_scripts {
-    'cl_taxijob.lua'
+    'cl_uber.lua'
 }
 server_scripts {
-    'sv_taxijob.lua'
+    'sv_uber.lua'
 }
