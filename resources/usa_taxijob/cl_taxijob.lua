@@ -159,8 +159,10 @@ AddEventHandler("taxiJob:onDuty", function()
 	TriggerEvent("chatMessage", "", {}, "Welcome! Use your own vehicle to pickup people who request a ride through the 'services' app! Charge them what you want!")
 	Wait(3000)
 	TriggerEvent("chatMessage", "", {}, "Locals can also randomly call you while you are on duty. Use ^3/togglerequests^0 to stop or start receiving requests from locals.")
-	Citizen.Wait(3000)
+	Wait(3000)
 	TriggerEvent("chatMessage", "", {}, "Use your cell phone to communicate with customers and/or type ^3/ping [id]^0 to request a person\'s location.")
+	Wait(3000)
+	TriggerEvent("chatMessage", "", {}, "You can have people use ^3/payuber^0 to give you money so you don't need to share your contact info.")
 	DrawCoolLookingNotificationWithTaxiPic("Have a good shift!")
 	keypressOnHold = false
 	onDuty = true

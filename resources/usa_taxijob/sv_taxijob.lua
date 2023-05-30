@@ -88,6 +88,38 @@ end, {
 	help = "Toggle receiving local ride requests"
 })
 
+TriggerEvent('es:addCommand', 'payuber', function(src, args, char)
+	local target = tonumber(args[2])
+	if target then 
+		if GetPlayerName(target) then
+			local targetChar = exports["usa-characters"]:GetCharacter(src)
+			if targetChar.get("job") == "uber" then
+				local amount = tonumber(args[3])
+				if amount and amount > 0 then
+					if char.hasEnoughMoneyOrBank(amount) then
+						char.removeMoneyOrBank(amount)
+						targetChar.giveBank(amount)
+						TriggerClientEvent("usa:notify", src, "Sent: $" .. exports.globals:comma_value(amount), "^3Uber: ^0You sent $" .. exports.globals:comma_value(amount))
+						TriggerClientEvent("usa:notify", target, "Received: $" .. exports.globals:comma_value(amount), "^3Uber: ^0You received $" .. exports.globals:comma_value(amount))
+					else
+						TriggerClientEvent("usa:notify", src, "Don\'t have that much")
+					end
+				end
+			else
+				TriggerClientEvent("usa:notify", src, "Not a valid uber driver")
+			end
+		else
+			TriggerClientEvent("usa:notify", src, "Not a valid uber driver")
+		end
+	end
+end, {
+	help = "Pay your uber driver",
+	params = {
+		{ name = "ID", help = "The target player's ID" },
+		{ name = "amount", help = "The desired amount" }
+	}
+})
+
 exports["globals"]:PerformDBCheck("usa_taxijob", "uber-driver-stats", CheckBusinessLeases)
 
 AddEventHandler("playerDropped", function(reason)
