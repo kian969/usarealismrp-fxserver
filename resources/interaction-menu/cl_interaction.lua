@@ -1265,18 +1265,18 @@ function interactionMenuUse(index, itemName, wholeItem)
 	elseif itemName == "Car Wash Kit" then
 		local nearestVeh = lib.getClosestVehicle(GetEntityCoords(PlayerPedId()), 3, false)
 		local success = lib.skillCheck({'easy', 'easy', 'easy', 'easy', 'easy', 'medium', 'medium', 'medium'})
-		TriggerEvent("dpemotes:command", 'e', GetPlayerServerId(PlayerId()), {"clean2"})
-		lib.progressBar({
-            duration = 60000,
-            label = 'Cleaning vehicle',
-			canCancel = true,
-            disable = {
-                car = true,
-                move = true,
-                combat = true,
-            },
-        })
 		if success then
+			TriggerEvent("dpemotes:command", 'e', GetPlayerServerId(PlayerId()), {"clean2"})
+			lib.progressBar({
+				duration = 60000,
+				label = 'Cleaning vehicle',
+				canCancel = true,
+				disable = {
+					car = true,
+					move = true,
+					combat = true,
+				},
+			})
 			NetworkRequestControlOfEntity(nearestVeh)
 			SetVehicleDirtLevel(nearestVeh, 0.0)
 			exports.globals:notify("Vehicle clean!", "^3INFO: ^0Vehicle cleaned!")
