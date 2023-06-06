@@ -753,7 +753,7 @@ RegisterNUICallback('reloadWeapon', function(data, cb)
 end)
 
 RegisterNUICallback('unloadWeapon', function(data, cb)
-	TriggerEvent("ammo:ejectMag", data)
+	TriggerEvent("ammo:ejectAmmo", data)
 end)
 
 RegisterNUICallback('notification', function(data, cb)
