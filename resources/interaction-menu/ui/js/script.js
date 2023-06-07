@@ -691,6 +691,7 @@ function CloseMenu() {
     interactionMenu.showSecondaryInventory = false;
     interactionMenu.contextMenu.showContextMenu = false;
     interactionMenu.inputBox.show = false;
+    interactionMenu.inputBox.value = 1;
     interactionMenu.locked = false;
     interactionMenu.tooltip.visible = false;
     navigationHistory = [{ name: "Home", children: menuItems }];
