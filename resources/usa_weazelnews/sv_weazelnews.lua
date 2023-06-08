@@ -175,8 +175,3 @@ function generate_random_number_plate()
 	number_plate = number_plate .. charset.numbers[math.random(#charset.numbers)] -- number
 	return number_plate
 end
-
-Citizen.CreateThread(function()
-	Wait(20000)
-	TriggerClientEvent('weazelnews:911call', 1, 'test', -356.0, 6182.0, 31.0, 'test')
-end)
