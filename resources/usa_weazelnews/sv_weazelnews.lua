@@ -86,7 +86,6 @@ AddEventHandler("weazelnews:verifySpawnVan", function(locationName)
 	end
 end)
 
--- todo: make sure pay is still good (need raising?)
 RegisterServerEvent('weazelnews:completeCall')
 AddEventHandler('weazelnews:completeCall', function(distance)
 	if not distance then
