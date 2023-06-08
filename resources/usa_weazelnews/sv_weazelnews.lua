@@ -112,7 +112,7 @@ AddEventHandler('weazelnews:completeCall', function(distance)
 	lastRewardedTimes[source] = os.time()
 	local char = exports["usa-characters"]:GetCharacter(source)
 	if char.get("job") == "reporter" then
-		local amountRewarded = math.ceil(BASE_PAY + (0.05 * distance))
+		local amountRewarded = math.ceil(BASE_PAY + (0.50 * distance))
 		char.giveMoney(amountRewarded)
 		TriggerClientEvent('usa:notify', source, 'Call completed, you have received: ~y~$'..amountRewarded..'.00')
 		print("WEAZEL_NEWS: " .. GetPlayerName(source) .. "["..GetPlayerIdentifier(source).."] has received amount["..amountRewarded..'] after distance['..distance..'] for 911 call!')
@@ -177,6 +177,6 @@ function generate_random_number_plate()
 end
 
 Citizen.CreateThread(function()
-	Wait(10000)
+	Wait(20000)
 	TriggerClientEvent('weazelnews:911call', 1, 'test', -356.0, 6182.0, 31.0, 'test')
 end)
