@@ -2,7 +2,7 @@
 --# for USA REALISM rep
 --# requres 'globals' resource to send notifications and usa_rp to change their model, check their jail time on join, and stuff like that
 
-local releaseX, releaseY, releaseZ = 1840.3393554688, 2589.9916992188, 46.014316558838
+local releaseX, releaseY, releaseZ = 1847.086, 2585.990, 45.672
 local assigned_cell = nil
 local tabletObject
 
@@ -100,7 +100,7 @@ AddEventHandler("jail:jail", function(cell, gender)
   DoScreenFadeOut(1000)
   Citizen.Wait(1000)
   if not cell then
-    cell = {x = 1756.6555175781, y = 2483.0612792969, z = 45.740749359131, occupant = nil}
+    cell = {x = 1779.7791748047, y = 2580.640625, z = 45.792705535889, occupant = nil}
   end
   RequestCollisionAtCoord(cell.x, cell.y, cell.z)
   Wait(1000)
