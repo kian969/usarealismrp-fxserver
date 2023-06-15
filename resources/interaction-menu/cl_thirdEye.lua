@@ -514,7 +514,7 @@ AddEventHandler("thirdEye:updateActionsForNewJob", function(job)
     end
 end)
 
-target.addPoint("911CallPoint", "911", "fas fa-siren", vector3(1772.273, 2495.202, 45.74072), 1, function() end, {
+target.addPoint("911CallPoint", "911", "fas fa-siren", vector3(1776.873, 2572.845, 45.79781), 1, function() end, {
     {
         name = 'call',
         label = 'Call 911',
