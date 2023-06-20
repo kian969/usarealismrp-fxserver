@@ -28,6 +28,7 @@ AddEventHandler("arena:joinRandom", function()
     -- add to next game queue
     currentGame.queue[source] = newPlayer
     TriggerClientEvent("usa:notify", source, "Joined the queue", "^3INFO: ^0You joined the arena queue! You will be assigned a random team.")
+    print("new queue: " .. json.encode(currentGame.queue) .. ", length: " .. tableCount(currentGame.queue))
 end)
 
 RegisterServerEvent("arena:joinTeam1")
@@ -130,18 +131,18 @@ AddEventHandler("arena:teamInfo", function()
     local count = 0
     for src, info in pairs(currentGame.team1) do
         if count == 0 then
-            team1Str = currentGame.team1[i].name
+            team1Str = info.name
         else
-            team1Str = team1Str .. ", " .. currentGame.team1[i].name
+            team1Str = team1Str .. ", " .. info.name
         end
         count = count + 1
     end
     count = 0
     for src, info in pairs(currentGame.team2) do
         if count == 0 then
-            team1Str = currentGame.team2[i].name
+            team2Str = info.name
         else
-            team1Str = team1Str .. ", " .. currentGame.team2[i].name
+            team2Str = team2Str .. ", " .. info.name
         end
         count = count + 1
     end
@@ -186,12 +187,13 @@ CreateThread(function()
                     triggerPreGameStartClientActions()
                     -- start game
                     currentGame.startTime = os.time()
+                    print("game started state: " .. json.encode(currentGame))
                 end
             else
                 -- watch for game ending events
                 local team1AliveCount = getAliveCount(currentGame.team1)
                 local team2AliveCount = getAliveCount(currentGame.team2)
-                if team1AliveCount <= 0 or team2AliveCount <= 0 or #currentGame.team1 <= 0 or #currentGame.team2 <= 0 then
+                if team1AliveCount <= 0 or team2AliveCount <= 0 or tableCount(currentGame.team1) <= 0 or tableCount(currentGame.team2) <= 0 then
                     print("game ended!")
                     -- notify teams
                     local winningTeam = "undefined"
@@ -201,12 +203,12 @@ CreateThread(function()
                         winningTeam = "Team 1"
                     end
                     local key = winningTeam:gsub("%s+", ""):lower()
-                    for i = 1, #currentGame[key] do
-                        TriggerClientEvent("arena:playSound", currentGame[key][i].source, "DLC_VW_WIN_CHIPS", "dlc_vw_table_games_frontend_sounds")
+                    for src, info in pairs(currentGame[key]) do
+                        TriggerClientEvent("arena:playSound", src, "DLC_VW_WIN_CHIPS", "dlc_vw_table_games_frontend_sounds")
                     end
                     notifyPlayers(winningTeam .. " won the game! Good game!")
                     -- notify if not enough players
-                    if #currentGame.team1 <= 0 or #currentGame.team2 <= 0 then
+                    if tableCount(currentGame.team1) <= 0 or tableCount(currentGame.team2) <= 0 then
                         notifyPlayers("Not enough players to start round, waiting for another player (need at least 2)")
                     end
                     -- reset teams for next round
@@ -286,23 +288,23 @@ function resetGame()
 end
 
 function assignTeams()
-    for i = #currentGame.queue, 1, -1 do
-        if not currentGame.queue[i].chosenTeam then
+    for src, info in pairs(currentGame.queue) do
+        if not info.chosenTeam then
             -- choose random team
             if tableCount(currentGame.team1) <= tableCount(currentGame.team2) then
-                currentGame.team1[currentGame.queue[i].source] = currentGame.queue[i]
-                notifyPlayers(currentGame.queue[i].name .. " has joined team 1")
+                currentGame.team1[info.source] = info
+                notifyPlayers(info.name .. " has joined team 1")
             else
-                currentGame.team2[currentGame.queue[i].source] = currentGame.queue[i]
-                notifyPlayers(currentGame.queue[i].name .. " has joined team 2")
+                currentGame.team2[info.source] = info
+                notifyPlayers(info.name .. " has joined team 2")
             end
         else
             -- put on chosen team
-            local key = "team" .. currentGame.queue[i].chosenTeam
-            currentGame[key][currentGame.queue[i].source] = currentGame.queue[i]
-            notifyPlayers(currentGame.queue[i].name .. " has joined team " .. currentGame.queue[i].chosenTeam)
+            local key = "team" .. info.chosenTeam
+            currentGame[key][info.source] = info
+            notifyPlayers(info.name .. " has joined team " .. info.chosenTeam)
         end
-        table.remove(currentGame.queue, i)
+        currentGame.queue[src] = nil
     end
 end
 
