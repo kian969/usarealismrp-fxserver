@@ -137,21 +137,6 @@ CreateThread(function()
 	end
 end)
 
---[[
-CreateThread(function()
-	while true do
-		if isPlaying then
-			local mycoords = GetEntityCoords(PlayerPedId())
-			local dist = #(mycoords - ARENA_COORDS)
-			if dist >= 125 then
-				TriggerEvent("arena:leave")
-			end
-		end
-		Wait(1)
-	end
-end)
---]]
-
 local arenaPolyZone = PolyZone:Create({
 	vector2(-1303.752, -3414.313),
 	vector2(-1271.66, -3361.457),
