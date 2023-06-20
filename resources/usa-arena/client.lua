@@ -17,19 +17,29 @@ exports.globals:createCulledNonNetworkedPedAtCoords("a_m_y_latino_01", {
 				event = "arena:leaderboard"
 			},
 			{           
-				title = "Join the arena",
+				title = "Team Info",
+                description = "Show current team info",
+				event = "arena:teamInfo"
+			},
+			{           
+				title = "Join a random team",
                 description = "Get assigned a team and start playing!",
-				event = "arena:join"
+				event = "arena:joinRandom"
+			},
+			{           
+				title = "Join team 1",
+                description = "Join team 1 and start playing!",
+				event = "arena:joinTeam1"
+			},
+			{           
+				title = "Join team 2",
+                description = "Join team 2 and start playing!",
+				event = "arena:joinTeam2"
 			},
 			{           
 				title = "Leave the arena",
                 description = "Leave your team",
 				event = "arena:leave"
-			},
-			{           
-				title = "Team Info",
-                description = "Show current team info",
-				event = "arena:teamInfo"
 			},
 		}
 	})
@@ -40,9 +50,23 @@ RegisterCommand("arenajoin", function()
 	TriggerEvent("arena:join")
 end, true)
 
-RegisterNetEvent("arena:join")
-AddEventHandler("arena:join", function()
-    TriggerServerEvent("arena:join")
+RegisterNetEvent("arena:joinRandom")
+AddEventHandler("arena:joinRandom", function()
+    TriggerServerEvent("arena:joinRandom")
+	isPlaying = true
+	TriggerEvent("arena:setPlayingArenaState", true)
+end)
+
+RegisterNetEvent("arena:joinTeam1")
+AddEventHandler("arena:joinTeam1", function()
+    TriggerServerEvent("arena:joinTeam1")
+	isPlaying = true
+	TriggerEvent("arena:setPlayingArenaState", true)
+end)
+
+RegisterNetEvent("arena:joinTeam2")
+AddEventHandler("arena:joinTeam2", function()
+    TriggerServerEvent("arena:joinTeam2")
 	isPlaying = true
 	TriggerEvent("arena:setPlayingArenaState", true)
 end)

@@ -1,4 +1,6 @@
 -- todo: noise when winning the round
+-- todo: support different maps
+-- todo: support different game modes
 
 local currentGame = {
     startTime = nil,
@@ -27,8 +29,8 @@ function isOnAnyTeam(source)
     return false
 end
 
-RegisterServerEvent("arena:join")
-AddEventHandler("arena:join", function()
+RegisterServerEvent("arena:joinRandom")
+AddEventHandler("arena:joinRandom", function()
     if isOnAnyTeam(source) then
         TriggerClientEvent("usa:notify", source, "Already on a team!")
         return
@@ -41,6 +43,44 @@ AddEventHandler("arena:join", function()
     -- add to next game queue
     table.insert(currentGame.queue, newPlayer)
     TriggerClientEvent("usa:notify", source, "Joined the queue", "^3INFO: ^0You joined the arena queue! You will be assigned a random team.")
+end)
+
+RegisterServerEvent("arena:joinTeam1")
+AddEventHandler("arena:joinTeam1", function()
+    if isOnAnyTeam(source) then
+        TriggerClientEvent("usa:notify", source, "Already on a team!")
+        return
+    end
+    if #currentGame.team1 - #currentGame.team2 > 2 then
+        TriggerClientEvent("usa:notify", source, "Team full!")
+        return
+    end
+    local char = exports["usa-characters"]:GetCharacter(source)
+    local newPlayer = {
+        source = source,
+        name = char.getName(),
+        chosenTeam = 1
+    }
+    table.insert(currentGame.queue, newPlayer)
+end)
+
+RegisterServerEvent("arena:joinTeam2")
+AddEventHandler("arena:joinTeam2", function()
+    if isOnAnyTeam(source) then
+        TriggerClientEvent("usa:notify", source, "Already on a team!")
+        return
+    end
+    if #currentGame.team2 - #currentGame.team1 > 2 then
+        TriggerClientEvent("usa:notify", source, "Team full!")
+        return
+    end
+    local char = exports["usa-characters"]:GetCharacter(source)
+    local newPlayer = {
+        source = source,
+        name = char.getName(),
+        chosenTeam = 2
+    }
+    table.insert(currentGame.queue, newPlayer)
 end)
 
 RegisterServerEvent("arena:leave")
@@ -156,7 +196,7 @@ CreateThread(function()
             lastCheck = os.time()
             if not currentGame.startTime then
                 -- assign queued players random team
-                assignRandomTeams()
+                assignTeams()
                 -- start game
                 if #currentGame.team1 > 0 and #currentGame.team2 > 0 then
                     print("starting game!")
@@ -277,14 +317,22 @@ function resetGame()
     end
 end
 
-function assignRandomTeams()
+function assignTeams()
     for i = #currentGame.queue, 1, -1 do
-        if #currentGame.team1 <= #currentGame.team2 then
-            table.insert(currentGame.team1, currentGame.queue[i])
-            notifyPlayers(currentGame.queue[i].name .. " has joined team 1")
+        if not currentGame.queue[i].chosenTeam then
+            -- choose random team
+            if #currentGame.team1 <= #currentGame.team2 then
+                table.insert(currentGame.team1, currentGame.queue[i])
+                notifyPlayers(currentGame.queue[i].name .. " has joined team 1")
+            else
+                table.insert(currentGame.team2, currentGame.queue[i])
+                notifyPlayers(currentGame.queue[i].name .. " has joined team 2")
+            end
         else
-            table.insert(currentGame.team2, currentGame.queue[i])
-            notifyPlayers(currentGame.queue[i].name .. " has joined team 2")
+            -- put on chosen team
+            local key = "team" .. currentGame.queue[i].chosenTeam
+            table.insert(currentGame[key], currentGame.queue[i])
+            notifyPlayers(currentGame.queue[i].name .. " has joined team " .. currentGame.queue[i].chosenTeam)
         end
         table.remove(currentGame.queue, i)
     end
