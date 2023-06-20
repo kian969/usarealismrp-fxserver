@@ -108,6 +108,11 @@ AddEventHandler("arena:gameEnded", function()
 	wasArmed = false
 end)
 
+RegisterNetEvent("arena:playSound")
+AddEventHandler("arena:playSound", function(name, dict)
+	PlaySoundFrontend(-1, "DLC_VW_WIN_CHIPS", "dlc_vw_table_games_frontend_sounds", 1)
+end)
+
 CreateThread(function()
 	while true do
 		if isPlaying then

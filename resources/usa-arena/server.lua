@@ -228,6 +228,10 @@ CreateThread(function()
                     else
                         winningTeam = "Team 1"
                     end
+                    local key = winningTeam:gsub("%s+", ""):lower()
+                    for i = 1, #currentGame[key] do
+                        TriggerClientEvent("arena:playSound", currentGame[key][i].source, "DLC_VW_WIN_CHIPS", "dlc_vw_table_games_frontend_sounds")
+                    end
                     notifyPlayers(winningTeam .. " won the game! Good game!")
                     -- notify if not enough players
                     if #currentGame.team1 <= 0 or #currentGame.team2 <= 0 then
