@@ -1,4 +1,3 @@
--- todo: noise when winning the round
 -- todo: support different maps
 -- todo: support different game modes
 
