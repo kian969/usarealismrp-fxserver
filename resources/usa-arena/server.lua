@@ -14,24 +14,10 @@ local ARENA = {
     team2Start = vector3(-1257.257, -3373.275, 13.94016)
 }
 
-function isOnAnyTeam(source)
-    for i = 1, #currentGame.team1 do
-        if currentGame.team1[i].source == source then
-            return true
-        end
-    end
-    for i = 1, #currentGame.team2 do
-        if currentGame.team2[i].source == source then
-            return true
-        end
-    end
-    return false
-end
-
 RegisterServerEvent("arena:joinRandom")
 AddEventHandler("arena:joinRandom", function()
-    if isOnAnyTeam(source) then
-        TriggerClientEvent("usa:notify", source, "Already on a team!")
+    if currentGame.queue[source] or currentGame.team1[source] or currentGame.team2[source] then
+        TriggerClientEvent("usa:notify", source, "Already on a team or in queue!")
         return
     end
     local char = exports["usa-characters"]:GetCharacter(source)
@@ -40,17 +26,17 @@ AddEventHandler("arena:joinRandom", function()
         name = char.getName()
     }
     -- add to next game queue
-    table.insert(currentGame.queue, newPlayer)
+    currentGame.queue[source] = newPlayer
     TriggerClientEvent("usa:notify", source, "Joined the queue", "^3INFO: ^0You joined the arena queue! You will be assigned a random team.")
 end)
 
 RegisterServerEvent("arena:joinTeam1")
 AddEventHandler("arena:joinTeam1", function()
-    if isOnAnyTeam(source) then
-        TriggerClientEvent("usa:notify", source, "Already on a team!")
+    if currentGame.queue[source] or currentGame.team1[source] or currentGame.team2[source] then
+        TriggerClientEvent("usa:notify", source, "Already on a team or in queue!")
         return
     end
-    if #currentGame.team1 - #currentGame.team2 > 2 then
+    if tableCount(currentGame.team1) - tableCount(currentGame.team2) > 2 then
         TriggerClientEvent("usa:notify", source, "Team full!")
         return
     end
@@ -60,16 +46,16 @@ AddEventHandler("arena:joinTeam1", function()
         name = char.getName(),
         chosenTeam = 1
     }
-    table.insert(currentGame.queue, newPlayer)
+    currentGame.queue[source] = newPlayer
 end)
 
 RegisterServerEvent("arena:joinTeam2")
 AddEventHandler("arena:joinTeam2", function()
-    if isOnAnyTeam(source) then
-        TriggerClientEvent("usa:notify", source, "Already on a team!")
+    if currentGame.queue[source] or currentGame.team1[source] or currentGame.team2[source] then
+        TriggerClientEvent("usa:notify", source, "Already on a team or in queue!")
         return
     end
-    if #currentGame.team2 - #currentGame.team1 > 2 then
+    if tableCount(currentGame.team2) - tableCount(currentGame.team1) > 2 then
         TriggerClientEvent("usa:notify", source, "Team full!")
         return
     end
@@ -79,47 +65,30 @@ AddEventHandler("arena:joinTeam2", function()
         name = char.getName(),
         chosenTeam = 2
     }
-    table.insert(currentGame.queue, newPlayer)
+    currentGame.queue[source] = newPlayer
 end)
 
 RegisterServerEvent("arena:leave")
 AddEventHandler("arena:leave", function()
-    for i = 1, #currentGame.team1 do
-        if currentGame.team1[i].source == source then
-            notifyPlayers(currentGame.team1[i].name .. " left the arena")
-            table.remove(currentGame.team1, i)
-            return
-        end
-    end
-    for i = 1, #currentGame.team2 do
-        if currentGame.team2[i].source == source then
-            notifyPlayers(currentGame.team2[i].name .. " left the arena")
-            table.remove(currentGame.team2, i)
-            return
-        end
-    end
+    notifyPlayers(getPlayerName(source) .. " left the arena")
+    currentGame.queue[source] = nil
+    currentGame.team1[source] = nil
+    currentGame.team2[source] = nil
 end)
 
 RegisterServerEvent("arena:died")
 AddEventHandler("arena:died", function(killerSource)
     -- set death info for player
-    for i = 1, #currentGame.team1 do
-        if currentGame.team1[i].source == source then
-            currentGame.team1[i].deathInfo = {
-                diedTime = os.time(),
-                killedBy = killerSource
-            }
-            break
-        end
-    end
-    for i = 1, #currentGame.team2 do
-        if currentGame.team2[i].source == source then
-            currentGame.team2[i].deathInfo = {
-                diedTime = os.time(),
-                killedBy = killerSource
-            }
-            break
-        end
+    if currentGame.team1[source] then
+        currentGame.team1[source].deathInfo = {
+            diedTime = os.time(),
+            killedBy = killerSource
+        }
+    elseif currentGame.team2[source] then
+        currentGame.team2[source].deathInfo = {
+            diedTime = os.time(),
+            killedBy = killerSource
+        }
     end
     -- notify
     local killerChar = exports["usa-characters"]:GetCharacter(killerSource)
@@ -157,20 +126,24 @@ RegisterServerEvent("arena:teamInfo")
 AddEventHandler("arena:teamInfo", function()
     TriggerClientEvent("usa:notify", source, false, "^3INFO: ^0Current teams:")
     local team1Str = ""
-    for i = 1, #currentGame.team1 do
-        if i == 1 then
+    local team2Str = ""
+    local count = 0
+    for src, info in pairs(currentGame.team1) do
+        if count == 0 then
             team1Str = currentGame.team1[i].name
         else
             team1Str = team1Str .. ", " .. currentGame.team1[i].name
         end
+        count = count + 1
     end
-    local team2Str = ""
-    for i = 1, #currentGame.team2 do
-        if i == 1 then
-            team2Str = currentGame.team2[i].name
+    count = 0
+    for src, info in pairs(currentGame.team2) do
+        if count == 0 then
+            team1Str = currentGame.team2[i].name
         else
-            team2Str = team2Str .. ", " .. currentGame.team2[i].name
+            team1Str = team1Str .. ", " .. currentGame.team2[i].name
         end
+        count = count + 1
     end
     TriggerClientEvent("usa:notify", source, false, "Team 1: " .. team1Str)
     TriggerClientEvent("usa:notify", source, false, "Team 2: " .. team2Str)
@@ -197,7 +170,7 @@ CreateThread(function()
                 -- assign queued players random team
                 assignTeams()
                 -- start game
-                if #currentGame.team1 > 0 and #currentGame.team2 > 0 then
+                if tableCount(currentGame.team1) > 0 and tableCount(currentGame.team2) > 0 then
                     print("starting game!")
                     -- notify players
                     notifyPlayers("Next game starting in 30 seconds")
@@ -246,33 +219,31 @@ CreateThread(function()
 end)
 
 function notifyPlayers(msg)
-    for i = 1, #currentGame.team1 do
-        TriggerClientEvent("usa:notify", currentGame.team1[i].source, false, "^3INFO: ^0" .. msg)
-    end
-    for i = 1, #currentGame.team2 do
-        TriggerClientEvent("usa:notify", currentGame.team2[i].source, false, "^3INFO: ^0" .. msg)
+    local teams = { "team1", "team2" }
+    for i = 1, #teams do
+        for src, info in pairs(currentGame[teams[i]]) do
+            TriggerClientEvent("usa:notify", src, false, "^3INFO: ^0" .. msg)
+        end
     end
 end
 
 function teleportPlayersIntoArena()
-    for i = 1, #currentGame.team1 do
-        TriggerClientEvent("arena:gameStarting", currentGame.team1[i].source)
-        SetEntityCoords(GetPlayerPed(currentGame.team1[i].source), ARENA.team1Start.x, ARENA.team1Start.y, ARENA.team1Start.z)
-        healAndRevivePlayer(currentGame.team1[i].source)
-        print("healed and revived player on team 1 with source: " .. currentGame.team1[i].source)
-    end
-    for i = 1, #currentGame.team2 do
-        TriggerClientEvent("arena:gameStarting", currentGame.team2[i].source)
-        SetEntityCoords(GetPlayerPed(currentGame.team2[i].source), ARENA.team2Start.x, ARENA.team2Start.y, ARENA.team2Start.z)
-        healAndRevivePlayer(currentGame.team2[i].source)
-        print("healed and revived player on team 2 with source: " .. currentGame.team2[i].source)
+    local teams = { "team1", "team2" }
+    for i = 1, #teams do
+        for src, info in pairs(currentGame[teams[i]]) do
+            TriggerClientEvent("arena:gameStarting", src)
+            local startKey = teams[i] .. "Start"
+            SetEntityCoords(GetPlayerPed(src), ARENA[startKey].x, ARENA[startKey].y, ARENA[startKey].z)
+            healAndRevivePlayer(src)
+            print("healed and revived player on team 1 with source: " .. src)
+        end
     end
 end
 
 function getAliveCount(team)
     local count = 0
-    for i = 1, #team do
-        if not team[i].deathInfo then
+    for src, info in pairs(team) do
+        if not info.deathInfo then
             count = count + 1
         end
     end
@@ -303,20 +274,14 @@ function healAndRevivePlayer(src)
 end
 
 function resetGame()
+    -- reset state and trigger client game ended stuff
     currentGame.startTime = nil
-    -- reset death state
-    for i = 1, #currentGame.team1 do
-        currentGame.team1[i].deathInfo = nil
-    end
-    for i = 1, #currentGame.team2 do
-        currentGame.team2[i].deathInfo = nil
-    end
-    -- trigger game ended client stuff
-    for i = 1, #currentGame.team1 do
-        TriggerClientEvent("arena:gameEnded", currentGame.team1[i].source)
-    end
-    for i = 1, #currentGame.team2 do
-        TriggerClientEvent("arena:gameEnded", currentGame.team2[i].source)
+    local teams = { "team1", "team2" }
+    for i = 1, #teams do
+        for src, info in pairs(currentGame[teams[i]]) do
+            currentGame[teams[i]][src].deathInfo = nil
+            TriggerClientEvent("arena:gameEnded", src)
+        end
     end
 end
 
@@ -324,17 +289,17 @@ function assignTeams()
     for i = #currentGame.queue, 1, -1 do
         if not currentGame.queue[i].chosenTeam then
             -- choose random team
-            if #currentGame.team1 <= #currentGame.team2 then
-                table.insert(currentGame.team1, currentGame.queue[i])
+            if tableCount(currentGame.team1) <= tableCount(currentGame.team2) then
+                currentGame.team1[currentGame.queue[i].source] = currentGame.queue[i]
                 notifyPlayers(currentGame.queue[i].name .. " has joined team 1")
             else
-                table.insert(currentGame.team2, currentGame.queue[i])
+                currentGame.team2[currentGame.queue[i].source] = currentGame.queue[i]
                 notifyPlayers(currentGame.queue[i].name .. " has joined team 2")
             end
         else
             -- put on chosen team
             local key = "team" .. currentGame.queue[i].chosenTeam
-            table.insert(currentGame[key], currentGame.queue[i])
+            currentGame[key][currentGame.queue[i].source] = currentGame.queue[i]
             notifyPlayers(currentGame.queue[i].name .. " has joined team " .. currentGame.queue[i].chosenTeam)
         end
         table.remove(currentGame.queue, i)
@@ -346,27 +311,38 @@ function triggerPreGameStartClientActions()
     while os.difftime(os.time(), startWait) <= 1 do
         Wait(1)
     end
-    for i = 1, #currentGame.team1 do
-        TriggerClientEvent("arena:gameStarted", currentGame.team1[i].source)
-    end
-    for i = 1, #currentGame.team2 do
-        TriggerClientEvent("arena:gameStarted", currentGame.team2[i].source)
+    local teams = { "team1", "team2" }
+    for i = 1, #teams do
+        for src, info in pairs(currentGame[teams[i]]) do
+            TriggerClientEvent("arena:gameStarted", src)
+        end
     end
 end
 
+function tableCount(tbl)
+    local count = 0
+    for k, v in pairs(tbl) do
+        count = count + 1
+    end
+    return count
+end
+
+function getPlayerName(src)
+    if currentGame.queue[src] then
+        return currentGame.queue[src].name
+    elseif currentGame.team1[src] then
+        return currentGame.team1[src].name
+    elseif currentGame.team2[src] then
+        return currentGame.team2[src].name
+    else
+        return nil
+    end 
+end
+
 AddEventHandler("playerDropped", function(reason)
-    for i = 1, #currentGame.team1 do
-        if currentGame.team1[i].source == source then
-            table.remove(currentGame.team1, i)
-            return
-        end
-    end
-    for i = 1, #currentGame.team2 do
-        if currentGame.team2[i].source == source then
-            table.remove(currentGame.team2, i)
-            return
-        end
-    end
+    currentGame.queue[source] = nil
+    currentGame.team1[source] = nil
+    currentGame.team2[source] = nil
 end)
 
 exports["globals"]:PerformDBCheck("usa-arena", "arena-player-stats")
