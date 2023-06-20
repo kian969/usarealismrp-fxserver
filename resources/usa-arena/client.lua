@@ -47,7 +47,7 @@ exports.globals:createCulledNonNetworkedPedAtCoords("a_m_y_latino_01", {
 end, 38)
 
 RegisterCommand("arenajoin", function()
-	TriggerEvent("arena:join")
+	TriggerEvent("arena:joinRandom")
 end, true)
 
 RegisterNetEvent("arena:joinRandom")
@@ -110,7 +110,7 @@ end)
 
 RegisterNetEvent("arena:playSound")
 AddEventHandler("arena:playSound", function(name, dict)
-	PlaySoundFrontend(-1, "DLC_VW_WIN_CHIPS", "dlc_vw_table_games_frontend_sounds", 1)
+	PlaySoundFrontend(-1, name, dict, 1)
 end)
 
 CreateThread(function()
@@ -153,10 +153,10 @@ end)
 --]]
 
 local arenaPolyZone = PolyZone:Create({
-    vector2(-1302.663, -3409.087),
+	vector2(-1303.752, -3414.313),
 	vector2(-1271.66, -3361.457),
 	vector2(-1240.776, -3379.063),
-	vector2(-1269.805, -3428.914)
+	vector2(-1273.862, -3431.2)
 }, {
     name = "arenaPolyZone",
     debugGrid = false,
