@@ -1189,7 +1189,12 @@ function interactionMenuUse(index, itemName, wholeItem)
 	elseif itemName:find("Shovel") then
 		TriggerEvent("cultivation:shovel")
 	elseif itemName:find("Thermite") then
-		TriggerServerEvent("bank:useThermite")
+		local playerCoords = GetEntityCoords(PlayerPedId())
+		if #(playerCoords - exports.usa_bankrobbery:getBankCoords()) <= 100 then
+			TriggerServerEvent("bank:useThermite")
+		elseif #(playerCoords - exports["usa-artHeist"]:getMansionCoords()) <= 100 then
+			TriggerEvent("artHeist:useThermite")
+		end
 	elseif itemName:find("Butchered Meat") then
 		TriggerServerEvent("hunting:cookMeat", wholeItem.name)
 	elseif itemName:find("Vape") then

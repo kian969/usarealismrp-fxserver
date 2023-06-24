@@ -514,6 +514,16 @@ AddEventHandler("thirdEye:updateActionsForNewJob", function(job)
     end
 end)
 
+target.addPoint("UHH", "Art", "fas fa-money-bill", vector3(288.0126, -2981.809, 5.866447), 1, function() end, {
+    {
+        name = 'sellArt',
+        label = 'Sell Art',
+        onSelect = function(a, b, entityHandle)
+            TriggerEvent("vt-artheist:finishHeist")
+        end
+    },
+})
+
 target.addPoint("911CallPoint", "911", "fas fa-siren", vector3(1776.873, 2572.845, 45.79781), 1, function() end, {
     {
         name = 'call',
