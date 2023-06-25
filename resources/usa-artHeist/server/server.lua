@@ -88,7 +88,7 @@ AddEventHandler('vt-artheist:server:rewardItem', function(scene)
         local itemObj = {
             name = item,
             quantity = 1,
-            weight = 20
+            weight = 15
         }
         char.giveItem(itemObj)
     end
