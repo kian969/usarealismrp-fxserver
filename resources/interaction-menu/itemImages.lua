@@ -555,5 +555,9 @@ ITEM_IMAGES = {
     ["paintingj"] = "https://i.imgur.com/7DU4fbz.png",
     ["paintinge"] = "https://i.imgur.com/FTDT3tj.png",
     ["paintingf"] = "https://i.imgur.com/cEfRCGy.png",
-    ["paintingg"] = "https://i.imgur.com/CjxKWax.png"
+    ["paintingg"] = "https://i.imgur.com/CjxKWax.png",
+    nail = "https://i.imgur.com/AH3VK2b.png",
+    planks = "https://i.imgur.com/rQcnv2t.png",
+    lift = "https://i.imgur.com/RBlsnUq.png",
+    lift_rail = "https://i.imgur.com/BxfxgLL.png"
 }

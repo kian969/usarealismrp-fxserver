@@ -1290,6 +1290,8 @@ function interactionMenuUse(index, itemName, wholeItem)
 			exports.globals:notify("Wash failed!", "^3INFO: ^Wash failed!")
 		end
 		TriggerEvent("dpemotes:command", 'e', GetPlayerServerId(PlayerId()), {"c"})
+	elseif itemName == "lift" or itemName == "lift_rail" then
+		TriggerEvent("pickle_construction:createLift")
 	else
 		TriggerEvent("interaction:notify", "There is no use action for that item!")
 	end
