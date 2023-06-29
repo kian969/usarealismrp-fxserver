@@ -177,6 +177,8 @@ MechanicHelper.useMechanicTools = function(veh, repairCount, cb)
                     SetVehicleEngineHealth(veh, 800.0)
                 end
 
+                NetworkRequestControlOfEntity(veh)
+                Wait(300)
                 FixAllTires(veh)
                 TriggerEvent("kq_wheeldamage:fixCar", veh)
                 success = true
@@ -229,6 +231,8 @@ MechanicHelper.useRepairKit = function(veh, repairCount, cb)
                     SetVehicleEngineHealth(veh, 850.0)
                 end
                 
+                NetworkRequestControlOfEntity(veh)
+                Wait(300)
                 FixAllTires(veh)
                 TriggerEvent("kq_wheeldamage:fixCar", veh)
                 success = true
