@@ -113,8 +113,8 @@ AddEventHandler("arena:leaderboard", function()
     table.sort(all, function(a, b)
         return a.kdRatio > b.kdRatio
     end)
-    TriggerClientEvent("usa:notify", src, false, "^3INFO: ^0Top 15 Arena Players:")
-    for i = 1, 15 do
+    TriggerClientEvent("usa:notify", src, false, "^3INFO: ^0Top 20 Arena Players:")
+    for i = 1, 20 do
         if all[i] then
             local charDoc = exports.essentialmode:getDocument("characters", all[i]._id)
             local name = charDoc.name.first .. " " .. charDoc.name.last
