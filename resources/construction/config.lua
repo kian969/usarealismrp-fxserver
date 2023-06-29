@@ -182,7 +182,7 @@ Config.Sites = {
     -- Airport
     {
         model = `p_cs_mp_jet_01_s`,
-        location = vector3(-1275.8625, -3388.2761, 12.9401),
+        location = vector3(-1658.935, -3154.286, 12.99201),
         heading = 147.9113,
     },
     -- Boat Dock
