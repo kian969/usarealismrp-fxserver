@@ -448,33 +448,19 @@ end)
 
 -- store vehicle at property --
 RegisterServerEvent("properties:storeVehicle")
-AddEventHandler("properties:storeVehicle", function(property_name, plate) --IMPLEMENT
+AddEventHandler("properties:storeVehicle", function(property_name, plate)
   plate = exports.globals:trim(plate)
-  local usource = tonumber(source)
-  -- check if player owns veh trying to store --
-  local owns = false
-  local user = exports["usa-characters"]:GetCharacter(usource)
-  local uvehicles = user.get("vehicles")
-  for i = 1, #uvehicles do
-    if plate == uvehicles[i] then
-        owns = true
-    end
-  end
-  if owns or (recentlyChangedPlates[user.get("_id")] and recentlyChangedPlates[user.get("_id")][plate]) then
-      -- store vehicle if owner --
-      TriggerEvent('es:exposeDBFunctions', function(couchdb)
-        if recentlyChangedPlates[user.get("_id")] and recentlyChangedPlates[user.get("_id")][plate] then
-          plate = recentlyChangedPlates[user.get("_id")][plate] -- if they recently changed their plate at the DMV, they still own it even though original logic says they don't
-        end
-        couchdb.updateDocument("vehicles", plate, { stored_location = property_name }, function()
-            -- delete vehicle on client --
-            TriggerClientEvent("properties:storeVehicle", usource)
-            -- remove key from inventory --
-            user.removeItem("Key -- " .. plate)
-        end)
-      end)
+  local src = tonumber(source)
+  local char = exports["usa-characters"]:GetCharacter(src)
+  local vehDoc = exports.essentialmode:getDocument("vehicles", plate)
+  if vehDoc then
+    vehDoc._rev = nil
+    vehDoc.stored_location = property_name
+    exports.essentialmode:updateDocument("vehicles", plate, vehDoc)
+    TriggerClientEvent("properties:storeVehicle", src)
+    char.removeItem("Key -- " .. plate)
   else
-      TriggerClientEvent("usa:notify", usource, "You do not own that vehicle!")
+    TriggerClientEvent("usa:notify", src, "You do not own that vehicle!")
   end
 end)
 
