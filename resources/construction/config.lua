@@ -202,6 +202,52 @@ Config.Sites = {
         location = vector3(-90.0106, -1714.3567, 27.3416),
         heading = 139.5437,
     },
+    -- Senora Fwy
+    {
+        model = `prop_billboard_01`,
+        location = vector3(2780.73, 4453.45, 46.02693),
+        heading = 189.5437,
+    },
+    {
+        model = `prop_billboard_01`,
+        location = vector3(2929.167, 3849.633, 50.08356),
+        heading = 173.5437,
+    },
+    {
+        model = `prop_billboard_01`,
+        location = vector3(2702.301, 4783.866, 42.02012),
+        heading = 198.5437,
+    },
+    {
+        model = `prop_billboard_01`,
+        location = vector3(2628.854, 5093.292, 42.78501),
+        heading = 198.5437,
+    },
+    {
+        model = `prop_billboard_01`,
+        location = vector3(2488.083, 5566.202, 42.03923),
+        heading = 193.5437,
+    },
+    {
+        model = `prop_billboard_01`,
+        location = vector3(875.2618, 6513.68, 19.54971),
+        heading = 267.5437,
+    },
+    {
+        model = `prop_billboard_01`,
+        location = vector3(535.0694, 6570.301, 25.09592),
+        heading = 267.5437,
+    },
+    {
+        model = `prop_billboard_01`,
+        location = vector3(-2163.585, 4462.069, 60.81997),
+        heading = 296.5437,
+    },
+    {
+        model = `prop_billboard_01`,
+        location = vector3(-2493.882, 3712.255, 12.07593),
+        heading = 345.5437,
+    },
     -- Pipe Welding
     {
         model = `prop_pipe_single_01`,
