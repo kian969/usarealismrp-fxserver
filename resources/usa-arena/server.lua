@@ -347,4 +347,14 @@ AddEventHandler("playerDropped", function(reason)
     currentGame.team2[source] = nil
 end)
 
+exports("isPlayerPlaying", function(src)
+    if currentGame.team1[src] then
+        return true
+    elseif currentGame.team2[src] then
+        return true
+    else
+        return false
+    end
+end)
+
 exports["globals"]:PerformDBCheck("usa-arena", "arena-player-stats")
