@@ -63,6 +63,11 @@ Config.Workplace = {
         heading = 86.5400,
         vehicles = {
             {
+                label = "Van",
+                model = `rumpo`,
+                price = 500,
+            },
+            {
                 label = "Bulldozer",
                 model = `bulldozer`,
                 price = 2000,
