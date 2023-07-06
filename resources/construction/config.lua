@@ -203,9 +203,39 @@ Config.Sites = {
         heading = 139.5437,
     },
     {
+        model = `prop_cctv_pole_02`,
+        location = vector3(-45.52844, -1743.681, 28.31407),
+        heading = 48.5437,
+    },
+    {
+        model = `prop_cctv_pole_02`,
+        location = vector3(1895.215, 2606.191, 44.75982),
+        heading = 356.5437,
+    },
+    {
         model = `prop_billboard_01`,
         location = vector3(-90.0106, -1714.3567, 27.3416),
         heading = 139.5437,
+    },
+    {
+        model = `prop_cctv_pole_02`,
+        location = vector3(1873.201, 2584.823, 44.67204),
+        heading = 271.5437,
+    },
+    {
+        model = `prop_cctv_pole_02`,
+        location = vector3(1855.539, 2520.389, 44.91222),
+        heading = 0.5437,
+    },
+    {
+        model = `prop_cctv_pole_02`,
+        location = vector3(1873.137, 2632.748, 44.672),
+        heading = 267.5437,
+    },
+    {
+        model = `prop_cctv_pole_02`,
+        location = vector3(1857.48, 2687.143, 44.82111),
+        heading = 0.5437,
     },
     -- Senora Fwy
     {
