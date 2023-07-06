@@ -3,7 +3,7 @@ Vank17a = {}
 
 Config = Config or {
    Price = {
-        paintingeSellAll = math.random(20000, 100000), -- price all
+        paintingeSellAll = math.random(100000, 300000), -- price all
     },
     Items = {
         paintinge = "paintinge",
