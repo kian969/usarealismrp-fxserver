@@ -24,7 +24,7 @@ Config.Workplace = {
             {
                 label = "Construction Lift",
                 item = "lift",
-                price = 2000,
+                price = 1000,
                 weight = 30,
                 type = "misc"
             },
@@ -247,6 +247,16 @@ Config.Sites = {
         model = `prop_billboard_01`,
         location = vector3(-2493.882, 3712.255, 12.07593),
         heading = 345.5437,
+    },
+    {
+        model = `prop_billboard_01`,
+        location = vector3(-2976.08, 2116.526, 38.89329),
+        heading = 305.5437,
+    },
+    {
+        model = `prop_billboard_01`,
+        location = vector3(-3086.644, 1128.62, 18.41069),
+        heading = 171.5437,
     },
     -- Pipe Welding
     {
