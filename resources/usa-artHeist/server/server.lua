@@ -3,11 +3,19 @@ local lastrob = Config.Cooldown * 60000
 local lastRewardRequestTime = {}
 
 local hasDoorBeenThermited = false
+local haveGuardsSpawned = false
 
 RegisterServerCallback {
     eventName = "artHeist:hasDoorBeenThermited",
     eventCallback = function(source)
         return hasDoorBeenThermited
+    end
+}
+
+RegisterServerCallback {
+    eventName = "artHeist:haveGuardsSpawned",
+    eventCallback = function(source)
+        return haveGuardsSpawned
     end
 }
 
@@ -37,6 +45,7 @@ RegisterServerCallback {
             return false
         else
             hasDoorBeenThermited = false
+            haveGuardsSpawned = false
             exports.usa_doormanager:toggleDoorLockByName("Art Mansion Front", true)
             lastrob = os.time()
             return true
@@ -47,6 +56,7 @@ RegisterServerCallback {
 RegisterServerEvent('artHeist:makeGuardsAggressiveForAll')
 AddEventHandler('artHeist:makeGuardsAggressiveForAll', function()
     TriggerClientEvent("artHeist:makeGuardsAggressive", -1)
+    haveGuardsSpawned = true
 end)
 
 RegisterServerEvent('vt-artheist:server:syncHeistStart')

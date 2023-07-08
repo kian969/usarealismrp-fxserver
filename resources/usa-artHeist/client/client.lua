@@ -61,7 +61,11 @@ CreateThread(function()
                                 eventName = "artHeist:hasDoorBeenThermited",
                                 args = {}
                             }
-                            if hasDoorBeenThermited then
+                            local haveGuardsSpawned = TriggerServerCallback {
+                                eventName = "artHeist:haveGuardsSpawned",
+                                args = {}
+                            }
+                            if haveGuardsSpawned and hasDoorBeenThermited then
                                 local weapon = GetSelectedPedWeapon(ped)
                                 if weapon == GetHashKey('WEAPON_SWITCHBLADE') then
                                     if not ArtHeist['cuting'] then
@@ -73,7 +77,7 @@ CreateThread(function()
                                     exports.globals:notify('Need a switchblade', "^3INFO: ^0Need a switchblade")
                                 end
                             else
-                                print("door not thermited")
+                                print("door not thermited / guards not spawned")
                             end
                         end
                     end
