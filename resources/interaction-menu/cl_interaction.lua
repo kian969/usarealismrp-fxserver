@@ -1533,6 +1533,9 @@ AddEventHandler("interaction:equipWeapon", function(item, equip, ammoAmount, pla
 		end
 		SetPedAmmo(ped, item.hash, currentWeaponAmmo)
 		SetAmmoInClip(ped, item.hash, currentWeaponAmmo)
+		if exports["usa-arena"]:isPlayingArena() then
+			SetPedInfiniteAmmo(PlayerPedId(), true, item.hash)
+		end
 		if playAnim then
 			exports["usa_holster"]:handleHolsterAnim()
 		end
