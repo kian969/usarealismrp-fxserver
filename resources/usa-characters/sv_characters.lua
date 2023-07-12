@@ -153,8 +153,10 @@ function CreateNewCharacter(src, data, cb)
 end
 
 function InitializeCharacter(src, characterID)
-    -- print(src)
-    -- print(characterID)
+    if not doesPlayerOwnCharWithId(src, characterID) then
+      print("player did not own char that they were trying to load!")
+      return
+    end
     TriggerEvent('es:exposeDBFunctions', function(db)
         db.getDocument("characters", characterID, function(charData)
             charData.source = src
@@ -262,6 +264,22 @@ function GetMinutesFromTime(time)
 	local wholemins = math.floor(minutesfrom)
 	--print("CHARACTERS:  wholemins: " .. wholemins)
 	return wholemins
+end
+
+function doesPlayerOwnCharWithId(src, charId)
+  local steamId = GetPlayerIdentifiers(src)[1]
+  local query = {
+    ["created.ownerIdentifier"] = steamId
+  }
+  local chars = exports.essentialmode:getDocumentsByRows("characters", query)
+  if chars then
+    for i = 1, #chars do
+      if chars[i]._id == charId then
+        return true
+      end
+    end
+  end
+  return false
 end
 
 TriggerEvent("es:addGroupCommand", "charlist", "superadmin", function(src, args, char, location)
