@@ -16,7 +16,7 @@ Config = Config or {
 }
 Config.CoreScriptName             = 'usa' -- name export
 Config.CoreName                   = 'usa' -- name event
-Config.Cooldown                   = 90 -- 60 minutes
+Config.Cooldown                   = 3 * 60 -- minutes
 Config.Jobs = "police" -- Jobs Cops
 Config.RequiredCops = 0 -- Need a police officer. They are currently [4], you can change it
 Config.DoorId = 'Artheist-door' -- name of the door in your doorlock config
