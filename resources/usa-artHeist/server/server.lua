@@ -1,4 +1,4 @@
-local lastrob = Config.Cooldown * 60000
+local lastRobTime = nil
 
 local lastRewardRequestTime = {}
 
@@ -38,17 +38,15 @@ RegisterServerCallback {
 RegisterServerCallback {
     eventName = "artHeist:checkRobTime",
     eventCallback = function(source)
-        local src = source
-        if (os.time() - lastrob) < Config['ArtHeist']['nextRob'] and lastrob ~= 0 then
-            local seconds = Config['ArtHeist']['nextRob'] - (os.time() - lastrob)
-            TriggerClientEvent('usa:notify', source, Strings['wait_nextrob'] .. '' .. math.floor(seconds / 60) .. '' .. Strings['minute'], "^3INFO: ^0" .. Strings['wait_nextrob'])
-            return false
-        else
+        if lastRobTime == nil or os.time() - lastRobTime >= Config.CooldownHours * 60 * 60 then
             hasDoorBeenThermited = false
             haveGuardsSpawned = false
             exports.usa_doormanager:toggleDoorLockByName("Art Mansion Front", true)
-            lastrob = os.time()
+            lastRobTime = os.time()
             return true
+        else
+            TriggerClientEvent("usa:notify", source, "Not ready to be robbed yet", "^3INFO: ^0Not ready to be robbed yet")
+            return false
         end
     end
 }
