@@ -229,7 +229,7 @@ Also check out `resources/[system]/globals` for a library of some miscellaneous 
 An example of creating a new command that anyone can use:
 ```
 TriggerEvent('es:addCommand', 'mynewcommand', function(source, args, char)
-	local firstArgument = args[1]
+	local firstArgument = args[2]
 	-- ...
 end, {
 	help = "Fancy new command description here",
@@ -243,7 +243,7 @@ end, {
 An example of creating a new command restricted by group (has to be used on server side):
 ```
 TriggerEvent('es:addGroupCommand', 'mynewcommand', 'admin', function(source, args, char)
-	local firstArgument = args[1]
+	local firstArgument = args[2]
 	-- ...
 end, {
 	help = "Fancy new command description here",
