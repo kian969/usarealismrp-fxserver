@@ -559,5 +559,8 @@ ITEM_IMAGES = {
     nail = "https://i.imgur.com/AH3VK2b.png",
     planks = "https://i.imgur.com/rQcnv2t.png",
     lift = "https://i.imgur.com/RBlsnUq.png",
-    lift_rail = "https://i.imgur.com/BxfxgLL.png"
+    lift_rail = "https://i.imgur.com/BxfxgLL.png",
+    lawnmower = "https://i.imgur.com/blJbZqg.png",
+    leafblower = "https://i.imgur.com/NL8QjAO.png",
+    garden_pitcher = "https://imgur.com/GC5yvkj.png"
 }
