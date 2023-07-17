@@ -1293,7 +1293,7 @@ function interactionMenuUse(index, itemName, wholeItem)
 	elseif itemName == "lift" or itemName == "lift_rail" then
 		TriggerEvent("pickle_construction:createLift")
 	else
-		TriggerEvent("interaction:notify", "There is no use action for that item!")
+		TriggerServerEvent("interaction:attemptItemUse", wholeItem)
 	end
 end
 
