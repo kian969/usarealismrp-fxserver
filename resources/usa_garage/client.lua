@@ -88,7 +88,6 @@ locations = {
 	{x = -1916.8400878906, y = 2030.8366699219, z = 140.73731994629, noBlip = false}, -- Orange Farm
 	{x = 436.27728271484, y = 6529.9682617188, z = 27.877355575562, noBlip = false}, -- Orange Farm Paleto
 	{x = -181.43, y = -1289.32, z = 31.3, noBlip = true}, -- Benny's
-	{x = -372.1146, y = -109.6916, z = 38.70002, noBlip = true}, -- AASC
 	{x = 1313.3503417969, y = -1662.0200195313, z = 51.236389160156, noBlip = true}, -- Eastside Deli
 	{x = 3542.7263183594, y = 3782.8959960938, z = 29.955053329468, ['noBlip'] = false}, -- Humane Labs
 	{x = -205.56878662109, y = 308.45645141602, z = 96.946670532227, ['noBlip'] = false}, -- West Vinewood Garage
