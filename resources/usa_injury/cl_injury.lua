@@ -152,7 +152,7 @@ injuries = { -- ensure this is the same as sv_injury.lua
 }
 
 hospitalLocations = {
-    {307.10046386719, -595.07073974609, 43.284019470215}, -- upper PB
+    {311.94583129883, -580.67303466797, 43.267623901367}, -- upper PB
     {350.97692871094, -587.77874755859, 28.796844482422}, -- lower PB
     {-817.61511230469, -1236.6121826172, 7.3374252319336}, -- viceroy medical
     {1782.0440673828, 2556.306640625, 45.797794342041}, -- prison
@@ -639,6 +639,40 @@ Citizen.CreateThread(function()
         end
     end
 end)
+
+local thirdCheckingIn = false
+RegisterNetEvent('injuries:ThirdEyeCheckin')
+AddEventHandler('injuries:ThirdEyeCheckin', function()
+    local playerPed = PlayerPedId()
+    local playerCoords = GetEntityCoords(playerPed)
+    for i = 1, #hospitalLocations do
+        local x, y, z = table.unpack(hospitalLocations[i])
+        if Vdist(playerCoords, x, y, z) < 20 then
+            local totalPrice = BASE_CHECKIN_PRICE
+            for bone, injuries in pairs(injuredParts) do
+                for injury, data in pairs(injuredParts[bone]) do
+                    totalPrice = totalPrice + data.treatmentPrice
+                end
+            end
+            if not thirdCheckingIn then
+                PlayDoorAnimation()
+                thirdCheckingIn = true
+                local beginTime = GetGameTimer()
+                while GetGameTimer() - beginTime < 3000 do
+                    Citizen.Wait(0)
+                    DrawTimer(beginTime, 3000, 1.42, 1.475, 'CHECKING IN')
+                end
+                thirdCheckingIn = false
+                playerCoords = GetEntityCoords(playerPed)
+                if Vdist(playerCoords, x, y, z) < 10 then
+                    local x, y, z = table.unpack(playerCoords)
+                    TriggerServerEvent('injuries:validateCheckin', injuredParts, IsPedDeadOrDying(playerPed), x, y, z, IsPedMale(playerPed))
+                end
+            end
+        end
+    end
+end)
+
 
 RegisterNetEvent('injuries:checkin')
 AddEventHandler('injuries:checkin', function()
