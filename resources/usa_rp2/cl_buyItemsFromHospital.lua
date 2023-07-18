@@ -7,7 +7,7 @@ local MAX_DRAW_3D_TEXT_DISTANCE = 3
 
 local HOSPITAL_ITEM_PURCHASE_LOCATIONS = {
     {name = "paleto", x = -254.8669, y = 6334.6440, z = 32.4272},
-    {name = "pillbox", x = 312.41775512695,y = -592.96716308594, z = 43.283985137939}, 
+    -- {name = "pillbox", x = 310.77679443359, y = -583.28619384766, z = 43.26762008667}, 
     {name = "mt. zenoah", x = -497.9, y = -335.9, z = 34.5},
     {name = "davis", x = 307.4, y = -1433.8, z = 29.9},
     {name = "viceroy modeical", x = -811.6181640625, y = -1236.4844970703, z = 7.3374252319336},

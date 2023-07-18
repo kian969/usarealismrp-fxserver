@@ -546,6 +546,33 @@ target.addPoint("catCafeSignIn", "Cat Cafe", "fas fa-cat", vector3(-597.52642822
         end
     },
 })
+
+target.addPoint("PillboxMedicalSign", "Pillbox", "fas fa-kit-medical", vector3(303.19375610352, -583.98132324219, 43.267616271973), 1, function() end, {
+    {
+        name = 'checkIn',
+        label = 'Check in',
+        onSelect = function(a, b, entityHandle)
+            TriggerEvent('injuries:ThirdEyeCheckin')
+            Wait(5000)
+        end
+    },
+    {
+        name = 'receiveMedpack',
+        label = 'Purchase First Aid Kit',
+        onSelect = function(a, b, entityHandle)
+            TriggerServerEvent("hospital:buyFirstAidKit")
+        end
+    },
+    {
+        name = 'receiveWheelchair',
+        label = 'Request a wheelchair',
+        onSelect = function(a, b, entityHandle)
+            TriggerServerEvent("hospital:buyWheelchair")
+            Wait(1000)
+        end
+    }
+})
+
 target.addPoint("catCafeLeaderboard", "Cat Cafe", "fas fa-cat", vector3(-593.94860839844, -1052.7293701172, 22.344200134277), 1, function() end, {
     {
         name = 'leaderboard',

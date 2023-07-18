@@ -106,36 +106,25 @@ local warp_locations = {
   -- },
   ["Pillbox Helipad"] = {
   	entrance = {
-      coords = {327.24771118164, -603.35797119141, 43.284008026123},
-      heading = 80.0
+      coords = {335.77523803711, -592.50128173828, 43.268444061279},
+      heading = 250.0
     },
     exit = {
       coords = {338.52, -583.87, 74.16},
-      heading = 250.0
+      heading = 70.0
     },
   job_access = "emergency"
   },
   ["Public Pillbox Elevator"] = {
   	entrance = {
-      coords = {331.91830444336, -595.49407958984, 43.28409576416},
+      coords = {337.18557739258, -589.21545410156, 43.268447875977},
       heading = 250.0
     },
     exit = {
-      coords = {344.65518188477, -586.38732910156, 28.79683303833},
-      heading = 70.0
+      coords = {323.68872070313, -583.45892333984, 28.848222732544},
+      heading = 72.0
     },
   job_access = "civ"
-  },
-  ["Private Pillbox Elevator"] = {
-  	entrance = {
-      coords = {330.08773803711, -601.03497314453, 43.28409576416},
-      heading = 70.0
-    },
-    exit = {
-      coords = {339.48376464844, -584.45709228516, 28.796844482422},
-      heading = 70.0
-    },
-  job_access = "emergency"
   },
   ["Viceroy Helipad"] = {
     entrance = {
