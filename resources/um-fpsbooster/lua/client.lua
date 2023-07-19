@@ -107,12 +107,12 @@ CreateThread(function()
             for obj in GetWorldObjects() do
                 if not IsEntityOnScreen(obj) then
                     SetEntityAlpha(obj, 0)
-                    SetEntityAsNoLongerNeeded(obj)
+                    --SetEntityAsNoLongerNeeded(obj)
                 else
                     if GetEntityAlpha(obj) == 0 then
                         SetEntityAlpha(obj, 255)
-                    elseif GetEntityAlpha(obj) ~= 170 then
-                        SetEntityAlpha(obj, 170)
+                    --elseif GetEntityAlpha(obj) ~= 200 then
+                        --SetEntityAlpha(obj, 200)
                     end
                 end
                 Wait(1)
@@ -139,12 +139,12 @@ CreateThread(function()
             for obj in GetWorldObjects() do
                 if not IsEntityOnScreen(obj) then
                     SetEntityAlpha(obj, 0)
-                    SetEntityAsNoLongerNeeded(obj)
+                    --SetEntityAsNoLongerNeeded(obj)
                 else
                     if GetEntityAlpha(obj) == 0 then
                         SetEntityAlpha(obj, 255)
-                    elseif GetEntityAlpha(ped) ~= 210 then
-                        SetEntityAlpha(ped, 210)
+                    --elseif GetEntityAlpha(ped) ~= 210 then
+                        --SetEntityAlpha(ped, 210)
                     end
                 end
                 Wait(1)
@@ -168,7 +168,7 @@ CreateThread(function()
             for obj in GetWorldObjects() do
                 if not IsEntityOnScreen(obj) then
                     SetEntityAlpha(obj, 0)
-                    SetEntityAsNoLongerNeeded(obj)
+                    --SetEntityAsNoLongerNeeded(obj)
                 else
                     if GetEntityAlpha(obj) == 0 then
                         SetEntityAlpha(obj, 255)
