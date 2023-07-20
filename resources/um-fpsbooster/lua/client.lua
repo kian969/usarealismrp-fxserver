@@ -83,6 +83,17 @@ RegisterCommand("fps", function(_,args)
     umfpsBooster(args[1]) 
 end, false)
 
+function isPedAPlayer(ped)
+    for i = 1, 255 do
+        if NetworkIsPlayerActive(i) then
+            if GetPlayerPed(i) == ped then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 -- Main Loop
 
 -- // Distance rendering and entity handler (need a revision)
@@ -91,16 +102,18 @@ CreateThread(function()
         if loopType == "ulow" then
             --// Find closest ped and set the alpha
             for ped in GetWorldPeds() do
-                if not IsEntityOnScreen(ped) then
-                    SetEntityAlpha(ped, 0)
-                else
-                    if GetEntityAlpha(ped) == 0 then
-                        SetEntityAlpha(ped, 255)
-                    elseif GetEntityAlpha(ped) ~= 210 then
-                        SetEntityAlpha(ped, 210)
+                if not isPedAPlayer(ped) then
+                    if not IsEntityOnScreen(ped) then
+                        SetEntityAlpha(ped, 0)
+                    else
+                        if GetEntityAlpha(ped) == 0 then
+                            SetEntityAlpha(ped, 255)
+                        elseif GetEntityAlpha(ped) ~= 210 then
+                            SetEntityAlpha(ped, 210)
+                        end
                     end
+                    SetPedAoBlobRendering(ped, false)
                 end
-                SetPedAoBlobRendering(ped, false)
                 Wait(1)
             end
             --// Find closest object and set the alpha
@@ -123,16 +136,18 @@ CreateThread(function()
         elseif loopType == "low" then
             --// Find closest ped and set the alpha
             for ped in GetWorldPeds() do
-                if not IsEntityOnScreen(ped) then
-                    SetEntityAlpha(ped, 0)
-                else
-                    if GetEntityAlpha(ped) == 0 then
-                        SetEntityAlpha(ped, 255)
-                    elseif GetEntityAlpha(ped) ~= 210 then
-                        SetEntityAlpha(ped, 210)
+                if not isPedAPlayer(ped) then
+                    if not IsEntityOnScreen(ped) then
+                        SetEntityAlpha(ped, 0)
+                    else
+                        if GetEntityAlpha(ped) == 0 then
+                            SetEntityAlpha(ped, 255)
+                        elseif GetEntityAlpha(ped) ~= 210 then
+                            SetEntityAlpha(ped, 210)
+                        end
                     end
+                    SetPedAoBlobRendering(ped, false)
                 end
-                SetPedAoBlobRendering(ped, false)
                 Wait(1)
             end
             --// Find closest object and set the alpha
@@ -154,14 +169,16 @@ CreateThread(function()
         elseif loopType == "medium" then
             --// Find closest ped and set the alpha
             for ped in GetWorldPeds() do
-                if not IsEntityOnScreen(ped) then
-                    SetEntityAlpha(ped, 0)
-                else
-                    if GetEntityAlpha(ped) == 0 then
-                        SetEntityAlpha(ped, 255)
+                if not isPedAPlayer(ped) then
+                    if not IsEntityOnScreen(ped) then
+                        SetEntityAlpha(ped, 0)
+                    else
+                        if GetEntityAlpha(ped) == 0 then
+                            SetEntityAlpha(ped, 255)
+                        end
                     end
+                    SetPedAoBlobRendering(ped, false)
                 end
-                SetPedAoBlobRendering(ped, false)
                 Wait(1)
             end
             --// Find closest object and set the alpha
