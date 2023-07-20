@@ -140,7 +140,7 @@ RegisterNetEvent('vt-artheist:server:items', function()
     local char = exports["usa-characters"]:GetCharacter(src)
     if not char then return end
 
-    if lastRewardRequestTime[src] and os.time() - lastRewardRequestTime[src]["money"] <= Config.Cooldown * 60 * 1000 then
+    if lastRewardRequestTime[src] and os.time() - lastRewardRequestTime[src]["money"] <= Config.CooldownHours * 60 * 60 then
         print("too soon for money reward")
         return
     end
