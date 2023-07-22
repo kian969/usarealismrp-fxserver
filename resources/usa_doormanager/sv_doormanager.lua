@@ -189,7 +189,11 @@ local DOORS = {
   {name = "Pillbox - Exam Room 1", x = 319.68637084961, y = -595.26281738281, z = 43.26762008667, model = 459631401, locked = true, offset={0.0, 1.0, -0.11}, heading = 160, _dist = 1.5, allowedJobs = {'sheriff', "corrections", "ems", "doctor"}},
   {name = "Pillbox - Exam Room 2", x = 324.63375854492, y = -597.02905273438, z = 43.26762008667, model = 459631401, locked = true, offset={0.0, 1.0, -0.11}, heading = 160, _dist = 1.5, allowedJobs = {'sheriff', "corrections", "ems", "doctor"}},
   {name = "Pillbox - Consulting Room", x = 329.17919921875, y = -598.76446533203, z = 43.26762008667, model = 459631401, locked = true, offset={0.0, 1.0, -0.11}, heading = 160, _dist = 1.5, allowedJobs = {'sheriff', "corrections", "ems", "doctor"}},
-
+  {name = "Ward A - MRI", x = 308.44262695313, y = -571.02081298828, z = 43.267627716064, model = 1281019151, locked = true, offset={0.0, 1.0, -0.11}, heading = 340, _dist = 1.5, allowedJobs = {'sheriff', 'corrections', 'ems', 'doctor'}},
+  {name = "Ward A - XRay", x = 318.4524230957, y = -574.56597900391, z = 43.267574310303, model = 1281019151, locked = true, offset={0.0, 1.0, -0.11}, heading = 340, _dist = 1.5, allowedJobs = {'sheriff', 'corrections', 'ems', 'doctor'}},
+  {name = "Ward A - Observe", x = 313.4938659668, y = -572.66772460938, z = 43.26762008667, model = 459631401, locked = true, offset={0.0, 1.0, -0.11}, heading = 340, _dist = 1.5, allowedJobs = {'sheriff', 'corrections', 'ems', 'doctor'}},
+  {name = "Ward A - Operating 1", x = 325.62945556641, y = -577.13623046875, z = 43.267570495605, model = 459631401, locked = true, offset={0.0, 1.0, -0.11}, heading = 340, _dist = 1.5, allowedJobs = {'sheriff', 'corrections', 'ems', 'doctor'}}, 
+  {name = "Ward A - Operating 2", x = 330.94561767578, y = -579.06280517578, z = 43.267623901367, model = 459631401, locked = true, offset={0.0, 1.0, -0.11}, heading = 340, _dist = 1.5, allowedJobs = {'sheriff', 'corrections', 'ems', 'doctor'}},
 
   {name = 'BCSO Paleto - Door 1', x = -443.16, y = 6015.41, z = 31.71, model = -1501157055, locked = false, offset={0.0, 1.24, -0.1}, heading = 315, _dist = 1.5, allowedJobs = {'sheriff', 'corrections', 'judge'}},
   {name = 'BCSO Paleto - Door 2', x = -444.3, y = 6016.3, z = 31.71, model = -1501157055, locked = true, _dist = 1.5, static = true, allowedJobs = {'sheriff', 'corrections', 'judge'}},

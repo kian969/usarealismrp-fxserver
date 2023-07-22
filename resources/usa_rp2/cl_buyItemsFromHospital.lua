@@ -10,7 +10,7 @@ local HOSPITAL_ITEM_PURCHASE_LOCATIONS = {
     -- {name = "pillbox", x = 310.77679443359, y = -583.28619384766, z = 43.26762008667}, 
     {name = "mt. zenoah", x = -497.9, y = -335.9, z = 34.5},
     {name = "davis", x = 307.4, y = -1433.8, z = 29.9},
-    {name = "viceroy modeical", x = -811.6181640625, y = -1236.4844970703, z = 7.3374252319336},
+    -- {name = "viceroy modeical", x = -811.6181640625, y = -1236.4844970703, z = 7.3374252319336},
     {name = "sandy", x = 1829.2332, y = 3673.7722, z = 34.2749}
 }
 

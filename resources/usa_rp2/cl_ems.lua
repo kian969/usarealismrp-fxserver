@@ -119,7 +119,7 @@ function ActivateBed(x, y, z, model)
                     return
                 end
             end
-            TaskPlayAnimAdvanced(playerPed, dict, 'f_sleep_l_loop_bighouse', x, y+0.05, z+0.8, rx, ry, rz-180.0, 1.0, 1.0, -1, 1, 0.0, false, false)
+            TaskPlayAnimAdvanced(playerPed, dict, 'f_sleep_l_loop_bighouse', x, y+0.05, z+1.175, rx, ry, rz-180.0, 1.0, 1.0, -1, 1, 0.0, false, false)
             FreezeEntityPosition(playerPed, true)
         end
     end)
