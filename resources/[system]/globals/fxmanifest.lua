@@ -1,4 +1,13 @@
-resource_manifest_version '44febabe-d386-4d18-afbe-5e627f4af937'
+fx_version 'cerulean'
+game 'gta5'
+
+description 'USARRP globals'
+
+lua54 'yes'
+
+shared_scripts {
+  '@ox_lib/init.lua',
+}
 
 client_scripts {
   'cl_global.lua',

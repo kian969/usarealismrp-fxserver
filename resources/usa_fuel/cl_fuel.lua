@@ -77,8 +77,12 @@ local fuelData = {
 	fuelUsage = 0.0,
 	lastVeh = nil,
 	isRefuelling = false,
-	displayFuel = true
+	displayFuel = false
 }
+
+exports("getFuelLevel", function()
+	return fuelData.fuelAmount
+end)
 
 _menuPool = NativeUI.CreatePool()
 mainMenu = NativeUI.CreateMenu("Fuel Station", "~b~Welcome!", 0 --[[X COORD]], 320 --[[Y COORD]])

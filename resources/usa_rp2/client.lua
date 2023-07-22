@@ -534,10 +534,18 @@ end)
 -----------------------
 RegisterNetEvent("usa:notify")
 AddEventHandler("usa:notify", function(msg, chatMsg)
+  msg = msg:gsub("~y~", "")
+  msg = msg:gsub("~w~", "")
+  msg = msg:gsub("~g~", "")
+  msg = msg:gsub("~r~", "")
+  msg = msg:gsub("~s~", "")
   if msg ~= false then
-    SetNotificationTextEntry("STRING")
-    AddTextComponentString(msg)
-    DrawNotification(0,1)
+    lib.notify({
+      title = msg,
+      position = "center-left"
+      --description = 'Notification description',
+      --type = 'success'
+    })
   end
   if chatMsg then
       TriggerEvent('chatMessage', '', {0,0,0}, '^0' .. chatMsg)
