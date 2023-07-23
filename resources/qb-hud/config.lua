@@ -151,7 +151,7 @@ Config.EffectInterval = {
 }
 
 Config.Menu = {
-    isOutMapChecked = false, -- isOutMapChecked
+    isOutMapChecked = true, -- isOutMapChecked
     isOutCompassChecked = false, -- isOutMapChecked
     isCompassFollowChecked = true, -- isCompassFollowChecked
     isOpenMenuSoundsChecked = true, -- isOpenMenuSoundsChecked
