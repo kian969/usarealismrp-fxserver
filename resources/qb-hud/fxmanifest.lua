@@ -5,6 +5,7 @@ description 'qb-hud'
 version '2.2.0'
 
 shared_scripts {
+    '@ox_lib/init.lua',
     '@pmc-callbacks/import.lua',
     'config.lua'
 }

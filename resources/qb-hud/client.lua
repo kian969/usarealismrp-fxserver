@@ -568,14 +568,14 @@ RegisterNetEvent('hud:client:ToggleCinematic', function()
         CinematicShow(false)
         Menu.isCinematicModeChecked = false
         if Menu.isCinematicNotifChecked then
-            exports.globals:notify("Cinematic mode off", "^3INFO: ^0Cinematic mode off")
+            --exports.globals:notify("Cinematic mode off", "^3INFO: ^0Cinematic mode off")
         end
         DisplayRadar(1)
     else
         CinematicShow(true)
         Menu.isCinematicModeChecked = true
         if Menu.isCinematicNotifChecked then
-            exports.globals:notify("Cinematic mode on", "^3INFO: ^0Cinematic mode on")
+            --exports.globals:notify("Cinematic mode on", "^3INFO: ^0Cinematic mode on")
         end
     end
     TriggerEvent("hud:client:playHudChecklistSound")
@@ -897,19 +897,29 @@ end)
 
 RegisterNetEvent('hud:client:ShowAccounts', function(type, amount)
     if type == 'cash' then
+        /*
         SendNUIMessage({
             action = 'show',
             type = 'cash',
             cash = amount
         })
-        exports.globals:notify("Cash: $" .. exports.globals:comma_value(amount))
+        */
+        lib.notify({
+            title = "Cash: $" .. exports.globals:comma_value(amount),
+            position = "center-right"
+        })
     else
+        /*
         SendNUIMessage({
             action = 'show',
             type = 'bank',
             bank = amount
         })
-        exports.globals:notify("Bank: $" .. exports.globals:comma_value(amount))
+        */
+        lib.notify({
+            title = "Bank: $" .. exports.globals:comma_value(amount),
+            position = "center-right"
+        })
     end
 end)
 
