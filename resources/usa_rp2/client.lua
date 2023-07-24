@@ -534,12 +534,12 @@ end)
 -----------------------
 RegisterNetEvent("usa:notify")
 AddEventHandler("usa:notify", function(msg, chatMsg)
-  msg = msg:gsub("~y~", "")
-  msg = msg:gsub("~w~", "")
-  msg = msg:gsub("~g~", "")
-  msg = msg:gsub("~r~", "")
-  msg = msg:gsub("~s~", "")
   if msg ~= false then
+    msg = msg:gsub("~y~", "")
+    msg = msg:gsub("~w~", "")
+    msg = msg:gsub("~g~", "")
+    msg = msg:gsub("~r~", "")
+    msg = msg:gsub("~s~", "")
     lib.notify({
       title = msg,
       position = "center-left"
