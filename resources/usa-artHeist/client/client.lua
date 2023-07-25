@@ -42,8 +42,8 @@ CreateThread(function()
         local sellDist = #(pedCo - Config['ArtHeist']['sellPainting']['pos'])
         if heistDist <= 3.0 then
             sleep = 1
-            --DrawTxt(0.932, 1.35, 1.0, 1.0, 0.50, Strings['start_heist'], 255, 255, 255, 255)
-            exports.globals:notify(Strings['start_heist'])
+            DrawTxt(0.932, 1.35, 1.0, 1.0, 0.50, Strings['start_heist'], 255, 255, 255, 255)
+
             if IsControlJustPressed(0, 38) then
                 TriggerEvent("vt-artheist:starttheheist")
             end
@@ -54,8 +54,8 @@ CreateThread(function()
                 if dist <= 1.0 then
                     sleep = 1
                     if not v['taken'] then
-                        --DrawTxt(0.932, 1.35, 1.0, 1.0, 0.50, Strings['start_stealing'], 255, 255, 255, 255)
-                        exports.globals:notify(Strings['start_stealing'])
+                        DrawTxt(0.932, 1.35, 1.0, 1.0, 0.50, Strings['start_stealing'], 255, 255, 255, 255)
+                        --exports.globals:notify(Strings['start_stealing'])
                         if IsControlJustPressed(0, 38) then
                             local hasDoorBeenThermited = TriggerServerCallback {
                                 eventName = "artHeist:hasDoorBeenThermited",
@@ -460,7 +460,7 @@ function StartHeist()
         Wait(3000)
         TriggerServerEvent('vt-artheist:server:syncHeistStart')
         looted2 = true
-        exports.globals:notify(Strings['go_steal'], Strings['go_steal'])
+        exports.globals:notify(false, Strings['go_steal'])
         stealBlip = addBlip(vector3(1397.66, 1140.42, 114.268), 439, 0, Strings['steal_blip'])
         repeat
             local ped = PlayerPedId()
