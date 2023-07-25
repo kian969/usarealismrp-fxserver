@@ -10,11 +10,13 @@ Config.MinimumStress = 50 -- Minimum Stress Level For Screen Shaking
 Config.MinimumSpeedUnbuckled = 50 -- Going Over This Speed Unbuckled Will Cause Stress
 Config.MinimumSpeed = 100 -- Going Over This Speed While Buckled Will Cause Stress
 Config.DisableStress = true -- If true will disable stress completely for all players
+Config.showArmedIcon = false
 
 -- Stress
 Config.WhitelistedWeaponArmed = { -- Disable showing armed icon from weapons in this table
     -- miscellaneous
     [`weapon_petrolcan`] = true,
+
     [`weapon_hazardcan`] = true,
     [`weapon_fireextinguisher`] = true,
     -- melee

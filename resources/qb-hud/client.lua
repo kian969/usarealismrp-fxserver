@@ -722,12 +722,16 @@ CreateThread(function()
             local playerId = PlayerId()
             local weapon = GetSelectedPedWeapon(player)
             -- Player hud
-            if not config.WhitelistedWeaponArmed[weapon] then
-                if weapon ~= `WEAPON_UNARMED` then
-                    armed = true
-                else
-                    armed = false
+            if config.showArmedIcon then
+                if not config.WhitelistedWeaponArmed[weapon] then
+                    if weapon ~= `WEAPON_UNARMED` then
+                        armed = true
+                    else
+                        armed = false
+                    end
                 end
+            else
+                armed = false
             end
             playerDead = IsEntityDead(player) --[[or PlayerData.metadata["inlaststand"] or PlayerData.metadata["isdead"]--]] or false
             parachute = GetPedParachuteState(player)
