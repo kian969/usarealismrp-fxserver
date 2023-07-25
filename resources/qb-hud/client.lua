@@ -459,7 +459,7 @@ RegisterNUICallback('ToggleMapShape', function(_, cb)
     if not Menu.isHideMapChecked then
         Menu.isToggleMapShapeChecked = Menu.isToggleMapShapeChecked == "circle" and "square" or "circle"
         Wait(50)
-        TriggerEvent("hud:client:LoadMap")
+        TriggerEvent("hud:client:LoadMap", Menu.isToggleMapShapeChecked)
     end
     TriggerEvent("hud:client:playHudChecklistSound")
     saveSettings()
@@ -1156,7 +1156,7 @@ CreateThread(function()
         end
 		if heading == '360' then heading = '0' end
             if heading ~= lastHeading then
-			    if IsPedInAnyVehicle(player) then
+                if IsPedInAnyVehicle(player) then
                     local crossroads = getCrossroads(player)
                     SendNUIMessage ({
                         action = 'update',
