@@ -838,7 +838,6 @@ CreateThread(function()
                     dev,
                     radioActive,
                 })
-                print("Yup")
                 if isInBackSeat(player) then
                     seatbeltOn = true
                 end
@@ -881,7 +880,6 @@ CreateThread(function()
 end)
 
 function isInBackSeat(ped)
-    print("checking back seat for ped: " .. ped)
     if IsPedInAnyVehicle(ped) then
         local veh = GetVehiclePedIsIn(ped)
         local backLeftPed = GetPedInVehicleSeat(veh, 1)
