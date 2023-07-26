@@ -838,6 +838,10 @@ CreateThread(function()
                     dev,
                     radioActive,
                 })
+                print("Yup")
+                if isInBackSeat(player) then
+                    seatbeltOn = true
+                end
                 updateVehicleHud({
                     show,
                     IsPauseMenuActive(),
@@ -875,6 +879,21 @@ CreateThread(function()
         --end
     end
 end)
+
+function isInBackSeat(ped)
+    print("checking back seat for ped: " .. ped)
+    if IsPedInAnyVehicle(ped) then
+        local veh = GetVehiclePedIsIn(ped)
+        local backLeftPed = GetPedInVehicleSeat(veh, 1)
+        local backRightPed = GetPedInVehicleSeat(veh, 2)
+        if backLeftPed == ped or backRightPed == ped then
+            return true
+        else
+            return false
+        end
+    end
+    return false
+end
 
 -- Low fuel
 --[[
