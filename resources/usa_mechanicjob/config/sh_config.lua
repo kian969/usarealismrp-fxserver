@@ -298,6 +298,22 @@ Config = {
             show_blip = {
                 disable_blip = false
             }
+        },
+        ["Hayne's Auto"] = {
+            duty = {
+                x = -1430.0560302734,
+                y = -453.39138793945,
+                z = 34.909706115723
+            },
+            truck_spawn = {
+                x = -1418.5881347656, y = -463.6286315918, z = 34.478015899658,
+                heading = 119.0
+            },
+            impound = nil,
+            ped = nil,
+            show_blip = {
+                disable_blip = false
+            }
         }
     },
 
