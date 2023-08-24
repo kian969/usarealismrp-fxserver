@@ -203,6 +203,10 @@ function GetCharacters(cb)
     cb(CHARACTERS)
 end
 
+exports("GetCharactersSync", function()
+  return CHARACTERS
+end)
+
 function GetNumCharactersWithJob(job)
   local count = 0
   for src, char in pairs(CHARACTERS) do
