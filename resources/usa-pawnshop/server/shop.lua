@@ -53,6 +53,14 @@ end
 function acceptableItem(item)
     if item.name:find("Key") then
         return false
+    elseif item.name:find("nail") then
+        return false
+    elseif item.name:find("planks") then 
+        return false
+    elseif item.name:find("lift") or item.name:find("lift_rail") then
+        return false
+    elseif item.name:find("garden_pitcher") or item.name:find("leafblower") then
+        return false
     elseif item.type then
         if item.type == "license" then
             return false
