@@ -452,7 +452,7 @@ AddEventHandler("properties:storeVehicle", function(property_name, plate)
   plate = exports.globals:trim(plate)
   local src = tonumber(source)
   if not doesVehicleBelongToAnyOwnerOfProperty(property_name, plate) then
-    TriggerClientEvent("usa:notify", src, "Vehicle deos not belong to any owner of this property")
+    TriggerClientEvent("usa:notify", src, "Vehicle does not belong to any owner of this property")
     return
   end
   local char = exports["usa-characters"]:GetCharacter(src)
