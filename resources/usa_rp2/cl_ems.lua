@@ -95,7 +95,7 @@ function ActivateBed(x, y, z, model)
         local bedObject = GetClosestObjectOfType(x, y, z, 5.0, model, false, false, false)
         local x, y, z = table.unpack(GetEntityCoords(bedObject))
         local rx, ry, rz = table.unpack(GetEntityRotation(bedObject))
-        local dict = 'anim@mp_bedmid@left_var_01'
+        local dict = 'anim@mp_bedmid@left_var_04'
         RequestAnimDict(dict)
         while not HasAnimDictLoaded(dict) do
             Citizen.Wait(0)

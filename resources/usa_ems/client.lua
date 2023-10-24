@@ -10,7 +10,7 @@ local EMSLockerRooms = {
 {x = 1701.4, y = 3604.1, z = 35.9}, -- sandy (interior / ymap)
 {x = 338.24346923828,y = -586.91796875, z = 74.165657043457}, -- pillbox helipad
 {x = -778.9980,y = -1202.9496, z = 51.1471}, -- viceroy helipad
-{x = 352.36312866211, y = -596.12005615234, z = 28.847423553467}, -- pillbox lockeroom
+{x = 301.4, y = -599.26, z = 43.28}, -- pillbox lockeroom
 {x = -823.76940917969, y = -1238.7368164062, z = 7.3374271392822}, -- viceroy medical locker room
 {x = 1825.89, y = 3674.86, z = 34.27}, -- sandy hostpital locker room
 {x = -252.5450, y = 6309.8086, z = 32.4272} -- paleto clinic
