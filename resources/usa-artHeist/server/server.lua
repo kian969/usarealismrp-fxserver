@@ -141,6 +141,7 @@ RegisterNetEvent('vt-artheist:server:items', function()
     if not char then return end
 
     if lastRewardRequestTime[src] and os.time() - lastRewardRequestTime[src]["money"] <= Config.CooldownHours * 60 * 60 then
+        TriggerClientEvent("usa:notify", src, "Too soon for money reward, try again later")
         print("too soon for money reward")
         return
     end
