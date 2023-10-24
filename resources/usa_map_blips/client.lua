@@ -88,7 +88,7 @@ local blips = {
 	{ title="Fire Department", colour = 1, id = 60, scale = 0.7, x = 1200.6988525391, y = -1472.1934814453, z = 34.857078552246, group = "fire_stations"},
 	{ title="Hospital", colour = 51, id = 61, scale = 0.7, x = -240.10, y = 6324.22, z = 32.43, group = "hospitals"}, -- paleto
 	{ title="Hospital", colour = 51, id = 61, scale = 0.7, x = 1832.5958, y = 3676.7114,  z = 34.2749, group = "hospitals" }, -- sandy
-	-- { title="Hospital", colour = 51, id = 61, scale = 0.7, x = -817.61511230469, y = -1236.6121826172, z = 7.3374252319336, group = "hospitals" }, -- viceroy medical
+	{ title="Hospital", colour = 51, id = 61, scale = 0.7, x = -817.61511230469, y = -1236.6121826172, z = 7.3374252319336, group = "hospitals" }, -- viceroy medical
 	{ title="Hospital", colour = 51, id = 61, scale = 0.7, x = 360.5, y = -584.7, z = 28.8, group = "hospitals" }, -- pillbox medical
 	{ title="Vanilla Unicorn", colour = 50, id = 121, scale = 0.7, x=129.607, y=-1299.83, z=29.2327, group = "entertainment"},
 	{ title="Legacy Tavern", colour = 15, id = 93, scale = 0.7, x=-564.778, y=274.195, z=83.0197, group = "entertainment"},
