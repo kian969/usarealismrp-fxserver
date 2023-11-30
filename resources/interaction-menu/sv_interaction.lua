@@ -101,7 +101,7 @@ RegisterServerEvent("interaction:giveItemToPlayer")
 AddEventHandler("interaction:giveItemToPlayer", function(item, targetPlayerId)
 	local toChar = exports["usa-characters"]:GetCharacter(targetPlayerId)
 	local fromChar = exports["usa-characters"]:GetCharacter(source)
-	if toChar.canHoldItem(item) then
+	if toChar.canHoldItem(item) and fromChar.hasItem(item) then
 		if not item.type or item.type == "license" then
 			TriggerClientEvent("usa:notify", targetPlayerId, "Can't trade licenses. Sorry!")
 			return
