@@ -1071,7 +1071,7 @@ local STATIC_OBJECTS = {
     obj = GetHashKey("gr_prop_gr_bench_02b"),
     coords = vector3(-1306.193, -3388.326, 12.94015),
     heading = 58.0
-  }
+  },
   --LEGION = {226.48237609863, -895.41094970703, 28.692138671875},
   --UPPER_PILLBOX = {242.40295410156, -565.30682373047, 41.278789520264},
   --BURGERSHOT = { -1191.5321044922, -894.51275634766, 18.479234695435},
@@ -1084,7 +1084,6 @@ local STATIC_OBJECTS = {
     obj = ATM_MODEL
   }
   --]]
-  --[[
   XMAS_TREE_LEGION = {
     coords = vector3(226.48237609863, -895.41094970703, 28.692138671875),
     obj = LARGE_XMAS_TREE_MODEL
@@ -1101,7 +1100,6 @@ local STATIC_OBJECTS = {
     coords = vector3(-30.562828063965, -1100.5909423828, 32.261386108398),
     obj = LARGE_XMAS_TREE_MODEL
   }
-  --]]
 }
 
 for _, info in pairs(STATIC_OBJECTS) do
