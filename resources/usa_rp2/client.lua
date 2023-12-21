@@ -1099,7 +1099,12 @@ local STATIC_OBJECTS = {
   XMAS_TREE_UPPER_PDM = {
     coords = vector3(-30.562828063965, -1100.5909423828, 32.261386108398),
     obj = LARGE_XMAS_TREE_MODEL
-  }
+  },
+  LAMESAPD_ATM = {
+    coords = vector3(827.39788818359, -1287.6212158203, 27.234066009521),
+    heading = 268.0,
+    obj = ATM_MODEL2
+  },
 }
 
 for _, info in pairs(STATIC_OBJECTS) do
