@@ -562,5 +562,8 @@ ITEM_IMAGES = {
     lift_rail = "https://i.imgur.com/BxfxgLL.png",
     lawnmower = "https://i.imgur.com/blJbZqg.png",
     leafblower = "https://i.imgur.com/NL8QjAO.png",
-    garden_pitcher = "https://imgur.com/GC5yvkj.png"
+    garden_pitcher = "https://imgur.com/GC5yvkj.png",
+    Corn = "https://i.imgur.com/jDPsLja.png",
+    ["Raw Corn"] = "https://i.imgur.com/tQNUfuS.png",
+    ["Small Corn Plant"] = "https://i.imgur.com/opsc5Xs.png"
 }
