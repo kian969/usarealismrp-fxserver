@@ -1105,6 +1105,11 @@ local STATIC_OBJECTS = {
     heading = 268.0,
     obj = ATM_MODEL2
   },
+  AUTOEXOTIC_ATM = {
+    coords = vector3(540.60186767578, -183.83302307129, 53.485401153564),
+    heading = 270.0,
+    obj = ATM_MODEL2
+  }
 }
 
 for _, info in pairs(STATIC_OBJECTS) do
