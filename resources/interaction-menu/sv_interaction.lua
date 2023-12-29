@@ -297,7 +297,8 @@ AddEventHandler("inventory:moveItem", function(data)
 end)
 
 RegisterServerEvent("inventory:dropItem")
-AddEventHandler("inventory:dropItem", function(name, index, posX, posY, posZ, heading)
+AddEventHandler("inventory:dropItem", function(name, index, posX, posY, posZ, heading, quantity)
+	quantity = math.abs(tonumber(quantity))
 	--------------------
 	-- play animation --
 	--------------------
@@ -311,15 +312,23 @@ AddEventHandler("inventory:dropItem", function(name, index, posX, posY, posZ, he
 	}
 	local char = exports["usa-characters"]:GetCharacter(source)
 	local item = char.getItemByIndex(index)
-	item.quantity = 1 -- only drop 1
+	if item.quantity < quantity then
+		TriggerClientEvent("usa:notify", source, "Invalid quantity")
+		return
+	end
+	item.quantity = quantity
 	item.coords = coords
 	if item.type == "weapon" then
 		TriggerClientEvent("interaction:equipWeapon", source, item, false)
 	end
 	if not item.invisibleWhenDropped then
-		TriggerEvent("interaction:addDroppedItem", item)
+		if quantity <= 1 then
+			TriggerEvent("interaction:addDroppedItem", item)
+		else
+			TriggerEvent("interaction:dropMultipleOfItem", item)
+		end
 	end
-	char.removeItemByIndex(index, 1)
+	char.removeItemByIndex(index, quantity)
 end)
 
 -- /e [emoteName]

@@ -910,7 +910,7 @@ RegisterNUICallback("dropItem", function(data, cb)
 			finalPos = GetOffsetFromEntityInWorldCoords(myped, table.unpack(NORMAL_OBJ_SPAWN_OFFSET))
 		end
 		TriggerEvent("usa:playAnimation", "anim@move_m@trash", "pickup", -8, 1, -1, 48, 0, 0, 0, 0)
-		TriggerServerEvent("inventory:dropItem", data.itemName, data.index, finalPos.x, finalPos.y, finalPos.z, GetEntityHeading(PlayerPedId()))
+		TriggerServerEvent("inventory:dropItem", data.itemName, data.index, finalPos.x, finalPos.y, finalPos.z, GetEntityHeading(PlayerPedId()), data.quantity)
 		if data.itemName:find("Radio") then
 			TriggerEvent("Radio.Set", false, {})
 		end
