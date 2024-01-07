@@ -7,7 +7,7 @@ local startWork = standardPress .. "Start work"
 local quitWork = standardPress .. "Quit work"
 
 local NPC_PED_MODEL = "csb_burgerdrug"
-local NPC_COORDS = {-1190.24, -897.37, 14.0}
+local NPC_COORDS = {-1200.0802001953, -893.09387207031, 13.886167526245}
 
 local JOB_START_TEXT_DIST = 1.5
 
@@ -19,9 +19,9 @@ local ANIMATION_TIME_SECONDS = 50
 local signedIn = nil
 
 local utils = {
-    {x = -1198.91, y = -895.17, z = 14.0, model = "smoothie"},
-    {x = -1199.66, y = -900.84, z = 14.0, model = "burgers"},
-    {x = -1201.17, y = -898.72, z = 14.0, model = 'frying'}
+    {x = -1191.3923339844, y = -898.49426269531, z = 13.886163711548, model = "smoothie"},
+    {x = -1195.5533447266, y = -898.19232177734, z = 13.886161804199, model = "burgers"},
+    {x = -1195.9969482422, y = -899.34692382813, z = 13.886161804199, model = 'frying'}
 }
 
 local working = "no"
@@ -136,6 +136,7 @@ Citizen.CreateThread(function()
                 SetBlockingOfNonTemporaryEvents(employerNPCHandle,true)
                 SetPedFleeAttributes(employerNPCHandle,0,0)
                 SetPedCombatAttributes(employerNPCHandle,17,1)
+                SetEntityHeading(employerNPCHandle, 211.0)
             end
         else 
             if employerNPCHandle then
