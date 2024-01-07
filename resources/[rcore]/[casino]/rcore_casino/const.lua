@@ -991,25 +991,25 @@ CasinoInventoryItems = {{
     key = "casino_vodka",
     title = "Vodka Shot",
     itemType = 2,
-    price = 10,
+    price = 200,
     luckyWheelAffected = true
 }, {
     key = "casino_mountshot",
     title = "The Mount Whiskey Shot",
     itemType = 2,
-    price = 55,
+    price = 200,
     luckyWheelAffected = true
 }, {
     key = "casino_richardshot",
     title = "Richard's Whiskey Shot",
     itemType = 2,
-    price = 190,
+    price = 300,
     luckyWheelAffected = true
 }, {
     key = "casino_macbethshot",
     title = "Macbeth Whiskey Shot",
     itemType = 2,
-    price = 350,
+    price = 400,
     luckyWheelAffected = true
 }, {
     key = "casino_silverchamp",
@@ -1037,61 +1037,61 @@ CasinoInventoryItems = {{
     key = "casino_beer",
     title = "Pisswasser",
     itemType = 1,
-    price = 5,
+    price = 100,
     consumable = 1
 }, {
     key = "casino_burger",
     title = "Burger",
     itemType = 1,
-    price = 5,
+    price = 200,
     consumable = 2
 }, {
     key = "casino_coke",
     title = "Kofola",
     itemType = 1,
-    price = 5,
+    price = 100,
     consumable = 1
 }, {
     key = "casino_sprite",
     title = "Sprite",
     itemType = 1,
-    price = 5,
+    price = 100,
     consumable = 1
 }, {
     key = "casino_luckypotion",
     title = "Lucky Potion",
     itemType = 1,
-    price = 50,
+    price = 150,
     consumable = 1
 }, {
     key = "casino_psqs",
     title = "P’s & Q’s",
     itemType = 1,
-    price = 3,
+    price = 150,
     consumable = 2
 }, {
     key = "casino_ego_chaser",
     title = "Ego Chaser",
     itemType = 1,
-    price = 3,
+    price = 150,
     consumable = 2
 }, {
     key = "casino_sandwitch",
     title = "Sandwitch",
     itemType = 1,
-    price = 5,
+    price = 150,
     consumable = 2
 }, {
     key = "casino_donut",
     title = "Donut",
     itemType = 1,
-    price = 3,
+    price = 125,
     consumable = 2
 }, {
     key = "casino_coffee",
     title = "Coffee",
     itemType = 1,
-    price = 10,
+    price = 175,
     consumable = 1
 }}
 
