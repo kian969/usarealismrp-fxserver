@@ -151,6 +151,6 @@ Citizen.CreateThread(function()
     -- ===============================================================
     -- =----------------------- [DLC: Casino] -----------------------=
     -- ===============================================================
-    DiamondCasino.LoadDefault()
-    DiamondPenthouse.LoadDefault()
+    --DiamondCasino.LoadDefault()
+    --DiamondPenthouse.LoadDefault()
 end)

@@ -306,3 +306,10 @@ end, {
     { name = "identifier", help = "player's steam identifier"}
   }
 })
+
+RegisterServerCallback {
+  eventName = "usa-characters:getCharInfo",
+  eventCallback = function(src)
+      return CHARACTERS[src].getSelf()
+  end
+}

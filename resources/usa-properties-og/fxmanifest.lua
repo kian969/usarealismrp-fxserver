@@ -6,7 +6,10 @@ version '1.0.0'
 
 lua54 'yes'
 
-shared_script '@ox_lib/init.lua'
+shared_scripts {
+    '@ox_lib/init.lua',
+    "@pmc-callbacks/import.lua"
+}
 
 client_scripts {
     "@NativeUI/Wrapper/Utility.lua",
@@ -42,5 +45,6 @@ client_scripts {
 server_script "server.lua"
 
 server_exports {
-    "GetOwnedProperties"
+    "GetOwnedProperties",
+    "ownsProperty"
 }

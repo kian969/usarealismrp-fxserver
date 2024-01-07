@@ -565,5 +565,16 @@ ITEM_IMAGES = {
     garden_pitcher = "https://imgur.com/GC5yvkj.png",
     Corn = "https://i.imgur.com/jDPsLja.png",
     ["Raw Corn"] = "https://i.imgur.com/tQNUfuS.png",
-    ["Small Corn Plant"] = "https://i.imgur.com/opsc5Xs.png"
+    ["Small Corn Plant"] = "https://i.imgur.com/opsc5Xs.png",
+    casino_chips = "https://i.imgur.com/cUElFth.png",
+    casino_coke = "https://imgur.com/n7ciMKF.png",
+    casino_beer = "https://i.imgur.com/sDAAijo.png",
+    casino_luckypotion = "https://i.imgur.com/KLnPEd3.png",
+    casino_coffee = "https://i.imgur.com/GJYTKRM.png",
+    casino_donut = "https://i.imgur.com/W7qiaQP.png",
+    casino_burger = "https://i.imgur.com/bhM5L3U.png",
+    casino_sandwitch = "https://i.imgur.com/POENGJV.png",
+    casino_sprite = "https://i.imgur.com/uYxRpW2.png",
+    casino_psqs = "https://i.imgur.com/38ZwDnO.png",
+    casino_ego_chaser = "https://i.imgur.com/5x8DNSN.png"
 }

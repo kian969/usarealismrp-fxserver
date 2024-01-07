@@ -1231,6 +1231,24 @@ function GetVehicleByHashName(hashName)
 	return nil
 end
 
+function GetVehicleByHashNumber(hashNum)
+	for category, items in pairs(vehicleShopItems["vehicles"]) do
+		for i = 1, #items do
+			if type(items[i].hash) == "string" then
+				if GetHashKey(items[i].hash) == hashNum then
+					return items[i]
+				end
+			elseif type(items[i].hash) == "number" then
+				if items[i].hash == hashNum then
+					return items[i]
+				end
+			end
+		end
+	end
+	return nil
+end
+
 exports("AddVehicleToDB", AddVehicleToDB)
 exports("GetVehicleByHashName", GetVehicleByHashName)
+exports("GetVehicleByHashNumber", GetVehicleByHashNumber)
 exports("generate_random_number_plate", generate_random_number_plate)

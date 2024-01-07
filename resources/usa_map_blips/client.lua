@@ -106,7 +106,7 @@ local blips = {
 	{ title = "Burger Shot", x = -1189.22, y = -888.43, id = 106, colour = 1, scale = 0.7, group = "jobs"},
 	{ title = "Mining", x = -596.51, y = 2090.44, id = 78, colour = 59, scale = 0.5, group = "jobs"},
 	{ title = "Mining", x = 1797.88, y = -2831.8, id = 78, colour = 59, scale = 0.5, group = "jobs"},
-	{ title = "Casino", x = 923.79486083984,y = 49.580528259277, id = 89, colour = 73, scale = 0.62, group = "entertainment"},
+	--{ title = "Casino", x = 923.79486083984,y = 49.580528259277, id = 89, colour = 73, scale = 0.62, group = "entertainment"},
 	{ title = "Vishnu's Go-Karts", x = -58.797729492188, y = -1839.8370361328, id = 488, colour = 0, scale = 0.7, group = "entertainment"},
 	{ title = "PDM - Rockford Hills", x = -1259.8367919922, y = -361.47216796875, id = 225, colour = 57, scale = 0.8},
 	{ title = "Best Buds", colour = 2, id = 140, x = 377.75665283203, y = -829.908203125, z = 29.302627563477, scale = 0.6 },

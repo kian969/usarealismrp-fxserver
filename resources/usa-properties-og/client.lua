@@ -975,6 +975,11 @@ Citizen.CreateThread(function()
                                                 coowners_submenu.SubMenu:AddItem(coowner)
                                               end
                                         end
+                                        -- tell owner about /casinoveh command if Diamond Casino --
+                                        if nearest_property_info.name == "Diamond Casino" then
+                                            local casinoPodiumVehInfoBtn = NativeUI.CreateItem("Update Podium Vehicle", "Use /casinoveh to set the lucky wheel prize vehicle")
+                                            mainMenu:AddItem(casinoPodiumVehInfoBtn)
+                                        end
                                     else
                                         mainMenu = NativeUI.CreateMenu(name, "", 50 --[[X COORD]], 320 --[[Y COORD]])
                                         local itembtn = NativeUI.CreateItem("Owner: " .. nearest_property_info.owner.name, nearest_property_info.owner.name .. " owns this property.")

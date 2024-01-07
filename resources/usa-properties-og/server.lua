@@ -1712,6 +1712,13 @@ function ownsProperty(name, src)
   return false
 end
 
+RegisterServerCallback {
+  eventName = "properties:ownsProperty",
+  eventCallback = function(src, name)
+    return ownsProperty(name, src)
+  end
+}
+
 --[[
 -- send nearby property data to clients every CLIENT_UPDATE_INTERVAL seconds
 Citizen.CreateThread(function()

@@ -214,6 +214,7 @@ local warp_locations = {
     },
     job_access = 'civ'
   },
+  --[[
   ['Casino Lobby'] = {
     entrance = {
       coords = {935.68670654297, 46.851871490479, 81.095748901367},
@@ -225,9 +226,10 @@ local warp_locations = {
     },
     job_access = 'civ'
   },
+  --]]
   ['Casino Roof'] = {
     entrance = {
-      coords = {969.59783935547, 63.212020874023, 112.55535888672},
+      coords = {2464.8679199219, -279.50253295898, -58.468109130859},
       heading = 59.0
     },
     exit = {
@@ -236,6 +238,7 @@ local warp_locations = {
     },
     job_access = 'civ'
   },
+  --[[
   ['Casino Penthouse'] = {
     entrance = {
       coords = {1085.4709472656, 214.5655670166, -49.200412750244},
@@ -247,6 +250,7 @@ local warp_locations = {
     },
     job_access = 'civ'
   },
+  --]]
   ['Eclipse Tower Apartment 1'] = {
     entrance = {
       coords = {-776.77490234375, 319.72201538086, 85.662673950195},

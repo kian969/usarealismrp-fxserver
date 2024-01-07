@@ -1374,7 +1374,7 @@ AddEventHandler("interaction:forceShutGUI", function(data)
 	TransitionFromBlurred(1000)
 	menuEnabled = false
 	SetPedCanSwitchWeapon(GetPlayerPed(-1), not menuEnabled)
-	if data.secondaryInventoryType and data.secondaryInventoryType == "property" then
+	if data and data.secondaryInventoryType and data.secondaryInventoryType == "property" then
 		TriggerServerEvent("properties-og:markAsInventoryClosed")
 	end
 end)
