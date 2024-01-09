@@ -51,7 +51,9 @@ function getSellPrice(itemInfo)
 end
 
 function acceptableItem(item)
-    if item.name:find("Key") then
+    if item.name:find("casino_chip") then
+        return false
+    elseif item.name:find("Key") then
         return false
     elseif item.name:find("nail") then
         return false
