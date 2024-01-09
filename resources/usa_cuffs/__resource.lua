@@ -4,3 +4,7 @@ lua54 'yes'
 shared_script '@ox_lib/init.lua'
 client_script 'cl_cuff.lua'
 server_script 'sv_cuff.lua'
+
+exports {
+  "isPlayerCuffed"
+}

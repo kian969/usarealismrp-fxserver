@@ -101,12 +101,13 @@ function ActivateBed(x, y, z, model)
             Citizen.Wait(0)
         end
         DoScreenFadeIn(1000)
+        local isInPoliceCustody = exports.usa_cuffs:isPlayerCuffed()
         --TaskPlayAnim(GetPlayerPed(-1), 'anim@mp_bedmid@left_var_02' , 'f_sleep_l_loop_bighouse' ,8.0, 1.0, -1, 1, 1.0, false, false, false )
         while currentBed do
             Citizen.Wait(1)
             if not currentlyAdmitted then
-                DrawTxt(0.965, 1.455, 1.0, 1.0, 0.40, 'Press ~g~E~s~ to leave bed', 255, 255, 255, 255)
-                if IsControlJustPressed(0, 38) then
+                if isInPoliceCustody then
+                    TriggerEvent('usa:notify', "You have been treated and removed from the bed.")
                     TriggerServerEvent('ems:resetBed')
                     FreezeEntityPosition(playerPed, false)
                     TaskPlayAnim(playerPed, dict, 'f_getout_l_bighouse', 8.0, -1, -1, 1, 1.0, false, false, false)
@@ -117,6 +118,20 @@ function ActivateBed(x, y, z, model)
                     ClearPedTasks(playerPed)
                     currentBed = nil
                     return
+                elseif not isInPoliceCustody then
+                    DrawTxt(0.965, 1.455, 1.0, 1.0, 0.40, 'Press ~g~E~s~ to leave bed', 255, 255, 255, 255)
+                    if IsControlJustPressed(0, 38) then
+                        TriggerServerEvent('ems:resetBed')
+                        FreezeEntityPosition(playerPed, false)
+                        TaskPlayAnim(playerPed, dict, 'f_getout_l_bighouse', 8.0, -1, -1, 1, 1.0, false, false, false)
+                        Citizen.Wait(2000)
+                        SetEntityCollision(bedObject, false)
+                        Citizen.Wait(2500)
+                        SetEntityCollision(bedObject, true)
+                        ClearPedTasks(playerPed)
+                        currentBed = nil
+                        return
+                    end
                 end
             end
             TaskPlayAnimAdvanced(playerPed, dict, 'f_sleep_l_loop_bighouse', x, y+0.05, z+1.175, rx, ry, rz-180.0, 1.0, 1.0, -1, 1, 0.0, false, false)

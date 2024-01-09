@@ -349,6 +349,10 @@ AddEventHandler('character:setCharacter', function()
 	end
 end)
 
+function isPlayerCuffed()
+	return isCuffed
+end
+
 function CuffPlayer()
 	count = 0
 	isCuffed = true
