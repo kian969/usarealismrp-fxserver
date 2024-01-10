@@ -1109,6 +1109,11 @@ local STATIC_OBJECTS = {
     coords = vector3(540.60186767578, -183.83302307129, 53.485401153564),
     heading = 270.0,
     obj = ATM_MODEL2
+  },
+  CASINO_ATM = {
+    coords = vector3(2497.2297363281, -277.64865112305, -59.711658477783),
+    heading = 322.0,
+    obj = ATM_MODEL2
   }
 }
 
