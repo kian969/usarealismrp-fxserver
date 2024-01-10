@@ -61,18 +61,18 @@ if Framework.Active == 4 then
             return char.getName()
         end
         ---------
-        xPlayer.getTotalAmount = function(item) -- ! need to test
-            print("item: " .. json.encode(item))
-            local itemData = char.getItem(item)
-            if itemData then
-                return itemData.quantity
-            else
-                return 0
+        xPlayer.getTotalAmount = function(item)
+            local total = 0
+            local allItems = char.getAllItemsByName(item)
+            if allItems[1] then
+                for i = 1, #allItems do
+                    total = total + allItems[i].quantity
+                end
             end
+            return total
         end
         ---------
         xPlayer.addInventoryItem = function(item, count)
-            print("adding inv item: " .. json.encode(item))
             local actualItem = {
                 name = item,
                 quantity = count,
