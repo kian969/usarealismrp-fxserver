@@ -1112,9 +1112,9 @@ PokerTableDatas[0] = {
     Title = "Poker",
     PlaceBetsTime = 40,
     MinBetValueAntePlay = 10,
-    MaxBetValueAntePlay = 10000,
+    MaxBetValueAntePlay = 50000,
     MinBetValuePairPlus = 10,
-    MaxBetValuePairPlus = 2000,
+    MaxBetValuePairPlus = 15000,
     UnluckyRound = 3 -- each 3rd round will be unlucky (high possibility that players get useless cards)
 }
 
@@ -1123,9 +1123,9 @@ PokerTableDatas[2] = {
     Title = "Poker Junior",
     PlaceBetsTime = 15,
     MinBetValueAntePlay = 10,
-    MaxBetValueAntePlay = 5000,
+    MaxBetValueAntePlay = 10000,
     MinBetValuePairPlus = 10,
-    MaxBetValuePairPlus = 1000,
+    MaxBetValuePairPlus = 5000,
     UnluckyRound = 3 -- each 3rd round will be unlucky (high possibility that players get useless cards)
 }
 
@@ -1134,9 +1134,9 @@ PokerTableDatas[3] = {
     Title = "Poker High Stakes",
     PlaceBetsTime = 40,
     MinBetValueAntePlay = 1000,
-    MaxBetValueAntePlay = 75000,
+    MaxBetValueAntePlay = 175000,
     MinBetValuePairPlus = 1000,
-    MaxBetValuePairPlus = 15000,
+    MaxBetValuePairPlus = 25000,
     VIP = true,
     UnluckyRound = 3 -- each 3rd round will be unlucky (high possibility that players get useless cards)
 }
@@ -1185,7 +1185,7 @@ BlackjackTableDatas[0] = {
     Title = "Blackjack",
     PlaceBetsTime = 40,
     MinimumBet = 10,
-    MaximumBet = 10000
+    MaximumBet = 50000
 }
 
 BlackjackTableDatas[3] = {
@@ -1193,7 +1193,7 @@ BlackjackTableDatas[3] = {
     Title = "Blackjack High Stakes",
     PlaceBetsTime = 40,
     MinimumBet = 1000,
-    MaximumBet = 75000,
+    MaximumBet = 175000,
     VIP = true
 }
 
@@ -1202,7 +1202,7 @@ BlackjackTableDatas[2] = {
     Title = "Blackjack Junior",
     PlaceBetsTime = 15,
     MinimumBet = 2,
-    MaximumBet = 2000
+    MaximumBet = 10000
 }
 
 RouletteAnimationNumbers = {38, 19, 34, 15, 30, 11, 26, 7, 22, 3, 25, 6, 37, 18, 33, 14, 29, 10, 8, 27, 12, 31, 16, 35,
