@@ -274,6 +274,20 @@ function CreateCharacter(data)
     return nil
   end
 
+  rTable.getAllItemsByName = function(name)
+    local items = {}
+    local inv = self.inventory
+    for i = 0, inv.MAX_CAPACITY - 1 do
+      local lookingAtItem = inv.items[tostring(i)]
+      if lookingAtItem then
+        if lookingAtItem.name:find(name) then
+          table.insert(items, lookingAtItem)
+        end
+      end
+    end
+    return items
+  end
+
   rTable.getAllItemsOfType = function(inType)
     local items = {}
     local inv = self.inventory
