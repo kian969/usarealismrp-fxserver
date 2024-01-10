@@ -54,16 +54,20 @@ AddEventHandler("interaction:removeDroppedItemAccessor", function()
 end)
 
 RegisterServerEvent("interaction:attemptPickupByUUID")
-AddEventHandler("interaction:attemptPickupByUUID", function(itemUUID, targetIndex, src)
+AddEventHandler("interaction:attemptPickupByUUID", function(itemUUID, targetIndex, src, quantity)
 	local itemIndex = getDroppedItemIndexByUUID(itemUUID)
 	local droppedItem = DROPPED_ITEMS[itemIndex]
-	local ok = attemptPickup(src, droppedItem, targetIndex)
+	local ok = attemptPickup(src, droppedItem, targetIndex, quantity)
 	if ok then
 		if droppedItem.name and droppedItem.name:find("Spike Strips") and droppedItem.coords then
 			TriggerEvent("spikestrips:removeStrip", droppedItem.coords)
 		end
-		TriggerClientEvent("interaction:removeDroppedItem", -1, itemIndex)
-		table.remove(DROPPED_ITEMS, itemIndex)
+		if quantity >= droppedItem.quantity then
+			TriggerClientEvent("interaction:removeDroppedItem", -1, itemIndex)
+			table.remove(DROPPED_ITEMS, itemIndex)
+		else
+			DROPPED_ITEMS[itemIndex].quantity = DROPPED_ITEMS[itemIndex].quantity - quantity
+		end
 		local char = exports["usa-characters"]:GetCharacter(src)
 		local nearbyItemsInv = getNearbyItemsAsInventoryForGUI(GetEntityCoords(GetPlayerPed(src)))
 		TriggerClientEvent("interaction:sendNUIMessage", src, { type = "updateBothInventories", inventory = { primary = char.get("inventory"), secondary = nearbyItemsInv}})
@@ -90,26 +94,33 @@ end)
 RegisterServerEvent("interaction:dropMultipleOfItem")
 AddEventHandler("interaction:dropMultipleOfItem", function(item)
 	local toSend = {}
-	for i = 1, item.quantity do
-		local copy = item
-		copy.quantity = 1
-		copy.dropTime = os.time()
-		if not copy.uuid then
-			copy.uuid = exports.globals:generateID()
+	if not item.uuid then
+		item.uuid = exports.globals:generateID()
+	end
+	item.dropTime = os.time()
+	if item.name == "casino_chips" or not item.notStackable then
+		table.insert(DROPPED_ITEMS, item)
+		table.insert(toSend, item)
+	else
+		for i = 1, item.quantity do
+			local copy = item
+			copy.quantity = 1
+			table.insert(DROPPED_ITEMS, copy)
+			table.insert(toSend, copy)
 		end
-		table.insert(DROPPED_ITEMS, copy)
-		table.insert(toSend, copy)
 	end
 	TriggerClientEvent("interaction:dropMultiple", -1, toSend)
 end)
 
-function attemptPickup(src, item, targetIndex)
+function attemptPickup(src, item, targetIndex, quantity)
 	if item then
+		local itemCopy = exports.globals:deepCopy(item)
+		itemCopy.quantity = quantity
 		local char = exports["usa-characters"]:GetCharacter(src)
-		if char.canHoldItem(item) then
+		if char.canHoldItem(itemCopy) then
 			if not char.getItemByIndex(targetIndex) then
-				char.setItemByIndex(targetIndex, item)
-				TriggerClientEvent("usa:notify", src, "You picked up (x1) " .. item.name)
+				char.setItemByIndex(targetIndex, itemCopy)
+				TriggerClientEvent("usa:notify", src, "You picked up (x1) " .. itemCopy.name)
 				TriggerClientEvent("usa:playAnimation", src, "anim@move_m@trash", "pickup", -8, 1, -1, 53, 0, 0, 0, 0, 2)
 				return true
 			else
