@@ -87,7 +87,7 @@ Config = {
 
     -- Cashier
     CASHIER_DAILY_BONUS = 500, -- daily visitor bonus that players can request at the Cashier, set to 0 if you don't want any daily bonuses. def: 1000
-    CASHIER_VIP_PRICE = 15000, -- price of the VIP casino membership, def: 50000
+    CASHIER_VIP_PRICE = 25000, -- price of the VIP casino membership, def: 50000
     CASHIER_VIP_DURATION = (60 * 60 * 24) * 7, -- VIP for player resets after this time, def: 7 days
     CASHIER_SHOW_SOCIETY_BALANCE = false, -- whether to show avaiable society balance in cashier UI
 
