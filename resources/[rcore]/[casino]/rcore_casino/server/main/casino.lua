@@ -390,6 +390,7 @@ function AddPlayerMoney(playerId, money, ignoreSociety)
                 xPlayer.addMoney(money)
             end
         end
+        exports["usa-businesses"]:RemoveBusinessCash("Casino", money)
         return true
     end
     return false
@@ -412,6 +413,7 @@ function RemovePlayerMoney(playerId, money)
         if Config.EnableSociety then
             GiveMoneyToSociety(money)
         end
+        exports["usa-businesses"]:GiveBusinessCash("Casino", money)
     end
 end
 

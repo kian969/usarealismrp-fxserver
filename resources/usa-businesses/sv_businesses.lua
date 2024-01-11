@@ -345,23 +345,48 @@ function SetBusinessStorage(name, storage, cb)
   end)
 end
 
-function GiveBusinessCash(name, amount, cb)
+function RemoveBusinessCash(name, amount, cb)
   GetBusinessStorage(name, function(storage)
-    storage.cash = storage.cash + amount
+    storage.cash = math.max(0, storage.cash - amount)
     -- set money --
     TriggerEvent("es:exposeDBFunctions", function(db)
       db.updateDocument("businesses", RemoveSpaces(name), { storage = storage }, function(err)
-        cb(true)
+        if cb then
+          cb(true)
+        end
       end)
     end)
   end)
 end
 
-function GiveBusinessCashPercent(name, amount)
+exports("RemoveBusinessCash", RemoveBusinessCash)
+
+function GiveBusinessCash(name, amount, cb)
+  print("giving " .. name .. " .. $" .. amount)
+  GetBusinessStorage(name, function(storage)
+    storage.cash = storage.cash + amount
+    -- set money --
+    TriggerEvent("es:exposeDBFunctions", function(db)
+      db.updateDocument("businesses", RemoveSpaces(name), { storage = storage }, function(err)
+        if cb then
+          cb(true)
+        end
+      end)
+    end)
+  end)
+end
+
+exports("GiveBusinessCash", GiveBusinessCash)
+
+function GiveBusinessCashPercent(name, amount, percent)
   if name then
     GetBusinessStorage(name, function(storage)
       if storage then
-        storage.cash = storage.cash + math.floor((BUSINESSES[name].purchasePercentage or DEFAULT_PURCHASE_PERCENT_REWARD) * amount)
+        local toGive = math.floor((BUSINESSES[name].purchasePercentage or DEFAULT_PURCHASE_PERCENT_REWARD) * amount)
+        if percent then
+          toGive = math.floor(amount * percent)
+        end
+        storage.cash = storage.cash + toGive
         -- set money --
         TriggerEvent("es:exposeDBFunctions", function(db)
           db.updateDocument("businesses", RemoveSpaces(name), { storage = storage }, function(newDoc) end)
