@@ -2041,3 +2041,24 @@ function getVehicleInFrontOfUser()
 	local targetVehicle = getVehicleInDirection(coordA, coordB)
 	return targetVehicle
 end
+
+function CalculateTimeToDisplay()
+	local hours = GetClockHours()
+	local minutes = GetClockMinutes()
+	local suffix = "AM"
+	if hours == 12 then
+		suffix = "PM"
+	elseif hours > 12 then
+		hours = hours - 12
+		suffix = "PM"
+	elseif hours == 0 then
+		hours = 12
+	end
+	local display_time = string.format("%d:%02d %s", hours, minutes, suffix)
+	return display_time
+end
+
+RegisterNetEvent("usa:showTime", function()
+	local curTime = CalculateTimeToDisplay()
+	exports.globals:notify("Time: " .. curTime, "Current time: " .. curTime)
+end)

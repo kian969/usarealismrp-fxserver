@@ -64,7 +64,8 @@ local GENERAL_STORE_ITEMS = {
     { name = "Cell Phone", price = 650, type = "misc", quantity = 1, legality = "legal", weight = 3, objectModel = "prop_npc_phone_02", blockedInPrison = true},
     { name = "Tablet", price = 1000, type = "misc", quantity = 1, legality = "legal", weight = 3, objectModel = "imp_prop_impexp_tablet", blockedInPrison = true},
     { name = "Vape", price = 400, type = "misc", quantity = 1, legality = "legal", weight = 3, objectModel = "ba_prop_battle_vape_01", blockedInPrison = true},
-    { name = "RC Car", price = 2000, type = "misc", quantity = 1, legality = "legal", weight = 30, objectModel = "prop_cs_cardbox_01", blockedInPrison = true}
+    { name = "RC Car", price = 2000, type = "misc", quantity = 1, legality = "legal", weight = 30, objectModel = "prop_cs_cardbox_01", blockedInPrison = true},
+    { name = "Watch", price = 5000, type = "misc", quantity = 1, legality = "legal", weight = 0, objectModel = "p_watch_01"}
   },
   ["Sports"] = {
     { name = "Roller Skates", price = 350, type = "misc", quantity = 1, legality = "legal", weight = 5, objectModel = "objectModel", blockedInPrison = true},
@@ -256,3 +257,7 @@ RegisterServerCallback {
     end
   end
 }
+
+exports["interaction-menu"]:registerUsableItem("Watch", function(src)
+  TriggerClientEvent("usa:showTime", src)
+end)

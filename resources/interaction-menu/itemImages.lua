@@ -576,5 +576,6 @@ ITEM_IMAGES = {
     casino_sandwitch = "https://i.imgur.com/POENGJV.png",
     casino_sprite = "https://i.imgur.com/uYxRpW2.png",
     casino_psqs = "https://i.imgur.com/38ZwDnO.png",
-    casino_ego_chaser = "https://i.imgur.com/5x8DNSN.png"
+    casino_ego_chaser = "https://i.imgur.com/5x8DNSN.png",
+    Watch = "https://i.imgur.com/vhJiNND.png"
 }
