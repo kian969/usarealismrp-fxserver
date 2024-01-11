@@ -1185,7 +1185,7 @@ BlackjackTableDatas[0] = {
     Title = "Blackjack",
     PlaceBetsTime = 40,
     MinimumBet = 10,
-    MaximumBet = 50000
+    MaximumBet = 25000
 }
 
 BlackjackTableDatas[3] = {
@@ -1193,7 +1193,7 @@ BlackjackTableDatas[3] = {
     Title = "Blackjack High Stakes",
     PlaceBetsTime = 40,
     MinimumBet = 1000,
-    MaximumBet = 175000,
+    MaximumBet = 50000,
     VIP = true
 }
 
@@ -1202,7 +1202,7 @@ BlackjackTableDatas[2] = {
     Title = "Blackjack Junior",
     PlaceBetsTime = 15,
     MinimumBet = 2,
-    MaximumBet = 10000
+    MaximumBet = 7000
 }
 
 RouletteAnimationNumbers = {38, 19, 34, 15, 30, 11, 26, 7, 22, 3, 25, 6, 37, 18, 33, 14, 29, 10, 8, 27, 12, 31, 16, 35,
