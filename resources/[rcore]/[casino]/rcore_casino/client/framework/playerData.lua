@@ -74,7 +74,7 @@ function RemovePlayerHunger(itemName)
         local item = {
             name = itemName,
             type = ITEM_TYPES[itemName],
-            substance = 20.0 -- todo: diff items have diff substances
+            substance = 10.0 -- todo: diff items have diff substances
         }
         TriggerEvent("hungerAndThirst:replenish", "hunger", item)
     end
@@ -91,7 +91,7 @@ function RemovePlayerThirst(itemName)
         local item = {
             name = itemName,
             type = ITEM_TYPES[itemName],
-            substance = 20.0 -- todo: diff items have diff substances
+            substance = 10.0 -- todo: diff items have diff substances
         }
         TriggerEvent("hungerAndThirst:replenish", "thirst", item)
     end

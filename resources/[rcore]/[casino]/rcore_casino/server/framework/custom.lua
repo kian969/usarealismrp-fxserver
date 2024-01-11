@@ -9,6 +9,7 @@ if Framework.Active == 4 then
         casino_ego_chaser = "food",
         casino_sandwitch = "food",
         casino_donut = "food",
+        casino_burger = "food",
         casino_diamondchamp = "alcohol",
         casino_goldchamp = "alcohol",
         casino_silverchamp = "alcohol",
@@ -81,6 +82,9 @@ if Framework.Active == 4 then
             actualItem.type = ITEM_TYPES[item]
             if item == "casino_chips" then
                 actualItem.weight = 0.0
+            end
+            if actualItem.type == "food" or actualItem.type == "drink"  then
+                actualItem.substance = 10.0
             end
             char.giveItem(actualItem, count)
         end
