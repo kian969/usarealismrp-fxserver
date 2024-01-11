@@ -310,6 +310,8 @@ end, {
 RegisterServerCallback {
   eventName = "usa-characters:getCharInfo",
   eventCallback = function(src)
+    if CHARACTERS[src] then
       return CHARACTERS[src].getSelf()
+    end
   end
 }
