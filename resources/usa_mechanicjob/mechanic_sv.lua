@@ -459,6 +459,27 @@ RegisterServerCallback {
 }
 
 RegisterServerCallback {
+	eventName = "mechanic:getRank",
+	eventCallback = function(src)
+		local retVal = nil
+		local char = exports["usa-characters"]:GetCharacter(src)
+		MechanicHelper.getMechanicRepairCount(char.get("_id"), function(count)
+			if count >= Config.LEVEL_3_RANK_THRESH then
+				retVal = 3
+			elseif count >= Config.LEVEL_2_RANK_THRESH then
+				retVal = 2
+			else
+				retVal = 1
+			end
+		end)
+		while retVal == nil do
+			Wait(1)
+		end
+		return retVal
+	end
+}
+
+RegisterServerCallback {
 	eventName = "mechanic:loadMenuData",
 	eventCallback = function(src)
 		local ret = nil

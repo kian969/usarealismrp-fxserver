@@ -1,0 +1,1 @@
+-- todo: add event handler to set PLAYER_JOB variable on job change
