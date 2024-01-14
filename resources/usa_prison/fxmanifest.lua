@@ -1,6 +1,11 @@
-resource_manifest_version '05cfa83c-a124-4cfa-a768-c24a5811d8f9'
+fx_version 'bodacious'
+game 'gta5'
+lua54 'yes'
 
-shared_script '@pmc-callbacks/import.lua'
+shared_scripts {
+    '@pmc-callbacks/import.lua',
+    '@ox_lib/init.lua'
+}
 
 client_scripts {
     '@salty_tokenizer/init.lua',

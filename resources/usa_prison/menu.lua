@@ -137,58 +137,91 @@ _menuPool = NativeUI.CreatePool()
 mainMenu = NativeUI.CreateMenu("BCSO", "~b~Blaine County Sheriff's Office", 0 --[[X COORD]], 320 --[[Y COORD]])
 _menuPool:Add(mainMenu)
 
+RegisterNetEvent("bcso:saveOutfit", function(character)
+	-- get name input
+	local input = lib.inputDialog('New Outfit', {'Name'})
+	if not input then return end
+	-- save
+  character.name = input[1]
+	TriggerServerEvent("bcso:saveOutfit", character)
+end)
+
+RegisterNetEvent("bcso:showOutfitSelectedMenu", function(id, name)
+	TriggerEvent('nh-context:createMenu', {
+        {
+          header = "Outfit: " .. name
+        },
+        {
+          header = "Put on",
+          event = "bcso:loadOutfit",
+          server = true,
+          args = {
+            id
+          }
+        },
+        {
+          header = "Delete",
+          event = "bcso:deleteOutfit",
+          server = true,
+          args = {
+            id
+          }
+        },
+    })
+end)
+
 function CreateUniformMenu(menu)
-    local ped = GetPlayerPed(-1)
+  local ped = GetPlayerPed(-1)
 
-    local submenu2 = _menuPool:AddSubMenu(menu, "Outfits", "Save and load outfits", true)
-    local selectedSaveSlot = 1
-    local selectedLoadSlot = 1
-    local saveslot = UIMenuListItem.New("Slot to Save", policeoutfitamount)
-    local saveconfirm = UIMenuItem.New('Confirm Save', 'Save outfit into the above number')
-    saveconfirm:SetRightBadge(BadgeStyle.Tick)
-    local loadslot = UIMenuListItem.New("Slot to Load", policeoutfitamount)
-    local loadconfirm = UIMenuItem.New('Load Outfit', 'Load outfit from above number')
-    loadconfirm:SetRightBadge(BadgeStyle.Clothes)
-    submenu2.SubMenu:AddItem(loadslot)
-    submenu2.SubMenu:AddItem(loadconfirm)
-    submenu2.SubMenu:AddItem(saveslot)
-    submenu2.SubMenu:AddItem(saveconfirm)
-
-    submenu2.SubMenu.OnListChange = function(sender, item, index)
-        if item == saveslot then
-            selectedSaveSlot = item:IndexToItem(index)
-        elseif item == loadslot then
-            selectedLoadSlot = item:IndexToItem(index)
-        end
-    end
-    submenu2.SubMenu.OnItemSelect = function(sender, item, index)
-        if item == saveconfirm then
-            local character = {
-      ["components"] = {},
-      ["componentstexture"] = {},
-      ["props"] = {},
-      ["propstexture"] = {}
-      }
-      local ply = GetPlayerPed(-1)
-      for i=0,2 do -- instead of 3?
-        character.props[i] = GetPedPropIndex(ply, i)
-        character.propstexture[i] = GetPedPropTextureIndex(ply, i)
-      end
-      for i=0,11 do
-        character.components[i] = GetPedDrawableVariation(ply, i)
-        character.componentstexture[i] = GetPedTextureVariation(ply, i)
-      end
-      TriggerServerEvent("doc:saveOutfit", character, selectedSaveSlot)
-        elseif item == loadconfirm then
-            DoScreenFadeOut(500)
-            Citizen.Wait(500)
-            TriggerServerEvent('doc:loadOutfit', selectedLoadSlot)
-      TriggerServerEvent('InteractSound_SV:PlayWithinDistance', 1, 'zip-close', 1.0)
-      Citizen.Wait(2000)
-      DoScreenFadeIn(500)
-            TriggerEvent("usa:playAnimation", 'clothingshirt', 'try_shirt_positive_d', -8, 1, -1, 48, 0, 0, 0, 0, 3)
-        end
-    end
+  local outfitsItem = NativeUI.CreateItem("Outfits", "Saved outfits")
+	outfitsItem.Activated = function(parentmenu, selected)
+		-- load saved items
+		local savedOutfits = TriggerServerCallback {
+			eventName = "bcso:loadSavedOutfits",
+			args = {}
+		}
+		-- create menu
+		local outfitMenu = {}
+		for i = 1, #savedOutfits do
+			table.insert(outfitMenu, {
+				header = savedOutfits[i].name,
+				subMenu = true,
+				event = "bcso:showOutfitSelectedMenu",
+				args = {
+					savedOutfits[i]._id,
+					savedOutfits[i].name
+				}
+			})
+		end
+		local character = {
+			["components"] = {},
+			["componentstexture"] = {},
+			["props"] = {},
+			["propstexture"] = {}
+			}
+			local ply = GetPlayerPed(-1)
+			for i=0,2 -- instead of 3?
+				do
+				character.props[i] = GetPedPropIndex(ply, i)
+				character.propstexture[i] = GetPedPropTextureIndex(ply, i)
+			end
+			for i=0,11
+				do
+				character.components[i] = GetPedDrawableVariation(ply, i)
+				character.componentstexture[i] = GetPedTextureVariation(ply, i)
+			end
+		table.insert(outfitMenu, {
+			header = "Save current outfit",
+			event = "bcso:saveOutfit",
+			args = {
+				character
+			}
+		})
+		TriggerEvent('nh-context:createMenu', outfitMenu)
+		mainMenu:Visible(false)
+		mainMenu:Clear()
+	end
+	menu:AddItem(outfitsItem)
   -- Components --
   local submenu = _menuPool:AddSubMenu(menu, "Components", "Modify components", true --[[KEEP POSITION]])
   for i = 1, #components do

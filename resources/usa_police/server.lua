@@ -416,51 +416,59 @@ AddEventHandler("policestation2:requestPurchase", function(index)
 end)
 
 RegisterServerEvent("policestation2:saveOutfit")
-AddEventHandler("policestation2:saveOutfit", function(character, slot)
+AddEventHandler("policestation2:saveOutfit", function(character, name)
     local src = source
     local char = exports["usa-characters"]:GetCharacter(src)
     if char.get("job") == "sheriff" then
-        TriggerEvent('es:exposeDBFunctions', function(db)
-            local docID = char.get("_id") .. "-" .. slot
-            db.createDocumentWithId(DB_NAME, character, docID, function(ok)
-                if ok then
-                    TriggerClientEvent("usa:notify", src, "Outfit in slot "..slot.." has been saved.")
-                else
-                    db.updateDocument(DB_NAME, docID, character, function(ok)
-                        if ok then
-                            TriggerClientEvent("usa:notify", src, "Outfit in slot "..slot.." has been updated.")
-                        else
-                            TriggerClientEvent("usa:notify", src, "Error saving outfit")
-                        end
-                    end)
-                end
-            end)
-        end)
+        -- get next free slot
+        local query = {
+            _id = {
+                ["$regex"] = char.get("_id")
+            }
+        }
+        local outfits = exports.essentialmode:getDocumentsByRows("sasp-outfits", query)
+        local nextSlot = outfits[#outfits]._id:sub(#outfits[#outfits]._id, #outfits[#outfits]._id)
+        nextSlot = tonumber(nextSlot) + 1
+        -- save
+        character.name = name
+        local ok = exports.essentialmode:createDocumentWithId(DB_NAME, char.get("_id") .. "-" .. nextSlot, character)
+        if ok then
+            TriggerClientEvent("usa:notify", src, "Outfit has been saved.")
+        else
+            TriggerClientEvent("usa:notify", src, "Error saving outfit")
+        end
     else
         TriggerClientEvent("usa:notify", source, "You must be on-duty to save a uniform.")
     end
 end)
 
-RegisterServerEvent("policestation2:loadOutfit")
-AddEventHandler("policestation2:loadOutfit", function(slot)
+RegisterServerEvent("police:loadOutfitById")
+AddEventHandler("police:loadOutfitById", function(id)
     local src = source
     local char = exports["usa-characters"]:GetCharacter(src)
     if char.get("policeRank") > 0 then
-        local docID = char.get("_id") .. "-" .. slot
-        TriggerEvent('es:exposeDBFunctions', function(db)
-            db.getDocumentById(DB_NAME, docID, function(outfit)
-                TriggerClientEvent("policestation2:setCharacter", src, outfit)
-                if char.get("job") ~= 'sheriff' then
-                    char.set("job", JOB_NAME)
-                    TriggerEvent('job:sendNewLog', src, JOB_NAME, true)
-                    TriggerClientEvent("thirdEye:updateActionsForNewJob", src, JOB_NAME)
-                end
-                TriggerClientEvent('interaction:setPlayersJob', src, 'sheriff')
-                TriggerEvent("eblips:add", {name = char.getName(), src = src, color = 3})
-            end)
-        end)
+        local outfit = exports.essentialmode:getDocument("sasp-outfits", id)
+        TriggerClientEvent("policestation2:setCharacter", src, outfit)
+        if char.get("job") ~= 'sheriff' then
+            char.set("job", JOB_NAME)
+            TriggerEvent('job:sendNewLog', src, JOB_NAME, true)
+            TriggerClientEvent("thirdEye:updateActionsForNewJob", src, JOB_NAME)
+        end
+        TriggerClientEvent('interaction:setPlayersJob', src, 'sheriff')
+        TriggerEvent("eblips:add", {name = char.getName(), src = src, color = 3})
     else
         DropPlayer(source, "Exploiting. Your information has been logged and staff has been notified. If you feel this was by mistake, let a staff member know.")
+    end
+end)
+
+RegisterServerEvent("police:deleteOutfit")
+AddEventHandler("police:deleteOutfit", function(id)
+    local src = source
+    local ok = exports.essentialmode:deleteDocument("sasp-outfits", id)
+    if ok then
+        TriggerClientEvent("usa:notify", src, "Outfit deleted")
+    else
+        TriggerClientEvent("usa:notify", src, "Error deleting outfit")
     end
 end)
 
@@ -571,3 +579,21 @@ function GetMakeModelPlate(plates, cb)
 		--keys = { "86CSH075" }
 	}), { ["Content-Type"] = 'application/json', Authorization = "Basic " .. exports["essentialmode"]:getAuth() })
 end
+
+RegisterServerCallback {
+    eventName = "police:loadSavedOutfits",
+    eventCallback = function(src)
+        local char = exports["usa-characters"]:GetCharacter(src)
+        local query = {
+            _id = {
+                ["$regex"] = char.get("_id")
+            }
+        }
+        local outfits = exports.essentialmode:getDocumentsByRows("sasp-outfits", query)
+        local ret = {}
+        for i = 1, #outfits do
+            table.insert(ret, { name = (outfits[i].name or "Not named"), _id = outfits[i]._id })
+        end
+        return ret
+    end
+}

@@ -609,11 +609,25 @@ exports("createDocumentWithId", function(db, id, doc)
 	return ret
 end)
 
+exports("createDocument", function(db, doc, cb)
+	print("creating doc")
+	PerformHttpRequest("http://" .. ip .. ":" .. port .. "/_uuids", function(err, rText, headers)
+		local data = json.decode(rText)
+		PerformHttpRequest("http://" .. ip .. ":" .. port .. "/" .. db .. "/" .. data.uuids[1], function(err, rText, headers)
+			print("rText: " .. rText)
+			if cb then
+				cb(data.uuids[1])
+			end
+		end, "PUT", json.encode(doc), {["Content-Type"] = 'application/json', Authorization = "Basic " .. auth})
+	end, "GET", "", {Authorization = "Basic " .. auth})
+end)
+
 exports("deleteDocument", function(db, docId)
 	local retVal = nil
 	PerformHttpRequest("http://" .. ip .. ":" .. port .. "/" .. db .. "/" .. docId, function(errGet, rTextGet, headersGet)
 		local doc = json.decode(rTextGet)
 		PerformHttpRequest("http://" .. ip .. ":" .. port .. "/" .. db .. "/" .. docId .. "?rev=" .. doc._rev, function(err, rText, headers)
+			print(rText)
 			retVal = json.decode(rText).ok
 		end, "DELETE", "", { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })
 	end, "GET", "", { ["Content-Type"] = 'application/json', ['Authorization'] = "Basic " .. exports["essentialmode"]:getAuth() })

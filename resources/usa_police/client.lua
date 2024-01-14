@@ -146,66 +146,92 @@ _menuPool = NativeUI.CreatePool()
 mainMenu = NativeUI.CreateMenu("SASP", "~b~San Andreas State Police", 0 --[[X COORD]], 320 --[[Y COORD]])
 _menuPool:Add(mainMenu)
 
+RegisterNetEvent("policestation2:saveOutfit", function(character)
+	-- get name input
+	local input = lib.inputDialog('New Outfit', {'Name'})
+	if not input then return end
+	-- save
+	TriggerServerEvent("policestation2:saveOutfit", character, input[1])
+end)
+
+RegisterNetEvent("police:showOutfitSelectedMenu", function(id, name)
+	TriggerEvent('nh-context:createMenu', {
+        {
+            header = "Outfit: " .. name
+        },
+        {
+            header = "Put on",
+            event = "police:loadOutfitById",
+			server = true,
+			args = {
+				id
+			}
+        },
+		{
+            header = "Delete",
+            event = "police:deleteOutfit",
+			server = true,
+			args = {
+				id
+			}
+        },
+    })
+end)
+
 function CreateUniformMenu(menu)
 	local ped = GetPlayerPed(-1)
 	menu:Clear()
 
-	local submenu2 = _menuPool:AddSubMenu(menu, "Outfits", "Save and load outfits", true)
-	local selectedSaveSlot = 1
-    local selectedLoadSlot = 1
-    local saveslot = UIMenuListItem.New("Slot to Save", policeoutfitamount)
-    local saveconfirm = UIMenuItem.New('Confirm Save', 'Save outfit into the above number')
-    saveconfirm:SetRightBadge(BadgeStyle.Tick)
-    local loadslot = UIMenuListItem.New("Slot to Load", policeoutfitamount)
-    local loadconfirm = UIMenuItem.New('Load Outfit', 'Load outfit from above number')
-    loadconfirm:SetRightBadge(BadgeStyle.Clothes)
-    submenu2.SubMenu:AddItem(loadslot)
-    submenu2.SubMenu:AddItem(loadconfirm)
-    submenu2.SubMenu:AddItem(saveslot)
-    submenu2.SubMenu:AddItem(saveconfirm)
-
-    submenu2.SubMenu.OnListChange = function(sender, item, index)
-        if item == saveslot then
-            selectedSaveSlot = item:IndexToItem(index)
-        elseif item == loadslot then
-            selectedLoadSlot = item:IndexToItem(index)
-        end
-    end
-    submenu2.SubMenu.OnItemSelect = function(sender, item, index)
-        if item == saveconfirm then
-            local character = {
+	local outfitsItem = NativeUI.CreateItem("Outfits", "Saved outfits")
+	outfitsItem.Activated = function(parentmenu, selected)
+		-- load saved items
+		local savedOutfits = TriggerServerCallback {
+			eventName = "police:loadSavedOutfits",
+			args = {}
+		}
+		-- create menu
+		local outfitMenu = {}
+		for i = 1, #savedOutfits do
+			table.insert(outfitMenu, {
+				header = savedOutfits[i].name,
+				subMenu = true,
+				--event = "police:loadOutfitById",
+				event = "police:showOutfitSelectedMenu",
+				args = {
+					savedOutfits[i]._id,
+					savedOutfits[i].name
+				}
+			})
+		end
+		local character = {
 			["components"] = {},
 			["componentstexture"] = {},
 			["props"] = {},
 			["propstexture"] = {}
 			}
 			local ply = GetPlayerPed(-1)
-			--local debugstr = "| Props: "
 			for i=0,2 -- instead of 3?
 				do
 				character.props[i] = GetPedPropIndex(ply, i)
 				character.propstexture[i] = GetPedPropTextureIndex(ply, i)
-				--debugstr = debugstr .. character.props[i] .. "->" .. character.propstexture[i] .. ","
 			end
-			--debugstr = debugstr .. "| Components: "
 			for i=0,11
 				do
 				character.components[i] = GetPedDrawableVariation(ply, i)
 				character.componentstexture[i] = GetPedTextureVariation(ply, i)
-				--debugstr = debugstr .. character.components[i] .. "->" .. character.componentstexture[i] .. ","
 			end
-			--print(debugstr)
-			TriggerServerEvent("policestation2:saveOutfit", character, selectedSaveSlot)
-        elseif item == loadconfirm then
-            DoScreenFadeOut(500)
-            Citizen.Wait(500)
-            TriggerServerEvent('policestation2:loadOutfit', selectedLoadSlot)
-			TriggerServerEvent('InteractSound_SV:PlayWithinDistance', 1, 'zip-close', 1.0)
-			Citizen.Wait(2000)
-			DoScreenFadeIn(500)
-            TriggerEvent("usa:playAnimation", 'clothingshirt', 'try_shirt_positive_d', -8, 1, -1, 48, 0, 0, 0, 0, 3)
-        end
-    end
+		table.insert(outfitMenu, {
+			header = "Save current outfit",
+			event = "policestation2:saveOutfit",
+			args = {
+				character
+			}
+		})
+		TriggerEvent('nh-context:createMenu', outfitMenu)
+		mainMenu:Visible(false)
+		mainMenu:Clear()
+	end
+	menu:AddItem(outfitsItem)
 	-- Components --
 	local submenu = _menuPool:AddSubMenu(menu, "Components", "Modify components", true --[[KEEP POSITION]])
 	for i = 1, #components do

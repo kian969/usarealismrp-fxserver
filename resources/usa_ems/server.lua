@@ -45,49 +45,57 @@ AddEventHandler("ems:getLoadout", function()
     end
 end)
 
-RegisterServerEvent("emsstation2:loadOutfit")
-AddEventHandler("emsstation2:loadOutfit", function(slot)
-  local src = source
-  local char = exports["usa-characters"]:GetCharacter(src)
-  local docID = char.get("_id") .. "-" .. slot
-  TriggerEvent('es:exposeDBFunctions', function(db)
-    db.getDocumentById(DB_NAME, docID, function(outfit)
-      TriggerClientEvent("emsstation2:setCharacter", src, outfit)
-      if char.get('job') ~= JOB_NAME then
-        char.set("job",JOB_NAME)
-        TriggerClientEvent("thirdEye:updateActionsForNewJob", src, JOB_NAME)
+RegisterServerEvent("lsfd:loadOutfitById")
+AddEventHandler("lsfd:loadOutfitById", function(id)
+    local src = source
+    local char = exports["usa-characters"]:GetCharacter(src)
+    local outfit = exports.essentialmode:getDocument("lsfd-outfits", id)
+    TriggerClientEvent("emsstation2:setCharacter", src, outfit)
+    if char.get("job") ~= JOB_NAME then
+        char.set("job", JOB_NAME)
         TriggerEvent('job:sendNewLog', src, JOB_NAME, true)
-      end
-      TriggerClientEvent('interaction:setPlayersJob', src, JOB_NAME)
-      TriggerEvent("eblips:add", {name = char.getName(), src = src, color = 1})
-    end)
-  end)
+        TriggerClientEvent("thirdEye:updateActionsForNewJob", src, JOB_NAME)
+    end
+    TriggerClientEvent('interaction:setPlayersJob', src, JOB_NAME)
+    TriggerEvent("eblips:add", {name = char.getName(), src = src, color = 3})
 end)
 
-RegisterServerEvent("emsstation2:saveOutfit")
-AddEventHandler("emsstation2:saveOutfit", function(character, slot)
-  local src = source
-  local char = exports["usa-characters"]:GetCharacter(src)
-  if char.get("job") == JOB_NAME then
-    TriggerEvent('es:exposeDBFunctions', function(db)
-      local docID = char.get("_id") .. "-" .. slot
-      db.createDocumentWithId(DB_NAME, character, docID, function(ok)
+RegisterServerEvent("lsfd:saveOutfit")
+AddEventHandler("lsfd:saveOutfit", function(character, name)
+    local src = source
+    local char = exports["usa-characters"]:GetCharacter(src)
+    if char.get("job") == JOB_NAME then
+        -- get next free slot
+        local query = {
+            _id = {
+                ["$regex"] = char.get("_id")
+            }
+        }
+        local outfits = exports.essentialmode:getDocumentsByRows("lsfd-outfits", query)
+        local nextSlot = outfits[#outfits]._id:sub(#outfits[#outfits]._id, #outfits[#outfits]._id)
+        nextSlot = tonumber(nextSlot) + 1
+        -- save
+        character.name = name
+        local ok = exports.essentialmode:createDocumentWithId(DB_NAME, char.get("_id") .. "-" .. nextSlot, character)
         if ok then
-          TriggerClientEvent("usa:notify", src, "Outfit in slot "..slot.." has been saved.")
+            TriggerClientEvent("usa:notify", src, "Outfit has been saved.")
         else
-          db.updateDocument(DB_NAME, docID, character, function(ok)
-            if ok then
-                TriggerClientEvent("usa:notify", src, "Outfit in slot "..slot.." has been updated.")
-            else 
-                TriggerClientEvent("usa:notify", src, "Error saving outfit")
-            end
-        end)
+            TriggerClientEvent("usa:notify", src, "Error saving outfit")
         end
-      end)
-    end)
-  else
-    TriggerClientEvent("usa:notify", src, "You must be on-duty to save a uniform.")
-  end
+    else
+        TriggerClientEvent("usa:notify", source, "You must be on-duty to save a uniform.")
+    end
+end)
+
+RegisterServerEvent("lsfd:deleteOutfit")
+AddEventHandler("lsfd:deleteOutfit", function(id)
+    local src = source
+    local ok = exports.essentialmode:deleteDocument("lsfd-outfits", id)
+    if ok then
+        TriggerClientEvent("usa:notify", src, "Outfit deleted")
+    else
+        TriggerClientEvent("usa:notify", src, "Error deleting outfit")
+    end
 end)
 
 RegisterServerEvent("emsstation2:onduty")
@@ -132,3 +140,21 @@ function RemoveServiceWeapons(char)
           end
       end
 end
+
+RegisterServerCallback {
+  eventName = "lsfd:loadSavedOutfits",
+  eventCallback = function(src)
+      local char = exports["usa-characters"]:GetCharacter(src)
+      local query = {
+          _id = {
+              ["$regex"] = char.get("_id")
+          }
+      }
+      local outfits = exports.essentialmode:getDocumentsByRows("lsfd-outfits", query)
+      local ret = {}
+      for i = 1, #outfits do
+          table.insert(ret, { name = (outfits[i].name or "Not named"), _id = outfits[i]._id })
+      end
+      return ret
+  end
+}

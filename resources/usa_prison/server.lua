@@ -1,6 +1,7 @@
 local DB_NAME = "correctionaldepartment"
 
 exports.globals:PerformDBCheck("usa_prison", DB_NAME)
+exports.globals:PerformDBCheck("usa_prison", "bcso-outfits")
 
 local WEAPONS = {
 	{ name = "IFAK", price = 25, weight = 1, type = "misc"},
@@ -178,45 +179,19 @@ AddEventHandler("doc:forceDuty", function()
 	end
 end)
 
-RegisterServerEvent("doc:saveOutfit")
-AddEventHandler("doc:saveOutfit", function(uniform, slot)
-	local usource = source
-	local player_identifer = GetPlayerIdentifiers(usource)[1]
-	TriggerEvent('es:exposeDBFunctions', function(db)
-		db.getDocumentByRow(DB_NAME, "identifier" , player_identifer, function(result)
-			if type(result) ~= "boolean" then
-				db.getDocumentByRow(DB_NAME, "identifier" , player_identifer, function(result)
-					local uniforms = result.uniform or {}
-					uniforms[tostring(slot)] = uniform
-					db.updateDocument(DB_NAME, result._id, {uniform = uniforms}, function()
-						TriggerClientEvent("usa:notify", usource, "Uniform saved!")
-					end)
-				end)
-			else
-				local target = exports["usa-characters"]:GetCharacter(tonumber(usource))
-				local uniforms = {}
-				uniforms[tostring(slot)] = uniform
-				local employee = {
-					identifier = player_identifer,
-					name = target.getFullName(),
-					uniform = uniforms,
-				}
-				db.createDocument("correctionaldepartment", employee, function()
-					print("new co created in db")
-				end)
-				TriggerClientEvent("usa:notify", usource, "Uniform saved!")
-			end
-		end)	
-	end)
+RegisterServerEvent("bcso:saveOutfit")
+AddEventHandler("bcso:saveOutfit", function(uniform)
+	local char = exports["usa-characters"]:GetCharacter(source)
+	uniform.ownerIdentifier = char.get("_id")
+	exports.essentialmode:createDocument("bcso-outfits", uniform)
 end)
 
-RegisterServerEvent("doc:loadOutfit")
-AddEventHandler("doc:loadOutfit", function(slot, id)
+RegisterServerEvent("bcso:loadOutfit")
+AddEventHandler("bcso:loadOutfit", function(outfitId, id)
 	if id then source = id end
 	local usource = source
 	local char = exports["usa-characters"]:GetCharacter(usource)
 	local job = char.get("job")
-	local player_identifer = GetPlayerIdentifiers(usource)[1]
 	if job ~= "corrections" then
 		char.set("job", "corrections")
 		TriggerClientEvent("thirdEye:updateActionsForNewJob", usource, "corrections")
@@ -226,13 +201,19 @@ AddEventHandler("doc:loadOutfit", function(slot, id)
 		TriggerClientEvent("interaction:setPlayersJob", usource, "corrections")
 		TriggerEvent("eblips:add", {name = char.getName(), src = usource, color = 82})
 	end
-	TriggerEvent('es:exposeDBFunctions', function(usersTable)
-		usersTable.getDocumentByRow(DB_NAME, "identifier" , player_identifer, function(result)
-			if result and result.uniform then
-				TriggerClientEvent("doc:uniformLoaded", usource, result.uniform[tostring(slot)] or nil)
-			end
-		end)
-	end)
+	local outfit = exports.essentialmode:getDocument("bcso-outfits", outfitId)
+	TriggerClientEvent("doc:uniformLoaded", usource, outfit)
+end)
+
+RegisterServerEvent("bcso:deleteOutfit")
+AddEventHandler("bcso:deleteOutfit", function(outfitId)
+	local src = source
+	local ok = exports.essentialmode:deleteDocument("bcso-outfits", outfitId)
+	if ok then
+		TriggerClientEvent("usa:notify", src, "Outfit deleted")
+	else
+		TriggerClientEvent("usa:notify", src, "Error deleting outfit")
+	end
 end)
 
 RegisterServerEvent("doc:spawnVehicle")
@@ -328,5 +309,14 @@ RegisterServerCallback {
 	eventCallback = function(source)
 		local char = exports["usa-characters"]:GetCharacter(source)
 		return char.get("jailTime") > 0
+	end
+}
+
+RegisterServerCallback {
+	eventName = "bcso:loadSavedOutfits",
+	eventCallback = function(source)
+		local char = exports["usa-characters"]:GetCharacter(source)
+		local outfits = exports.essentialmode:getDocumentsByRows("bcso-outfits", { ownerIdentifier = char.get("_id") })
+		return (outfits or {})
 	end
 }
