@@ -14,10 +14,10 @@ Music.Albums = {
 }
 
 Music.Songs = {
-    -- ["song_file.mp3"] = {
+    -- ["song.mp3"] = {
     --     Title = "Song Name",
-    --     Artist = "Artist",
+    --     Artist = "Song Artist",
     --     Album = "Album Name",
-    --     Cover = "https://example.com/abc.jpg",
-    -- }
+    --     Cover = "https://example.com/abc.jpg"
+    -- },
 }

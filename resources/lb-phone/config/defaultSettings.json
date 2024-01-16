@@ -35,8 +35,12 @@
     "phone": {
         "showCallerId": true
     },
+    "lockscreen": {
+        "color": "gradient",
+        "fontStyle": 1
+    },
     "apps": [
         ["Phone", "Messages", "Camera", "Photos"],
-        ["Settings", "AppStore", "Clock", "Garage", "Notes", "Calculator", "Weather", "Maps", "Wallet", "Home", "Music", "Mail", "Services"]
+        ["Settings", "AppStore", "Clock", "Garage", "Notes", "Calculator", "Weather", "Maps", "Wallet", "Home", "Music", "Mail", "VoiceMemo", "Services"]
     ]
 }

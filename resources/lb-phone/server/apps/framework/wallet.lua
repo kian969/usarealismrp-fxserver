@@ -22,7 +22,7 @@ function AddTransaction(phoneNumber, amount, company, logo)
             return
         end
 
-        local content = (amount < 0 and "-" or "") .. Config.CurrencyFormat:format(math.abs(amount))
+        local content = (amount < 0 and "-" or "") .. Config.CurrencyFormat:format(SeperateNumber(math.abs(amount)))
         SendNotification(phoneNumber, {
             app = "Wallet",
             title = company,

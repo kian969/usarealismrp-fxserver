@@ -86,6 +86,14 @@ if (!window.componentsLoaded) {
         UseComponent(cb, { ...data, component: 'camera' });
     }
 
+    function colorPicker(cb, data) {
+        UseComponent(cb, { ...data, component: 'colorpicker' });
+    }
+
+    function contactSelector(cb, data) {
+        UseComponent(cb, { ...data, component: 'contactselector' });
+    }
+
     function GetSettings() {
         return new Promise((resolve, reject) => {
             fetchNui('GetSettings', {}, 'lb-phone').then(resolve).catch(reject);

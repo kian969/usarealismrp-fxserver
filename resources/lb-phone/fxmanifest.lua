@@ -2,9 +2,9 @@ fx_version "cerulean"
 game "gta5"
 lua54 "yes"
 
-version "1.3.4"
+version "1.4.5"
 
-shared_scripts {
+shared_script {
     '@ox_lib/init.lua',
     "config/*.lua",
     "shared/**/*.lua"
@@ -33,8 +33,8 @@ dependencies {
 escrow_ignore {
     "config/**/*",
 
-    "client/apps/framework/*.lua",
-    "server/apps/framework/*.lua",
+    "client/apps/framework/**/*.lua",
+    "server/apps/framework/**/*.lua",
     "shared/*.lua",
 
     "client/custom/**/*.lua",
@@ -45,6 +45,9 @@ escrow_ignore {
 
     "server/apiKeys.lua",
 }
+
 dependency '/assetpacks'
 
-server_export "RefreshCompanies"
+server_exports {
+    "RefreshCompanies"
+}

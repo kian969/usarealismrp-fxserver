@@ -58,6 +58,7 @@
             "AUTOMATIC": "Automatic",
             "BRIGHTNESS": "Brightness",
             "PHONE_SCALE": "Phone Scale",
+            "FRAME_COLOR": "Frame Color",
             "WALLPAPER": "Wallpaper",
             "WALLPAPERS": "Wallpapers",
             "CHOOSE_NEW_WALLPAPER": "Choose a New Wallpaper",
@@ -229,7 +230,13 @@
             "IN_APP_PURCHASES": "In-App Purchases",
             "WORKS_WITH_PHONE": "Works with this phone",
             "NO": "No",
-            "YES": "Yes"
+            "YES": "Yes",
+            "PURCHASE_APP_POPUP": {
+                "TITLE": "Purchase App",
+                "DESCRIPTION": "Do you want to purchase {app} for {price}?",
+                "CANCEL": "Cancel",
+                "PROCEED": "Purchase"
+            }
         },
         "PHOTOS": {
             "TITLE": "Photos",
@@ -289,6 +296,8 @@
             "NOT_DELIVERED": "Not delivered",
             "PLACEHOLDER": "Text Message",
             "DONE": "Done",
+            "EDIT": "Edit",
+            "READ": "Read",
             "CANCEL": "Cancel",
             "SEND": "Send",
             "UNKNOWN": "Unknown",
@@ -299,6 +308,7 @@
             "LEAVE_GROUP": "Leave Conversation",
             "SENT_LOCATION": "Shared their location, click to open in Maps",
             "SENT_LOCATION_SHORT": "Shared their location",
+            "TRIED_TO_CALL": "{number} tried to call you",
             "DELETE": "Delete",
             "REMOVE_POPUP": {
                 "TITLE": "Remove member",
@@ -335,7 +345,12 @@
                 "TITLE": "Payment Failed",
                 "DESCRIPTION": "Error: {error}",
                 "CLOSE": "Close"
-            }
+            },
+            "DELETE_CONVERSATION": {
+                "TITLE": "Delete conversation",
+                "DESCRIPTION": "Are you sure you want to delete this conversation?"
+            },
+            "MARK_AS_READ": "Mark as read"
         },
         "PHONE": {
             "TITLE": "Phone",
@@ -410,7 +425,23 @@
                 "ADD_NUMBER": "Add Number"
             },
             "RECENTS": {
-                "TITLE": "Recent"
+                "TITLE": "Recents"
+            },
+            "VOICEMAIL": {
+                "TITLE": "Voicemail",
+                "AT": "at",
+                "DELETE_POPUP": {
+                    "TITLE": "Delete Voicemail",
+                    "DESCRIPTION": "Are you sure you want to delete this voicemail?",
+                    "CANCEL": "Cancel",
+                    "PROCEED": "Delete"
+                },
+                "CALL_POPUP": {
+                    "TITLE": "Call",
+                    "DESCRIPTION": "Are you sure you want to call {number}?",
+                    "CANCEL": "Cancel",
+                    "PROCEED": "Call"
+                }
             }
         },
         "WALLET": {
@@ -426,8 +457,9 @@
             "LATEST_BILLS": "Latest Bills",
             "NOW": "Now",
             "AGO": "ago",
-            "NUMBER_DOES_NOT_EXIST": "Number does not exist",
-            "NOT_ENOUGH_MONEY": "You do not have enough money"
+            "NUMBER_DOES_NOT_EXIST": "Number does not exist / Player is not online",
+            "NOT_ENOUGH_MONEY": "You do not have enough money",
+            "SELECT_CONTACT": "Select Contact"
         },
         "GARAGE": {
             "TITLTE": "Garage",
@@ -619,6 +651,7 @@
             "ADD_PLAYLIST": "Add to Playlist",
             "REMOVE_SONG": "Remove Song",
             "NOT_PLAYING": "Not Playing",
+            "EDIT_PLAYLIST": "Edit Playlist",
             "DELETE_PLAYLIST": "Delete Playlist",
             "SEARCH_PLACEHOLDER": "Artists, Songs, Albums, Playlists",
             "SONGS": "Songs",
@@ -638,6 +671,12 @@
                 "TITLE": "New Playlist",
                 "DESCRIPTION": "Create a new playlist",
                 "PLACEHOLDER": "Playlist Name",
+                "CANCEL": "Cancel",
+                "PROCEED": "Proceed"
+            },
+            "REMOVE_SONG_POPUP": {
+                "TITLE": "Remove Song",
+                "DESCRIPTION": "Are you sure you want to remove this song from the playlist?",
                 "CANCEL": "Cancel",
                 "PROCEED": "Proceed"
             }
@@ -721,7 +760,23 @@
                 "CANCEL": "Cancel",
                 "PROCEED": "Proceed"
             },
-
+            "INVITE_LIVE_POPUP": {
+                "TITLE": "Live Invite",
+                "DESCRIPTION": "{username} invited you to their live, Do you want to join?",
+                "NO": "No",
+                "YES": "Yes"
+            },
+            "REMOVE_LIVE_POPUP": {
+                "TITLE": "Remove {username}",
+                "DESCRIPTION": "Are you sure you want to remove {username} from your live?",
+                "CANCEL": "Cancel",
+                "REMOVE": "Remove"
+            },
+            "LEAVE_LIVE_POPUP": {
+                "TITLE": "Leave Live",
+                "DESCRIPTION": "Are you sure you want to leave this live?",
+                "LEAVE": "Leave"
+            },
             "LIVE_ENDED": "Live Ended",
             "COMMENT_PLACEHOLDER": "Comment",
             "LIVE": "Live",
@@ -739,6 +794,7 @@
             "FOLLOWING": "Following",
             "FOLLOWERS": "Followers",
             "FOLLOWER": "Follower",
+            "REQUESTED": "Requested",
             "LIKES": "Likes",
             "LIKED_BY": "Liked by",
             "VIEW_ALL_COMMENTS": "View all {count} comments",
@@ -762,6 +818,7 @@
             "CHANGE_PICTURE": "Change profile picture",
             "NAME": "Name",
             "BIO": "Bio",
+            "PRIVATE": "Toggle Private",
             "SIGN_OUT": "Sign Out",
             "POSTS": "Posts",
             "MESSAGE": "Message",
@@ -769,8 +826,17 @@
             "TO": "To",
             "SEND_A_MESSAGE": "Send a message...",
             "STORY_VIEWERS": "Viewers",
+            "PARTICIPANTS": "Participants",
             "SEEN_BY": "Seen by {count}",
-            "ADD_ACCOUNT": "Add Account"
+            "ADD_ACCOUNT": "Add Account",
+            "INVITE": "Invite",
+            "REMOVE": "Remove",
+            "IN_THIS_ROOM": "In This Room",
+            "WHOS_WATCHING": "Who's watching",
+            "FOLLOW_REQUESTS": "Follow requests",
+            "CONFIRM": "Confirm",
+            "DELETE": "Delete",
+            "ANDOTHERS": "{username} + {amount} others"
         },
         "TWITTER": {
             "TITLE": "Birdy",
@@ -791,6 +857,7 @@
             "SAVE": "Save",
             "NAME": "Name",
             "JOIN_DATE": "Join Date",
+            "PROTECTED_POSTS": "Protect your posts",
             "BIO": "Bio",
             "SIGN_OUT": "Sign Out",
             "SIGN_OUT_POPUP": {
@@ -834,6 +901,7 @@
             },
             "YOU": "You",
             "FOLLOW": "Follow",
+            "PENDING": "Pending",
             "FOLLOWING": "Following",
             "FOLLOWERS": "Followers",
             "RETWEETED": "Reposted",
@@ -868,7 +936,9 @@
             "UNPIN": "Unpin Post",
             "NEW_MESSAGE": "New Message",
             "PROMOTED": "Promoted",
-            "ADD_ACCOUNT": "Add Account"
+            "ADD_ACCOUNT": "Add Account",
+            "FOLLOWER_REQUESTS": "Follower Requests",
+            "NEW_POSTS": "New Posts"
         },
         "SERVICES": {
             "ACTIONS": "Actions",
@@ -882,6 +952,9 @@
             "DUTY": "Duty",
             "GO_ON_DUTY": "Go on Duty",
             "GO_OFF_DUTY": "Go off Duty",
+            "JOB_CALLS": "Job Calls",
+            "DISABLE_CALLS": "Disable Calls",
+            "ENABLE_CALLS": "Enable Calls",
             "BALANCE": "Balance",
             "MANAGE_EMPLOYEES": "Manage Employees",
             "HIRE": "Hire",
@@ -928,12 +1001,15 @@
             "BALANCE": "Estimated Balance",
             "BUY": "Buy",
             "SELL": "Sell",
+            "TRANSFER": "Transfer",
             "SELL_ALL": "Sell All",
             "NO_MONEY": "You don't have enough money",
             "NO_COINS": "You don't have any of this coin",
             "NOT_ENOUGH_COINS": "You don't have enough coins",
-            "ATLEAST_ONE_COIN": "You must {action} at least one coin",
+            "ATLEAST_ONE_COIN": "You must {action} at least one {currency}",
             "INVALID_COIN": "Invalid coin",
+            "NO_NUMBER": "No phonenumber provided",
+            "INVALID_NUMBER": "Invalid phonenumber (the user may not be online)",
             "ERROR": "Error",
             "CLOSE": "Close",
             "BUY_POPUP": {
@@ -946,15 +1022,22 @@
             "SELL_POPUP": {
                 "TITLE": "Sell {coin}",
                 "DESCRIPTION": "Enter the amount of {coin} (in $) you want to sell",
-                "PLACEHOLDER": "$1000",
-                "CANCEL": "Cancel",
-                "PROCEED": "Proceed"
+                "PLACEHOLDER": "$1000"
             },
             "SELL_ALL_POPUP": {
                 "TITLE": "Sell all {coin}",
-                "DESCRIPTION": "Are you sure you want to sell all your {coin} for ${amount}?",
-                "CANCEL": "Cancel",
-                "PROCEED": "Proceed"
+                "DESCRIPTION": "Are you sure you want to sell all your {coin} for ${amount}?"
+            },
+            "TRANSFER_POPUP": {
+                "TITLE": "Transfer {coin}",
+                "DESCRIPTION": "Enter the amount of {coin} (in $) you want to transfer (select contact in next step)",
+                "PLACEHOLDER": "$1000",
+                "NEXT": "Next"
+            },
+            "SUCCESSFULLY_TRANSFERED_POPUP": {
+                "TITLE": "Successfully transfered",
+                "DESCRIPTION": "You successfully transfered ${amount} of {coin} to {number}",
+                "CLOSE": "Close"
             }
         },
         "TIKTOK": {
@@ -1089,6 +1172,22 @@
             "NO_FOLLOWING_TITLE": "Start following people and their videos will appear here.",
             "NO_MESSAGES_TITLE": "Message your friends",
             "NO_MESSAGES_SUBTITLE": "Share videos or start a conversation"
+        },
+        "VOICEMEMO": {
+            "TITLE": "Voice Memo",
+            "ALL_RECORDINGS": "All Recordings",
+            "DEFAULT_NAME": "New Recording",
+            "DELETE_POPUP": {
+                "TITLE": "Delete voice memo",
+                "DESCRIPTION": "Are you sure you want to delete this voice memo?",
+                "CANCEL": "Cancel",
+                "PROCEED": "Proceed"
+            },
+            "NO_MICROPHONE_POPUP": {
+                "TITLE": "No Microphone",
+                "DESCRIPTION": "We don't have access to your microphone, make sure to have one connected and accept the popup on the top-right of your screen",
+                "OK": "OK"
+            }
         }
     },
     "COMPONENTS": {
@@ -1118,6 +1217,7 @@
             "AIRDROP_SENT": "Sent",
             "AIRDROP_ACCEPTED": "Accepted",
             "AIRDROP_DECLINED": "Declined",
+            "AIRDROP_NO_USERS": "No phones nearby",
             "WALLPAPER_POPUP": {
                 "TITLE": "Use as Wallpaper",
                 "TEXT": "Are you sure you want to set this image as your wallpaper?",
@@ -1126,13 +1226,14 @@
             }
         },
         "AIRDROP": {
-            "TITLE": "Airdrop",
+            "TITLE": "AirShare",
             "TEXT": "{sender} would like to share a {type}",
             "VIDEO": "video",
             "PHOTO": "photo",
             "CONTACT": "contact",
             "LOCATION": "location",
             "NOTE": "note",
+            "VOICEMEMO": "voicememo",
             "PLAYLIST": "playlist",
             "DECLINE": "Decline",
             "ACCEPT": "Accept"
@@ -1158,6 +1259,9 @@
             "BATTERY_REMAINING": "{percent}% battery remaining",
             "LOW_POWER_MODE": "Low Power Mode",
             "CLOSE": "Close"
+        },
+        "COLOR_PICKER": {
+            "COLOR": "Color"
         }
     },
     "SETUP": {
@@ -1186,12 +1290,21 @@
     },
     "LOCKSCREEN": {
         "ENTER_PASSCODE": "Enter Passcode",
-        "DELETE": "Delete"
+        "DELETE": "Delete",
+        "FONT_AND_COLOR": "Font & Color"
+    },
+    "MISC": {
+        "AIRPLANE_MODE_POPUP": {
+            "TITLE": "Error",
+            "DESCRIPTION": "You're trying to perform a action that requires internet access, disable airplane mode to continue.",
+            "OK": "OK"
+        }
     },
     "BACKEND": {
         "CALLS": {
             "NO_CALLER_ID": "No Caller ID",
-            "MISSED_CALL": "Missed call"
+            "MISSED_CALL": "Missed call",
+            "NEW_VOICEMAIL": "Voicemail"
         },
         "GARAGE": {
             "VALET": "Valet",
@@ -1204,7 +1317,16 @@
         "INSTAGRAM": {
             "NOT_ALLOWED_LIVE": "You are not allowed to go live",
             "NOT_ALLOWED_STORY": "You are not allowed to post stories",
-            "STARTED_LIVE": "{username} started a live video"
+            "STARTED_LIVE": "{username} started a live video",
+            "JOINED_LIVE": "{invitee} is now going live with {inviter}.",
+            "LIKED_PHOTO": "{username} liked your photo",
+            "LIKED_COMMENT": "{username} liked your comment",
+            "COMMENTED": "{username} commented on your post",
+            "NEW_FOLLOWER": "{username} started following you",
+            "FOLLOW_REQUEST_ACCEPTED_TITLE": "Follow request accepted",
+            "FOLLOW_REQUEST_ACCEPTED_DESCRIPTION": "{displayName} ({username}) accepted your follow request.",
+            "NEW_FOLLOW_REQUEST_TITLE": "New follow request",
+            "NEW_FOLLOW_REQUEST_DESCRIPTION": "{displayName} ({username}) has requested to follow you."
         },
         "TINDER": {
             "NEW_MATCH": "New match",
@@ -1226,7 +1348,9 @@
             "RETWEET": "Reposted by {displayName}:",
             "REPLY": "{displayName} replied:",
             "FOLLOW": "{username} started following you",
-            "TWEET": "{username} just posted"
+            "TWEET": "{username} just posted",
+            "FOLLOW_REQUEST_ACCEPTED_DESCRIPTION": "@{username} has accepted your follow request.",
+            "NEW_FOLLOW_REQUEST": "@{username} has requested to follow you!"
         },
         "TIKTOK": {
             "LIKE": "{displayName} liked your video.",
@@ -1238,7 +1362,12 @@
             "DM": "{displayName}"
         },
         "MISC": {
-            "VERIFIED": "Your account has been verified"
+            "VERIFIED": "Your account has been verified",
+            "X_PHONE": "{name}'s Phone"
+        },
+        "CRYPTO": {
+            "RECEIVED_TRANSFER_TITLE": "Received {coin}",
+            "RECEIVED_TRANSFER_DESCRIPTION": "You received {amount} {coin} worth ${value}"
         },
         "LOGS": {
             "MAIL_TITLE": "Email",
@@ -1259,7 +1388,9 @@
 
             "BOUGHT_CRYPTO": "Bought crypto",
             "SOLD_CRYPTO": "Sold crypto",
-            "CRYPTO_DETAILS": "**Coin**: {coin}\n**Amount**: {amount}\n**Value**: ${price}\n",
+            "CRYPTO_DETAILS": "**Coin**: {coin}\n**Amount**: {amount}\n**Value**: ${price}",
+            "TRANSFERRED_CRYPTO": "Transferred crypto",
+            "TRANSFERRED_CRYPTO_DETAILS": "**Coin**: {coin}\n**Amount**: {amount}\n**To**: {to}\n**From**: {from}",
 
             "DARKCHAT_CREATED_TITLE": "Created channel",
             "DARKCHAT_CREATED_DESCRIPTION": "{creator} created a channel called {channel}",

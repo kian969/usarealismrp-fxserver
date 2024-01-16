@@ -1,5 +1,39 @@
 {
-    "wallpapers": ["IOS16_2", "IOS16_3", "IOS16_4", "IOS16_5", "BlueSabers", "GreenSabers", "NeonSabers", "OrangeSabers", "PurpleSabers", "Bubble", "BubbleB", "BubbleC", "TwistBlack", "TwistBlue", "TwistGreen", "TwistPink", "TwistRed", "TwistWhite", "IOS15", "IOS16", "Beach", "Beach2", "ClownFish", "OrbsPurple", "Globe", "GlobeNight", "Moon"],
+    "wallpapers": [
+        "IOS16_2",
+        "IOS16_3",
+        "IOS16_4",
+        "IOS16_5",
+        "BlueSabers",
+        "GreenSabers",
+        "NeonSabers",
+        "OrangeSabers",
+        "PurpleSabers",
+        "Bubble",
+        "BubbleB",
+        "BubbleC",
+        "TwistBlack",
+        "TwistBlue",
+        "TwistGreen",
+        "TwistPink",
+        "TwistRed",
+        "TwistWhite",
+        "IOS15",
+        "IOS16",
+        "Beach",
+        "Beach2",
+        "ClownFish",
+        "OrbsPurple",
+        "Globe",
+        "GlobeNight",
+        "Moon",
+        "Boat",
+        "Lester",
+        "Lester2",
+        "Lift",
+        "Police",
+        "Wheel"
+    ],
     "sounds": {
         "ringtone": {
             "default": "default.mp3",
@@ -58,11 +92,6 @@
             "removable": false,
             "size": 84000
         },
-        "Health": {
-            "name": "Health",
-            "removable": false,
-            "size": 22300
-        },
         "Clock": {
             "name": "Clock",
             "removable": false,
@@ -89,6 +118,11 @@
             "name": "Wallet",
             "removable": false,
             "size": 2000
+        },
+        "Home": {
+            "name": "Home",
+            "removable": false,
+            "size": 19200
         },
         "Garage": {
             "name": "Garage",
@@ -132,6 +166,11 @@
             "removable": false,
             "size": 23200
         },
+        "VoiceMemo": {
+            "name": "Voice Memos",
+            "removable": false,
+            "size": 28200
+        },
         "Instagram": {
             "name": "InstaPic",
             "icon": "./assets/img/icons/apps/InstaPic.png",
@@ -174,6 +213,14 @@
             "removable": true,
             "game": true,
             "size": 64300
+        },
+        "Flappybird": {
+            "name": "Flappy Bird",
+            "description": "Avoid the pipes",
+            "images": ["https://cdn.discordapp.com/attachments/1035849182457638982/1119947697848340480/image.png"],
+            "removable": true,
+            "game": true,
+            "size": 35100
         }
     },
     "world_clock_locations": {

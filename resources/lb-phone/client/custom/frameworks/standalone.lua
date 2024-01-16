@@ -1,9 +1,10 @@
+if Config.Framework ~= "standalone" then
+    return
+end
+
 local scriptStartTime = GetGameTimer()
 
 CreateThread(function()
-    if Config.Framework ~= "standalone" then
-        return
-    end
 
     local PlayerJob = nil
 

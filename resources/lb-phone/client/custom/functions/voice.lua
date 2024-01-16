@@ -91,22 +91,22 @@ CreateThread(function()
         speakerEffect = CreateAudioSubmix("phonespeaker")
         SetAudioSubmixEffectRadioFx(speakerEffect, 0)
         SetAudioSubmixEffectParamInt(speakerEffect, 0, `default`, 1)
-    
+
         callEffect = CreateAudioSubmix("phonecall")
         SetAudioSubmixEffectRadioFx(callEffect, 0)
         SetAudioSubmixEffectParamInt(callEffect, 0, `default`, 1)
-    
+
         for hash, value in pairs(data) do
             SetAudioSubmixEffectParamFloat(speakerEffect, 0, hash, value)
             SetAudioSubmixEffectParamFloat(callEffect, 0, hash, value)
         end
-    
+
         SetAudioSubmixEffectParamFloat(speakerEffect, 0, `rm_mix`, 0.15)
         SetAudioSubmixEffectParamFloat(callEffect, 0, `rm_mix`, 0.05)
-    
+
         SetAudioSubmixOutputVolumes(speakerEffect, 0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
         SetAudioSubmixOutputVolumes(callEffect, 0, 0.25, 1.0, 0.0, 0.0, 1.0, 1.0)
-    
+
         AddAudioSubmixOutput(speakerEffect, 0)
         AddAudioSubmixOutput(callEffect, 0)
     end
@@ -119,7 +119,12 @@ CreateThread(function()
 
         for source, audio in pairs(currentTargets) do
             MumbleAddVoiceTargetPlayerByServerId(1, source)
-            MumbleSetVolumeOverrideByServerId(source, audio and 0.6 or -1.0)
+            if contains(watchingSources, source) then
+                MumbleSetVolumeOverrideByServerId(source, 1.0)
+            else
+                debugprint("volume:", audio and 0.7 or -1.0)
+                MumbleSetVolumeOverrideByServerId(source, audio and 0.7 or -1.0)
+            end
         end
 
         Wait(250)
@@ -140,10 +145,17 @@ RegisterNetEvent("phone:phone:addVoiceTarget", function(sources, audio, phoneCal
 
     for i = 1, #sources do
         local id = sources[i]
+        if id == GetPlayerServerId(PlayerId()) or voiceTargets[id] then
+            goto continue
+        end
+
         voiceTargets[id] = audio or false
         if phoneCall and Config.Voice.CallEffects then
             MumbleSetSubmixForServerId(id, speakerEffect)
         end
+        debugprint("Added voice target", id, audio)
+
+        ::continue::
     end
 end)
 
@@ -154,6 +166,10 @@ RegisterNetEvent("phone:phone:removeVoiceTarget", function(sources, phoneCall)
 
     for i = 1, #sources do
         local id = sources[i]
+        if id == GetPlayerServerId(PlayerId()) then
+            goto continue
+        end
+
         voiceTargets[id] = nil
         MumbleRemoveVoiceTargetPlayerByServerId(1, id)
         MumbleSetVolumeOverrideByServerId(id, -1.0)
@@ -161,12 +177,14 @@ RegisterNetEvent("phone:phone:removeVoiceTarget", function(sources, phoneCall)
             MumbleSetSubmixForServerId(id, -1)
         end
         debugprint("Removed voice target", id)
+
+        ::continue::
     end
 end)
 
 -- instagram proximity
 RegisterNetEvent("phone:instagram:enteredProximity", function(source, liveHost)
-    if liveHost ~= watchingSource then
+    if not contains(watchingSources, liveHost) then -- if we're not watching "liveHost", don't listen to "source"
         return
     end
 
@@ -176,14 +194,22 @@ RegisterNetEvent("phone:instagram:enteredProximity", function(source, liveHost)
     end
 
     debugprint("Adding live target", source)
-    MumbleAddVoiceTargetPlayerByServerId(1, source)
-    MumbleSetVolumeOverrideByServerId(source, 0.7)
+    voiceTargets[source] = true
 end)
 
 RegisterNetEvent("phone:instagram:leftProximity", function(source, liveHost)
-    if liveHost ~= watchingSource then
+    if not contains(watchingSources, liveHost) then -- if we're not watching "liveHost", don't listen to "source"
         return
     end
 
+    voiceTargets[source] = nil
+    MumbleRemoveVoiceTargetPlayerByServerId(1, source)
     MumbleSetVolumeOverrideByServerId(source, -1.0)
+    debugprint("Removing live target", source)
 end)
+
+-- local _MumbleSetVolumeOverrideByServerId = MumbleSetVolumeOverrideByServerId
+-- function MumbleSetVolumeOverrideByServerId(source, volume)
+--     _MumbleSetVolumeOverrideByServerId(source, volume)
+--     debugprint("MumbleSetVolumeOverrideByServerId", source, volume)
+-- end

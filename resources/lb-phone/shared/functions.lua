@@ -1,3 +1,55 @@
+local function isResourceStartedOrStarting(resource)
+    local state = GetResourceState(resource)
+    return state == "started" or state == "starting"
+end
+
+if Config.HouseScript == "auto" then
+    Config.HouseScript = false
+
+    local houseScripts = {
+        "loaf_housing",
+        "qb-houses",
+        "qs-housing"
+    }
+
+    for i = 1, #houseScripts do
+        if isResourceStartedOrStarting(houseScripts[i]) then
+            Config.HouseScript = houseScripts[i]
+            break
+        end
+    end
+end
+
+if Config.Item.Unique and Config.Item.Inventory == "auto" then
+    local inventoryScripts = {
+        "ox_inventory",
+        "qb-inventory",
+        "lj-inventory",
+        "core_inventory",
+        "mf-inventory",
+        "qs-inventory"
+    }
+
+    for i = 1, #inventoryScripts do
+        if isResourceStartedOrStarting(inventoryScripts[i]) then
+            Config.Item.Inventory = inventoryScripts[i]
+            break
+        end
+    end
+end
+
+if Config.Framework == "auto" then
+    if isResourceStartedOrStarting("es_extended") then
+        Config.Framework = "esx"
+    elseif isResourceStartedOrStarting("qb-core") then
+        Config.Framework = "qb"
+    elseif isResourceStartedOrStarting("ox_core") then
+        Config.Framework = "ox"
+    else
+        Config.Framework = "standalone"
+    end
+end
+
 function debugprint(...)
     if Config.Debug then
         local data = {...}
@@ -19,10 +71,21 @@ function debugprint(...)
     end
 end
 
+function table.deep_clone(og)
+    local copy = {}
+    for k, v in pairs(og) do
+        if type(v) == "table" then
+            v = table.deep_clone(v)
+        end
+        copy[k] = v
+    end
+    return copy
+end
+
 function contains(t, v)
     for i = 1, #t do
         if t[i] == v then
-            return true
+            return true, i
         end
     end
     return false
@@ -54,7 +117,8 @@ function L(path, args)
 
     if args then
         for k, v in pairs(args) do
-            translation = translation:gsub("{" .. k .. "}", tostring(v))
+            local safe_v = tostring(v):gsub("%%", "%%%%")  -- Escape % characters
+            translation = translation:gsub("{" .. k .. "}", safe_v)
         end
     end
 
@@ -81,6 +145,12 @@ function SpamError(error)
     end)
 end
 
+function SeperateNumber(number)
+    -- https://stackoverflow.com/questions/10989788/format-integer-in-lua
+    local res = tostring(number):reverse():gsub("(%d%d%d)", "%1 "):reverse():gsub("^ ", "")
+    return res
+end
+
 function FormatNumber(number)
     if not number or type(number) ~= "string" then
         return ""
@@ -99,21 +169,24 @@ function FormatNumber(number)
             -- get the number of digits specified in the format string
             local j = i + 1
             while j <= #format and format:sub(j, j) ~= "}" do
-                j = j + 1
+                j += 1
             end
             local n = tonumber(format:sub(i + 1, j - 1))
 
             -- add the next n digits from the number to the result
             for k = 1, n do
                 local digit = number:sub(k, k)
-                table.insert(result, digit)
+                if not digit then
+                    break
+                end
+                result[#result+1] = digit
             end
             number = number:sub(n + 1)
             i = j + 1
         else
             -- add the non-digit character to the result
-            table.insert(result, c)
-            i = i + 1
+            result[#result+1] = c
+            i += 1
         end
     end
     return table.concat(result)
