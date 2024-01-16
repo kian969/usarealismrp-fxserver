@@ -150,7 +150,7 @@ Citizen.CreateThread(function()
 	while true do
 		Wait(1)
 		playerPed = PlayerPedId()
-		playerVeh = GetVehiclePedIsIn(playerPed, true)
+		playerVeh = GetVehiclePedIsIn(playerPed, false)
 		if _menuPool:IsAnyMenuOpen() then
 			_menuPool:MouseControlsEnabled(false)
 			_menuPool:ControlDisablingEnabled(false)
