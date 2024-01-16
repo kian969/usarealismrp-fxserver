@@ -320,7 +320,7 @@ function CreateUniformMenu(menu)
 		SetPlayerModel(PlayerId(), modelhashed)
 	end
 	pedsubmenu.SubMenu:AddItem(listitem)
-	local listitem = NativeUI.CreateItem("Tarvis Yelnats", "Only for Prophet#1738")
+	listitem = NativeUI.CreateItem("Tarvis Yelnats", "Only for Prophet#1738")
 	listitem.Activated = function(parentmenu, selected)
 		local modelhashed = GetHashKey("ig_yelnats")
 		RequestModel(modelhashed)
@@ -328,6 +328,30 @@ function CreateUniformMenu(menu)
 			Citizen.Wait(100)
 		end
 		SetPlayerModel(PlayerId(), modelhashed)
+	end
+	pedsubmenu.SubMenu:AddItem(listitem)
+	listitem = NativeUI.CreateItem("Fat Andreas", "Chubby Cop")
+	listitem.Activated = function(parentmenu, selected)
+		local modelhashed = GetHashKey("pw_andreas")
+		RequestModel(modelhashed)
+		while not HasModelLoaded(modelhashed) do
+			Citizen.Wait(100)
+		end
+		SetPlayerModel(PlayerId(), modelhashed)
+		local ped = PlayerPedId()
+		local isMPPed = IsPedModel(ped, GetHashKey("mp_m_freemode_01")) or IsPedModel(ped, GetHashKey("mp_f_freemode_01"))
+		if isMPPed then return end
+		local currentPed = GetEntityModel(ped)
+		DeleteEntity(ped)
+		RequestModel(currentPed)
+		while not HasModelLoaded(currentPed) do
+			Wait(500)
+		end
+		Wait(1000)
+		SetPlayerModel(PlayerId(), currentPed)
+		SetPedDefaultComponentVariation(ped)
+		SetPedComponentVariation(PlayerPedId(), 0, 0, 0, 0)
+		SetEntityVisible(ped, true)
 	end
 	pedsubmenu.SubMenu:AddItem(listitem)
 	-- Clock Out --
