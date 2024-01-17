@@ -279,6 +279,32 @@ AddEventHandler("mechanic:fetchDeliveryProgress", function()
 	end)
 end)
 
+RegisterServerEvent("mechanic:removeUpgrade")
+AddEventHandler("mechanic:removeUpgrade", function(plate, partId)
+	local src = source
+	local char = exports["usa-characters"]:GetCharacter(src)
+	-- security checks
+	if not char.get("job") == "mechanic" then
+		return
+	end
+	plate = exports.globals:trim(plate)
+	local isNearVehicleAndMechanicShop = TriggerClientCallback {
+		source = src,
+		eventName = "mechanic:isNearVehicleAndMechanicShop",
+		args = { plate }
+	}
+	if not isNearVehicleAndMechanicShop then
+		return false 
+	end
+	-- continue
+	if MechanicHelper.doesVehicleHaveUpgrades(plate, { partId }) then
+		MechanicHelper.removeVehicleUpgrades(plate, { partId })
+		TriggerClientEvent("usa:notify", src, partId .. " upgrade removed!", "^3INFO: ^0" .. partId .. " upgrade removed! Store your vehicle to finish removing the upgrade.")
+	else
+		TriggerClientEvent("usa:notify", src, "Vehicle does not have upgrade: " .. partId)
+	end
+end)
+
 AddEventHandler("playerDropped", function(reason)
 	if installQueue[source] then 
 		installQueue[source] = nil

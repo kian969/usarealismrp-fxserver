@@ -672,3 +672,21 @@ function isNearSignOnSpot(range)
 	end
 	return false
 end
+
+RegisterClientCallback {
+	eventName = "mechanic:isNearVehicleAndMechanicShop",
+	eventCallback = function(plate)
+		if not isNearAnyRepairShop() then
+			return false
+		end
+		local closestVeh = MechanicHelper.getClosestVehicle()
+		if not closestVeh or not DoesEntityExist(closestVeh) then
+			return false
+		end
+		local closestVehPlate = exports.globals:trim(GetVehicleNumberPlateText(closestVeh))
+		if closestVehPlate ~= plate then
+			return false
+		end
+		return true
+	end
+}
