@@ -81,6 +81,7 @@ function onVehicleOptionSelect(a, buttonInfo, hitHandle)
     elseif buttonInfo.label == "Remove Upgrade" then
         local input = lib.inputDialog('Remove Upgrade', {'Name'})
         if not input then return end
+        exports.globals:Draw3DTextForOthers("removing upgrades")
         if lib.progressCircle({
             duration = 300000, -- meant to match the time it takes to install an uprgade (see usa_mechanic config file)
             label = 'Removing Upgrade',
