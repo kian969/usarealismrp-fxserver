@@ -53,6 +53,7 @@ AddEventHandler("insurance:fileClaim", function(vehicle_to_claim)
 					if business then
 						exports["usa-businesses"]:GiveBusinessCashPercent(business, CLAIM_PROCESSING_FEE)
 					end
+					removeAnyDuplicateVehicles(vehicle_to_claim.plate)
 				end)
 			else
 				TriggerClientEvent("usa:notify", _source, "You don't have enough money in the bank to make a claim on that vehicle.")
@@ -136,5 +137,18 @@ function playerHasValidAutoInsurance(playerInsurance)
 		end
 	else
 		return false
+	end
+end
+
+function removeAnyDuplicateVehicles(plate)
+	local allVehicles = GetAllVehicles()
+	for i = 1, #allVehicles do
+		local veh = allVehicles[i]
+		if DoesEntityExist(veh) then
+			local checkingPlate = exports.globals:trim(GetVehicleNumberPlateText(veh))
+			if checkingPlate == plate then
+				DeleteEntity(veh)
+			end
+		end
 	end
 end
