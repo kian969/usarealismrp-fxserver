@@ -296,13 +296,18 @@ AddEventHandler("mechanic:removeUpgrade", function(plate, partId)
 	if not isNearVehicleAndMechanicShop then
 		return false 
 	end
-	-- continue
-	if MechanicHelper.doesVehicleHaveUpgrades(plate, { partId }) then
-		MechanicHelper.removeVehicleUpgrades(plate, { partId })
-		TriggerClientEvent("usa:notify", src, partId .. " upgrade removed!", "^3INFO: ^0" .. partId .. " upgrade removed! Store your vehicle to finish removing the upgrade.")
-	else
-		TriggerClientEvent("usa:notify", src, "Vehicle does not have upgrade: " .. partId)
-	end
+	-- level check
+	MechanicHelper.getMechanicRank(char.get("_id"), function(rank)
+		if rank >= 3 then
+			-- continue
+			if MechanicHelper.doesVehicleHaveUpgrades(plate, { partId }) then
+				MechanicHelper.removeVehicleUpgrades(plate, { partId })
+				TriggerClientEvent("usa:notify", src, partId .. " upgrade removed!", "^3INFO: ^0" .. partId .. " upgrade removed! Store your vehicle to finish removing the upgrade.")
+			else
+				TriggerClientEvent("usa:notify", src, "Vehicle does not have upgrade: " .. partId)
+			end
+		end
+	end)
 end)
 
 AddEventHandler("playerDropped", function(reason)
