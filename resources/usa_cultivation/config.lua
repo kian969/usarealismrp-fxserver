@@ -61,8 +61,8 @@ PLANTED = {} -- global table of all currently planted plants (sort of an in-memo
 
 PLANT_CHECK_INTERVAL_MINUTES = 30
 
-MAX_DAYS_NO_FOOD = 3
-MAX_DAYS_NO_WATER = 2
+MAX_DAYS_NO_FOOD = 6
+MAX_DAYS_NO_WATER = 4
 
 --[[
 PLANT_STAGE_HOURS = {
