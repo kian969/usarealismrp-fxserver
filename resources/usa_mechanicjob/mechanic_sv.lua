@@ -281,6 +281,10 @@ end)
 
 RegisterServerEvent("mechanic:removeUpgrade")
 AddEventHandler("mechanic:removeUpgrade", function(plate, partId)
+	-- disabled for now
+	TriggerClientEvent("usa:notify", source, "Feature disabled", "^3INFO: ^0Removing vehicle upgrades has been disabled.")
+	return
+
 	local src = source
 	local char = exports["usa-characters"]:GetCharacter(src)
 	-- security checks
