@@ -314,7 +314,7 @@ cfg.robbery = {
         
                                         item_to_give_type = "normal", -- "normal" or "random" | "normal" trys to spawn every item, "random" gets an random item, not by rarity.
                                         item_to_give = {
-                                            {"money",2000,5000,100}, -- {item_name,amount_min,amount_max,item_rarity} Min: $20,000 | Max: $50,000
+                                            {"money",5000,15000,100}, -- {item_name,amount_min,amount_max,item_rarity}
                                             {"Stolen Goods",1,7,15}, -- 15% chance
                                             {"Chris Cortega",1,1,1}, -- 1% chance cuz am the best
                                         },
@@ -324,7 +324,7 @@ cfg.robbery = {
                                         polyzone = {"Collect","fa-solid fa-money-bill"},-- {label,targeticon,length,width,minZextra,maxZextra,offset_x,offset_y,offset_z}
 
                                         camera = true, -- if you want the cinematic camera system put "true" otherwise put "false".
-                                        checkforpolice = true, -- if true when you try to interact it will check for the police before you start the animation.
+                                        checkforpolice = false, -- if true when you try to interact it will check for the police before you start the animation.
                                         dispatch = nil,
                                     },
                                 },
