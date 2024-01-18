@@ -1,4 +1,4 @@
-POLICE_NEEDED = 2
+POLICE_NEEDED = 0
 policeNeededForBonus = 3
 robberyCooldown = 2100
 
@@ -10,8 +10,8 @@ KEYS = {
 	E = 38
 }
 
-MAX_ROB_PERCENT = 0.6
-MIN_ROB_PERCENT = 0.3
+MAX_ROB_PERCENT = 0.4
+MIN_ROB_PERCENT = 0.2
 
 BASE_ROB_DURATION = 60000
 
