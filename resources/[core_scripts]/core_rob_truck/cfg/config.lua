@@ -9,7 +9,7 @@ cfg.dispatch = "standalone" --nunoradioman,ps_dispatch,cd_dispatch,core_dispatch
 
 cfg.police = {
 	groups = {"sheriff","corrections"}, -- police groups
-	amount = 4, -- police amount
+	amount = 0, -- police amount
 }
 cfg.timers = {
 	reset_timer = 60, -- minutes
