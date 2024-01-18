@@ -64,6 +64,7 @@ cfg.robbery = {
     reset = false,
     npcs = {},
     interactables = {
+        --[[
         { -- 1
             type = "securitypanel01", -- type of loot
             pos = {960.78088378906, 20.195, 111.28333282471 + 0.4,0.0,0.0,147.50}, -- {pos_x,pos_y,pos_z,rot_x,rot_y,rot_z}
@@ -170,6 +171,7 @@ cfg.robbery = {
                 },
             },
         },
+        --]]
         { -- 3
             type = "securitypanel01", -- type of loot
             pos = {-2947.91, 485.52276611328, 15.458961486816 + 0.4,0.0,0.0,88.46}, -- {pos_x,pos_y,pos_z,rot_x,rot_y,rot_z}
