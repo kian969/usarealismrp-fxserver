@@ -369,7 +369,7 @@ AddEventHandler('storeRobberies:server:registerMoney', function(source, store, p
                 local char = exports["usa-characters"]:GetCharacter(source)
                 local randomAmount = math.random(Config.Shops[store].registerMoney[1], Config.Shops[store].registerMoney[2])
                 char.giveMoney(randomAmount)
-                TriggerClientEvent("usa:notify", source, "You stole: $" .. exports.globals:comma_value(randomAmount))
+                TriggerClientEvent("usa:notify", source, "You stole: $" .. exports.globals:comma_value(randomAmount), "^3INFO: ^0You stole: $" .. exports.globals:comma_value(randomAmount))
             end
         else
             DropPlayer(source, 'Cheating')  
@@ -405,7 +405,7 @@ AddEventHandler('storeRobberies:server:safeMoney', function(source, store, passw
                     local char = exports["usa-characters"]:GetCharacter(source)
                     local randomAmount = math.random(Config.Shops[store].safeMoney[1], Config.Shops[store].safeMoney[2])
                     char.giveMoney(randomAmount)
-                    TriggerClientEvent("usa:notify", source, "You stole: $" .. exports.globals:comma_value(randomAmount))
+                    TriggerClientEvent("usa:notify", source, "You stole: $" .. exports.globals:comma_value(randomAmount), "^3INFO: ^0You stole: $" .. exports.globals:comma_value(randomAmount))
                 end
             else
                 DropPlayer(source, 'Safe Abusing') 
