@@ -57,7 +57,7 @@ AddEventHandler("lsfd:loadOutfitById", function(id)
         TriggerClientEvent("thirdEye:updateActionsForNewJob", src, JOB_NAME)
     end
     TriggerClientEvent('interaction:setPlayersJob', src, JOB_NAME)
-    TriggerEvent("eblips:add", {name = char.getName(), src = src, color = 3})
+    TriggerEvent("eblips:add", {name = char.getName(), src = src, color = 1})
 end)
 
 RegisterServerEvent("lsfd:saveOutfit")
