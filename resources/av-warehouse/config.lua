@@ -216,6 +216,7 @@ Config.Rewards = {
 			[1] = { name = "Sticky Bomb", type = "weapon", hash = `WEAPON_STICKYBOMB`, quantity = 1, weight = 25, objectModel = "prop_bomb_01_s" },
 			[2] = { name = "Sticky Bomb", type = "weapon", hash = `WEAPON_STICKYBOMB`, quantity = 1, weight = 25, objectModel = "prop_bomb_01_s" },
 			[3] = { name = "Sticky Bomb", type = "weapon", hash = `WEAPON_STICKYBOMB`, quantity = 1, weight = 25, objectModel = "prop_bomb_01_s" },
+			[4] = { name = "Blackhat USB Drive", type = "misc", quantity = 1, weight = 1, objectModel = "hei_prop_hst_usb_drive"},
 		}
 	},
 	[15] = {

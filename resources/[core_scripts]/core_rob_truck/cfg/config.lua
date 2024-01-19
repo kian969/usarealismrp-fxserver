@@ -271,7 +271,7 @@ cfg.robbery = {
                             type = "bombtruck_01",
         
                             item_needed = {
-                                {"Armed Truck Bomb",1,100}, -- {item_name,item_amount,chance_to_remove}
+                                {"Sticky Bomb",1,100}, -- {item_name,item_amount,chance_to_remove}
                             },
         
                             explosivetimer = 60, -- seconds

@@ -232,7 +232,6 @@ local ITEMS = {
     { name = "9x18mm Shell Casing", legality = "legal", quantity = 2, type = "misc", weight = 0.2 },
     { name = "Bank Laptop", type = "misc", quantity = 1, legality = "legal", notStackable = true, weight = 10, objectModel = "imp_prop_impexp_tablet"},
     { name = "Blackhat USB Drive", type = "misc", quantity = 1, legality = "illegal", notStackable = true, weight = 1, objectModel = "hei_prop_hst_usb_drive"},
-    { name = "Armed Truck Bomb", type = "misc", quantity = 1, legality = "illegal", notStackable = true, weight = 10, objectModel = "prop_ld_bomb"},
     { name = "Crude Oil", legality = "legal", quantity = 1, type = "misc", weight = 15 },
     { name = "Plastic", legality = "legal", quantity = 1, type = "misc", weight = 2 },
     { name = "Copper Wire", legality = "legal", quantity = 1, type = "misc", weight = 3 },

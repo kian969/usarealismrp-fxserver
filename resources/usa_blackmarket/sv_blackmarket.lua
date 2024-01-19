@@ -65,7 +65,6 @@ local markets = {
       { name = "Empty 9mm Mag [12]", type = "magazine", legality = "legal", price = 70, weight = 5, receives = "9mm", MAX_CAPACITY = 12, currentCapacity = 0, objectModel = "w_pi_combatpistol_mag1" },
       { name = "Katana", hash = GetHashKey("WEAPON_KATANAS"), type = "weapon", legality = "illegal", price = 650, weight = 10, quantity = 1, stock = math.random(1,4), objectModel = "w_me_katana_lr"},
       { name = "Bank Laptop", type = "misc",  quantity = 1,  legality = "legal", notStackable = true,  weight = 10, stock = math.random(2,4), price = tonumber(tostring(math.random(8, 12)) .. "000"), objectModel = "imp_prop_impexp_tablet" },
-      { name = "Armed Truck Bomb", type = "misc", quantity = 1, legality = "illegal", notStackable = true, weight = 10, objectModel = "prop_ld_bomb", stock = math.random(4,7), price = tonumber(tostring(math.random(5, 9)) .. "000")}
     },
     ["pedHash"] = -1773333796
   },
@@ -88,6 +87,7 @@ local markets = {
       { name = "Katana", hash = GetHashKey("WEAPON_KATANAS"), type = "weapon", legality = "illegal", price = 650, weight = 10, quantity = 1, stock = math.random(4,8), objectModel = "w_me_katana_lr"},
       { name = "Hacking Device", type = 'misc', price = 12500, legality = "illegal", weight = 5, quantity = 1, stock = math.random(4,10), objectModel = "bkr_prop_fakeid_tablet_01a"},
       { name = "GPS Removal Device", type = 'misc', price = 8500, legality = "illegal", weight = 5, quantity = 1, stock = math.random(4,10), objectModel = "bkr_prop_fakeid_tablet_01a"},
+      { name = "Sticky Bomb", type = "weapon", hash = `WEAPON_STICKYBOMB`, quantity = 1, weight = 25, objectModel = "prop_bomb_01_s", stock = math.random(0, 1) }
     },
     ['pedHash'] = 'mp_m_g_vagfun_01'
   },
