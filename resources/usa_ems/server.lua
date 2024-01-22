@@ -72,8 +72,11 @@ AddEventHandler("lsfd:saveOutfit", function(character, name)
             }
         }
         local outfits = exports.essentialmode:getDocumentsByRows("lsfd-outfits", query)
-        local nextSlot = outfits[#outfits]._id:sub(#outfits[#outfits]._id, #outfits[#outfits]._id)
-        nextSlot = tonumber(nextSlot) + 1
+        local nextSlot = 1
+        if outfits then
+            nextSlot = outfits[#outfits]._id:sub(#outfits[#outfits]._id, #outfits[#outfits]._id)
+            nextSlot = tonumber(nextSlot) + 1
+        end
         -- save
         character.name = name
         local ok = exports.essentialmode:createDocumentWithId(DB_NAME, char.get("_id") .. "-" .. nextSlot, character)
@@ -127,6 +130,14 @@ RegisterServerEvent("emsstation2:checkWhitelist")
 AddEventHandler("emsstation2:checkWhitelist", function()
 	if exports["usa-characters"]:GetCharacterField(source, "emsRank") > 0 then
 		TriggerClientEvent("emsstation2:isWhitelisted", source)
+        local char = exports["usa-characters"]:GetCharacter(source)
+        if char.get("job") ~= JOB_NAME then
+            char.set("job", JOB_NAME)
+            TriggerClientEvent("thirdEye:updateActionsForNewJob", source, JOB_NAME)
+            TriggerEvent('job:sendNewLog', source, JOB_NAME, true)
+            TriggerEvent("eblips:add", {name = char.getName(), src = source, color = 1})
+            TriggerClientEvent("usa:notify", source, "Clocked in!")
+        end
 	else
 		TriggerClientEvent("usa:notify", source, "~y~You are not whitelisted for EMS. Apply at https://www.usarrp.gg.")
 	end
@@ -150,7 +161,7 @@ RegisterServerCallback {
               ["$regex"] = char.get("_id")
           }
       }
-      local outfits = exports.essentialmode:getDocumentsByRows("lsfd-outfits", query)
+      local outfits = (exports.essentialmode:getDocumentsByRows("lsfd-outfits", query) or {})
       local ret = {}
       for i = 1, #outfits do
           table.insert(ret, { name = (outfits[i].name or "Not named"), _id = outfits[i]._id })
