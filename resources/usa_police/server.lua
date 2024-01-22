@@ -340,6 +340,14 @@ AddEventHandler("policestation2:checkWhitelistForLockerRoom", function()
     local job = char.get("job")
     if char.get("policeRank") > 0 then
         TriggerClientEvent("policestation2:isWhitelisted", source)
+        if char.get("job") ~= 'sheriff' then
+            char.set("job", JOB_NAME)
+            TriggerEvent('job:sendNewLog', source, JOB_NAME, true)
+            TriggerClientEvent("thirdEye:updateActionsForNewJob", source, JOB_NAME)
+            TriggerClientEvent("usa:notify", source, "You clocked on!")
+        end
+        TriggerClientEvent('interaction:setPlayersJob', source, 'sheriff')
+        TriggerEvent("eblips:add", {name = char.getName(), src = source, color = 3})
     else
         TriggerClientEvent("usa:notify", source, "~y~You are not whitelisted for POLICE. Apply at https://www.usarrp.gg.")
     end
@@ -427,8 +435,11 @@ AddEventHandler("policestation2:saveOutfit", function(character, name)
             }
         }
         local outfits = exports.essentialmode:getDocumentsByRows("sasp-outfits", query)
-        local nextSlot = outfits[#outfits]._id:sub(#outfits[#outfits]._id, #outfits[#outfits]._id)
-        nextSlot = tonumber(nextSlot) + 1
+        local nextSlot = 1
+        if outfits then
+            nextSlot = outfits[#outfits]._id:sub(#outfits[#outfits]._id, #outfits[#outfits]._id)
+            nextSlot = tonumber(nextSlot) + 1
+        end
         -- save
         character.name = name
         local ok = exports.essentialmode:createDocumentWithId(DB_NAME, char.get("_id") .. "-" .. nextSlot, character)
@@ -589,7 +600,7 @@ RegisterServerCallback {
                 ["$regex"] = char.get("_id")
             }
         }
-        local outfits = exports.essentialmode:getDocumentsByRows("sasp-outfits", query)
+        local outfits = (exports.essentialmode:getDocumentsByRows("sasp-outfits", query) or {})
         local ret = {}
         for i = 1, #outfits do
             table.insert(ret, { name = (outfits[i].name or "Not named"), _id = outfits[i]._id })
