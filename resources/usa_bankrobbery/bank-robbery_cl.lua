@@ -526,7 +526,7 @@ RegisterNetEvent('bank:toggleAlarm')
 AddEventHandler('bank:toggleAlarm', function(doPlay)
 	local soundID = "bank-alarm-" .. PlayerId()
 	if doPlay then
-		xSound:PlayUrlPos(soundID,"https://www.mboxdrive.com/store-alarm.mp3", 0.1, ALARM_COORDS, true)
+		xSound:PlayUrlPos(soundID,"https://usarrp.gg/sounds/storealarm.wav", 0.1, ALARM_COORDS, true)
 		xSound:Distance(soundID, 30)
 	else
 		xSound:Destroy(soundID)
