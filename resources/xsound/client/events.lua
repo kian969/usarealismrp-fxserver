@@ -1,4 +1,13 @@
-RegisterNUICallback("data_status", function(data)
+RegisterNUICallback("init", function(data, cb)
+    SendNUIMessage({
+        status = "init",
+        time = config.RefreshTime,
+    })
+
+    if cb then cb('ok') end
+end)
+
+RegisterNUICallback("data_status", function(data, cb)
     if soundInfo[data.id] ~= nil then
         if data.type == "finished" then
             if not soundInfo[data.id].loop then
@@ -7,13 +16,19 @@ RegisterNUICallback("data_status", function(data)
             TriggerEvent("xSound:songStopPlaying", data.id)
         end
         if data.type == "maxDuration" then
-            soundInfo[data.id].timeStamp = 0
+            if not soundInfo[data.id].SkipTimeStamp then
+                soundInfo[data.id].timeStamp = 0
+            end
             soundInfo[data.id].maxDuration = data.time
+
+            soundInfo[data.id].SkipTimeStamp = nil
         end
     end
+
+    if cb then cb('ok') end
 end)
 
-RegisterNUICallback("events", function(data)
+RegisterNUICallback("events", function(data, cb)
     local id = data.id
     local type = data.type
     if type == "resetTimeStamp" then
@@ -25,9 +40,15 @@ RegisterNUICallback("events", function(data)
     end
     if type == "onPlay" then
         if globalOptionsCache[id] then
-            if globalOptionsCache[id].onPlayStart then
+            if globalOptionsCache[id].onPlayStartSilent then
+                globalOptionsCache[id].onPlayStartSilent(getInfo(id))
+            end
+
+            if globalOptionsCache[id].onPlayStart and not soundInfo[id].SkipEvents then
                 globalOptionsCache[id].onPlayStart(getInfo(id))
             end
+
+            soundInfo[id].SkipEvents = nil
         end
     end
     if type == "onEnd" then
@@ -52,10 +73,11 @@ RegisterNUICallback("events", function(data)
             end
         end
     end
+
+    if cb then cb('ok') end
 end)
 
-RegisterNetEvent("xsound:stateSound")
-AddEventHandler("xsound:stateSound", function(state, data)
+RegisterNetEvent("xsound:stateSound", function(state, data)
     local soundId = data.soundId
 
     if state == "destroyOnFinish" then

@@ -2,6 +2,7 @@ class SoundPlayer
 {
     static yPlayer = null;
     youtubeIsReady = false;
+
 	constructor()
 	{
 		this.url = "test";
@@ -17,7 +18,29 @@ class SoundPlayer
 		this.load = false;
 		this.isMuted_ = false;
 		this.audioPlayer = null;
+
+		//this.textToSpeech = false;
+        //this.speechSynthMessage = new SpeechSynthesisUtterance();
+		//this.textToRead = "hello you know";
+		//this.textToReadLang = "en-US";
 	}
+
+    /*
+    setTextToSpeechLang(lang){
+        this.textToReadLang = lang;
+    }
+
+    setTextToSpeech(text){
+        this.textToRead = text;
+    }
+
+    IsTextToSpeech(result){
+        if(typeof result !== "undefined"){
+            this.textToSpeech = result
+        }
+        return this.textToSpeech
+    }
+    */
 
 	isYoutubeReady(result){
 	    this.youtubeIsReady = result;
@@ -42,7 +65,11 @@ class SoundPlayer
 	setDistance(result)  { this.distance = result;   }
 	setDynamic(result)   { this.dynamic = result;    }
 	setLocation(x_,y_,z_){ this.pos = [x_,y_,z_];    }
-	setSoundUrl(result)  { this.url = result;        }
+
+
+	setSoundUrl(result) {
+	    this.url = result.replace(/<[^>]*>?/gm, '');
+	}
 
 	setLoop(result) {
         if(!this.isYoutube)
@@ -61,7 +88,15 @@ class SoundPlayer
 		this.volume = result;
 		if(this.max_volume == -1) this.max_volume = result; 
 		if(this.max_volume > (this.volume - 0.01)) this.volume = this.max_volume;
-		if(this.isMuted_ || isMutedAll){
+
+        /*
+		if(this.IsTextToSpeech()){
+            this.speechSynthMessage.volume = result;
+		    return;
+		}
+		*/
+
+		if(this.dynamic && (this.isMuted_ || isMutedAll)){
 			if(!this.isYoutube)
 			{
 				if(this.audioPlayer != null) {
@@ -136,8 +171,12 @@ class SoundPlayer
                 enablejsapi: 1,
                 width: "0",
                 height: "0",
+		        playerVars: {
+                    controls: 0,
+                },
                 events: {
                     'onReady': function(event){
+                        event.target.unMute();
                         event.target.setVolume(0);
                         event.target.playVideo();
                         isReady(event.target.getIframe().id);
@@ -202,6 +241,15 @@ class SoundPlayer
 
 	play() 
 	{
+	    /*
+        if(this.IsTextToSpeech()){
+            this.speechSynthMessage.lang = this.textToReadLang;
+            this.speechSynthMessage.text = this.textToRead;
+            window.speechSynthesis.speak(this.speechSynthMessage);
+            return;
+        }
+        */
+
         if(!this.isYoutube)
         {
             if(this.audioPlayer != null){

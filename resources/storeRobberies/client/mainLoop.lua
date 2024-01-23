@@ -283,6 +283,9 @@ Citizen.CreateThread(function()
                                             if canRob == true then
                                                 robbing = true
 
+                                                print("playing store alarm")
+                                                exports["usa-businesses"]:playStoreAlarm(pedCoords)
+
                                                 Citizen.CreateThread(function()
                                                     while robbing do Wait(0) if IsPedDeadOrDying(ped) then robbing = false end end
                                                 end)
