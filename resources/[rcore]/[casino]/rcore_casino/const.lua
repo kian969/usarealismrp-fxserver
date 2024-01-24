@@ -1037,61 +1037,61 @@ CasinoInventoryItems = {{
     key = "casino_beer",
     title = "Pisswasser",
     itemType = 1,
-    price = 100,
+    price = 450,
     consumable = 1
 }, {
     key = "casino_burger",
     title = "Burger",
     itemType = 1,
-    price = 200,
+    price = 500,
     consumable = 2
 }, {
     key = "casino_coke",
     title = "Kofola",
     itemType = 1,
-    price = 100,
+    price = 500,
     consumable = 1
 }, {
     key = "casino_sprite",
     title = "Sprite",
     itemType = 1,
-    price = 100,
+    price = 500,
     consumable = 1
 }, {
     key = "casino_luckypotion",
     title = "Lucky Potion",
     itemType = 1,
-    price = 150,
+    price = 500,
     consumable = 1
 }, {
     key = "casino_psqs",
     title = "P’s & Q’s",
     itemType = 1,
-    price = 150,
+    price = 500,
     consumable = 2
 }, {
     key = "casino_ego_chaser",
     title = "Ego Chaser",
     itemType = 1,
-    price = 150,
+    price = 500,
     consumable = 2
 }, {
     key = "casino_sandwitch",
     title = "Sandwitch",
     itemType = 1,
-    price = 150,
+    price = 500,
     consumable = 2
 }, {
     key = "casino_donut",
     title = "Donut",
     itemType = 1,
-    price = 125,
+    price = 500,
     consumable = 2
 }, {
     key = "casino_coffee",
     title = "Coffee",
     itemType = 1,
-    price = 175,
+    price = 500,
     consumable = 1
 }}
 
