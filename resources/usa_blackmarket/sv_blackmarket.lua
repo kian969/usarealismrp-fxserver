@@ -87,7 +87,7 @@ local markets = {
       { name = "Katana", hash = GetHashKey("WEAPON_KATANAS"), type = "weapon", legality = "illegal", price = 650, weight = 10, quantity = 1, stock = math.random(4,8), objectModel = "w_me_katana_lr"},
       { name = "Hacking Device", type = 'misc', price = 12500, legality = "illegal", weight = 5, quantity = 1, stock = math.random(4,10), objectModel = "bkr_prop_fakeid_tablet_01a"},
       { name = "GPS Removal Device", type = 'misc', price = 8500, legality = "illegal", weight = 5, quantity = 1, stock = math.random(4,10), objectModel = "bkr_prop_fakeid_tablet_01a"},
-      { name = "Sticky Bomb", type = "weapon", hash = `WEAPON_STICKYBOMB`, quantity = 1, weight = 25, objectModel = "prop_bomb_01_s", stock = math.random(0, 1) }
+      { name = "Sticky Bomb", type = "weapon", hash = `WEAPON_STICKYBOMB`, quantity = 1, weight = 25, objectModel = "prop_bomb_01_s", stock = math.random(0, 1), price = tonumber(tostring(math.random(30, 40)) .. "000")},
     },
     ['pedHash'] = 'mp_m_g_vagfun_01'
   },
