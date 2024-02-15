@@ -442,6 +442,7 @@ AddEventHandler("policestation2:saveOutfit", function(character, name)
         end
         -- save
         character.name = name
+        print("SASP: saving outfit with ID = " .. char.get("_id") .. "-" .. nextSlot)
         local ok = exports.essentialmode:createDocumentWithId(DB_NAME, char.get("_id") .. "-" .. nextSlot, character)
         if ok then
             TriggerClientEvent("usa:notify", src, "Outfit has been saved.")
