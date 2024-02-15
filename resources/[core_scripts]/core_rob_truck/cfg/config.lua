@@ -18,7 +18,7 @@ cfg.timers = {
 cfg.notification = {
     selected = "gtav", -- gtav,qbcore,esx
     notifications = {
-        noitem = "You dont have the item needed for this action.", -- message
+        noitem = "You need a bank laptop and black hat usb drive!", -- message
         nopolice = "There are too many Security Personnel monitoring the network. Try again later.", -- message
     },
 }
