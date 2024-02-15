@@ -405,15 +405,17 @@ AddEventHandler("policestation2:requestPurchase", function(index)
                 char.removeMoney(armoryItems[index].price)
                 TriggerClientEvent("mini:equipWeapon", usource, armoryItems[index].hash, attachments, false) -- equip
                 TriggerClientEvent('usa:notify', usource, 'Purchased: ~y~'..weapon.name..'\n~s~Price: ~y~$'..armoryItems[index].price)
-                TriggerEvent('es:exposeDBFunctions', function(couchdb)
-                    couchdb.createDocumentWithId("legalweapons", weaponDB, weaponDB.serialNumber, function(success)
-                        if success then
-                            print("* Weapon created serial["..weaponDB.serialNumber.."] name["..weaponDB.name.."] owner["..weaponDB.ownerName.."] *")
-                        else
-                            print("* Error: Weapon failed to be created!! *")
-                        end
+                if weapon.type and weapon.type == "weapon" then
+                    TriggerEvent('es:exposeDBFunctions', function(couchdb)
+                        couchdb.createDocumentWithId("legalweapons", weaponDB, weaponDB.serialNumber, function(success)
+                            if success then
+                                print("* Weapon created serial["..weaponDB.serialNumber.."] name["..weaponDB.name.."] owner["..weaponDB.ownerName.."] *")
+                            else
+                                print("* Error: Weapon failed to be created!! *")
+                            end
+                        end)
                     end)
-                end)
+                end
             else
                 TriggerClientEvent("usa:notify", usource, "Not enough money!")
             end
