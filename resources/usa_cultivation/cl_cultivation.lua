@@ -102,7 +102,7 @@ function doAdjustZCoord(objName)
 end
 
 function ShowHelp()
-    local msg = "'Use' the plant in your inventory to plant it. It will take about 14 whole days to enter its final stage at which point it becomes harvestable by 'using' large scisossors near it. Make sure you buy a watering can from the 24/7 and fertilizer from the hardware store and 'use' them near your plants to keep them alive! After harvesting, you can take weed buds to that big barn off Senora Freeway just North of the hardware store under Grapeseed to process them for sale. Corn can be processed at O'Neill's ranch and sold at the Grapeseed farmer's market."
+    local msg = "'Use' the plant in your inventory to plant it. It will take about 7 whole days to enter its final stage at which point it becomes harvestable by 'using' large scisossors near it. Make sure you buy a watering can from the 24/7 and fertilizer from the hardware store and 'use' them near your plants to keep them alive! After harvesting, you can take weed buds to that big barn off Senora Freeway just North of the hardware store under Grapeseed to process them for sale. Corn can be processed at O'Neill's ranch and sold at the Grapeseed farmer's market."
     TriggerEvent("chatMessage", "", {}, "^3INFO: ^0" .. msg)
 end
 
