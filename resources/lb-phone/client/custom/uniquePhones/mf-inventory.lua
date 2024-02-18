@@ -2,8 +2,6 @@ if Config.Item.Inventory ~= "mf-inventory" or not Config.Item.Unique or not Conf
     return
 end
 
-local ESX = exports.es_extended:getSharedObject()
-
 local function GetItemsByName(name)
     local items = {}
     local inventory = {}

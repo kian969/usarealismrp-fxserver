@@ -2,8 +2,6 @@ if (Config.Item.Inventory ~= "qb-inventory" and Config.Item.Inventory ~= "lj-inv
     return
 end
 
-local QB = exports["qb-core"]:GetCoreObject()
-
 ---Function to get all items a player has with a specific name
 ---@param source number
 ---@param name string

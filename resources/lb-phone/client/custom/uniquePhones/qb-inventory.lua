@@ -2,8 +2,6 @@ if (Config.Item.Inventory ~= "qb-inventory" and Config.Item.Inventory ~= "lj-inv
     return
 end
 
-local QB = exports["qb-core"]:GetCoreObject()
-
 local function GetItemsByName(name)
     local items = {}
     local inventory = QB.Functions.GetPlayerData().items

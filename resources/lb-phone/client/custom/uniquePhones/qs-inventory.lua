@@ -2,13 +2,6 @@ if Config.Item.Inventory ~= "qs-inventory" or not Config.Item.Unique or not Conf
     return
 end
 
-local ESX, QBCore
-if Config.Framework == "esx" then
-    ESX = exports.es_extended:getSharedObject()
-elseif Config.Framework == "qb" then
-    QBCore = exports["qb-core"]:GetCoreObject()
-end
-
 local function GetItemsByName(name)
     if Config.Framework == "esx" then
         local items = {}
@@ -21,7 +14,7 @@ local function GetItemsByName(name)
         return items
     elseif Config.Framework == "qb" then
         local items = {}
-        local inventory = QBCore.Functions.GetPlayerData().items
+        local inventory = QB.Functions.GetPlayerData().items
         for _, item in pairs(inventory) do
             if item?.name == name then
                 items[#items+1] = item

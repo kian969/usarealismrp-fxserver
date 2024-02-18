@@ -88,7 +88,7 @@
             "size": 831
         },
         "AppStore": {
-            "name": "AppStore",
+            "name": "App Store",
             "removable": false,
             "size": 84000
         },
@@ -103,7 +103,7 @@
             "size": 63400
         },
         "YellowPages": {
-            "name": "Yellow Pages",
+            "name": "Pages",
             "description": "Find local businesses and services",
             "removable": true,
             "size": 84400

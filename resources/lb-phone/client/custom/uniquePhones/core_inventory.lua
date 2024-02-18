@@ -2,14 +2,6 @@ if Config.Item.Inventory ~= "core_inventory" or not Config.Item.Unique or not Co
     return
 end
 
-local ESX, QB
-
-if Config.Framework == "qb" then
-    QB = exports["qb-core"]:GetCoreObject()
-elseif Config.Framework == "esx" then
-    ESX = exports.es_extended:getSharedObject()
-end
-
 local function GetItemsByName(name)
     local inventory = {}
     local items = {}

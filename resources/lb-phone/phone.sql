@@ -1,7 +1,7 @@
 -- phone_number is the identifier used for phones in twitter etc
 CREATE TABLE IF NOT EXISTS `phone_phones` (
     `id` VARCHAR(100) NOT NULL, -- if metadata - unique id for the phone; if not - player identifier
-    `owner` VARCHAR(100) NOT NULL, -- the player identifier of the first person who used the phone, used for lookup app etc
+    `owner_id` VARCHAR(100) NOT NULL, -- the player identifier of the first person who used the phone, used for lookup app etc
     `phone_number` VARCHAR(15) NOT NULL,
     `name` VARCHAR(50),
 
@@ -18,9 +18,9 @@ CREATE TABLE IF NOT EXISTS `phone_phones` (
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `phone_last_phone` (
-    `identifier` VARCHAR(100) NOT NULL,
+    `id` VARCHAR(100) NOT NULL, -- the player's identifier (not named identifier since esx_multicharacter breaks it)
     `phone_number` VARCHAR(15) NOT NULL,
-    PRIMARY KEY (`identifier`),
+    PRIMARY KEY (`id`),
     FOREIGN KEY (`phone_number`) REFERENCES `phone_phones`(`phone_number`) ON DELETE CASCADE ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -56,8 +56,8 @@ CREATE TABLE IF NOT EXISTS `phone_notifications` (
 
     `title` VARCHAR(50) DEFAULT NULL,
     `content` VARCHAR(500) DEFAULT NULL,
-    `thumbnail` VARCHAR(250) DEFAULT NULL,
-    `avatar` VARCHAR(250) DEFAULT NULL,
+    `thumbnail` VARCHAR(500) DEFAULT NULL,
+    `avatar` VARCHAR(500) DEFAULT NULL,
     `show_avatar` BOOLEAN DEFAULT FALSE,
 
     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -83,12 +83,12 @@ CREATE TABLE IF NOT EXISTS `phone_twitter_accounts` (
 
     `phone_number` VARCHAR(15) NOT NULL,
     `bio` VARCHAR(100) DEFAULT NULL,
-    `profile_image` VARCHAR(200) DEFAULT NULL,
-    `profile_header` VARCHAR(200) DEFAULT NULL,
+    `profile_image` VARCHAR(500) DEFAULT NULL,
+    `profile_header` VARCHAR(500) DEFAULT NULL,
 
     `pinned_tweet` VARCHAR(50) DEFAULT NULL,
 
-    `verified` BOOLEAN DEFAULT FALSE,
+    `verified` TINYINT(1) DEFAULT 0,
     `follower_count` INT(11) NOT NULL DEFAULT 0,
     `following_count` INT(11) NOT NULL DEFAULT 0,
 
@@ -216,7 +216,7 @@ CREATE TABLE IF NOT EXISTS `phone_phone_contacts` (
     `contact_phone_number` VARCHAR(15) NOT NULL, -- the phone number of the contact
     `firstname` VARCHAR(50) NOT NULL DEFAULT "",
     `lastname` VARCHAR(50) NOT NULL DEFAULT "",
-    `profile_image` VARCHAR(200) DEFAULT NULL,
+    `profile_image` VARCHAR(500) DEFAULT NULL,
     `email` VARCHAR(50) DEFAULT NULL,
     `address` VARCHAR(50) DEFAULT NULL,
     `favourite` BOOLEAN DEFAULT FALSE,
@@ -264,12 +264,12 @@ CREATE TABLE IF NOT EXISTS `phone_phone_voicemail` (
 
 -- INSTAGRAM
 CREATE TABLE IF NOT EXISTS `phone_instagram_accounts` (
-    `display_name` VARCHAR(30) NOT NUll,
+    `display_name` VARCHAR(30) NOT NULL,
     
     `username` VARCHAR(20) NOT NULL,
     `password` VARCHAR(100) NOT NULL,
 
-    `profile_image` VARCHAR(200) DEFAULT NULL,
+    `profile_image` VARCHAR(500) DEFAULT NULL,
     `bio` VARCHAR(100) DEFAULT NULL,
 
     `post_count` INT(11) NOT NULL DEFAULT 0,
@@ -382,7 +382,7 @@ CREATE TABLE IF NOT EXISTS `phone_instagram_notifications` (
 CREATE TABLE IF NOT EXISTS `phone_instagram_stories` (
     `id` VARCHAR(10) NOT NULL,
     `username` VARCHAR(20) NOT NULL, 
-    `image` VARCHAR(200) NOT NULL,
+    `image` VARCHAR(500) NOT NULL,
 
     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -581,10 +581,10 @@ CREATE TABLE IF NOT EXISTS `phone_yellow_pages_posts` (
 
 -- BACKUPS
 CREATE TABLE IF NOT EXISTS `phone_backups` (
-    `identifier` VARCHAR(100) NOT NULL,
+    `id` VARCHAR(100) NOT NULL,
     `phone_number` VARCHAR(15) NOT NULL,
 
-    PRIMARY KEY (`identifier`),
+    PRIMARY KEY (`id`),
     FOREIGN KEY (`phone_number`) REFERENCES `phone_phones`(`phone_number`) ON DELETE CASCADE ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -711,12 +711,12 @@ CREATE TABLE IF NOT EXISTS `phone_maps_locations` (
 
 -- CRYPTO
 CREATE TABLE IF NOT EXISTS `phone_crypto` (
-    `identifier` VARCHAR(100) NOT NULL, -- player identifier
+    `id` VARCHAR(100) NOT NULL, -- player identifier
     `coin` VARCHAR(15) NOT NULL, -- coin, for example "bitcoin"
     `amount` DOUBLE NOT NULL DEFAULT 0, -- amount of coins
     `invested` INT(11) NOT NULL DEFAULT 0, -- amount of $$$ invested
 
-    PRIMARY KEY (`identifier`, `coin`)
+    PRIMARY KEY (`id`, `coin`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- ACCOUNT SWITCHER
@@ -733,7 +733,7 @@ CREATE TABLE IF NOT EXISTS `phone_logged_in_accounts` (
 CREATE TABLE IF NOT EXISTS `phone_tiktok_accounts` (
     `name` VARCHAR(30) NOT NULL,
     `bio` VARCHAR(100) DEFAULT NULL,
-    `avatar` VARCHAR(200) DEFAULT NULL,
+    `avatar` VARCHAR(500) DEFAULT NULL,
 
     `username` VARCHAR(20) NOT NULL,
     `password` VARCHAR(100) NOT NULL,
@@ -780,7 +780,7 @@ CREATE TABLE IF NOT EXISTS `phone_tiktok_videos` (
 
     `username` VARCHAR(20) NOT NULL,
 
-    `src` VARCHAR(200) NOT NULL,
+    `src` VARCHAR(500) NOT NULL,
     `caption` VARCHAR(100) DEFAULT NULL,
     `metadata` LONGTEXT, -- json array of metadata
     `music` TEXT DEFAULT NULL,
@@ -1308,33 +1308,6 @@ BEGIN
     UPDATE phone_tiktok_channels
     SET last_message = modified_content
     WHERE id = NEW.channel_id;
-END;
-
--- Procedures for phone_tiktok_notifications
--- Procedure to make sure each notification entry is unique.
-CREATE PROCEDURE IF NOT EXISTS tiktok_insert_notification_if_unique(
-    IN p_username VARCHAR(20),
-    IN p_from VARCHAR(20),
-    IN p_type VARCHAR(20),
-    IN p_video_id VARCHAR(10),
-    IN p_comment_id VARCHAR(10)
-)
-BEGIN
-    DECLARE duplicate_entry INT DEFAULT 0;
-
-    SELECT COUNT(*)
-    INTO duplicate_entry
-    FROM phone_tiktok_notifications
-    WHERE (username = p_username)
-    AND (`from` = p_from)
-    AND (`type` = p_type)
-    AND (video_id = p_video_id OR (video_id IS NULL AND p_video_id IS NULL))
-    AND (comment_id = p_comment_id OR (comment_id IS NULL AND p_comment_id IS NULL));
-
-    IF duplicate_entry = 0 THEN
-        INSERT INTO phone_tiktok_notifications (username, `from`, `type`, video_id, comment_id)
-        VALUES (p_username, p_from, p_type, p_video_id, p_comment_id);
-    END IF;
 END;
 
 //

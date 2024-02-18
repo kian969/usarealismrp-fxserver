@@ -1,4 +1,5 @@
 local DISCORD_WEBHOOK_URL = GetConvar("lb-phone-media", "")
+local MEDIA_API_KEY = GetConvar("lb-phone-media-api-key", "")
 
 -- Webhook for instapic posts, recommended to be a public channel
 INSTAPIC_WEBHOOK = DISCORD_WEBHOOK_URL
@@ -21,8 +22,14 @@ LOGS = {
     Trendy = DISCORD_WEBHOOK_URL
 }
 
+-- Set your API keys for uploading media here. 
+-- Please note that the API key needs to match the correct upload method defined in Config.UploadMethod.
+-- The default upload method is Fivemanage
+-- We STRONGLY discourage using Discord as an upload method, as uploaded files may become inaccessible after a while.
+-- You can get your API keys from https://fivemanage.com/
+-- A video tutorial for how to set up Fivemanage can be found here: https://www.youtube.com/watch?v=y3bCaHS6Moc
 API_KEYS = {
-    Video = DISCORD_WEBHOOK_URL,
-    Image = DISCORD_WEBHOOK_URL,
-    Audio = DISCORD_WEBHOOK_URL,
+    Video = MEDIA_API_KEY,
+    Image = MEDIA_API_KEY,
+    Audio = MEDIA_API_KEY,
 }

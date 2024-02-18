@@ -3,10 +3,13 @@ if Config.Framework ~= "esx" then
 end
 
 debugprint("Loading ESX")
-local export, ESX = pcall(function()
+local export, obj = pcall(function()
     return exports.es_extended:getSharedObject()
 end)
-if not export then
+
+if export then
+    ESX = obj
+else
     TriggerEvent("esx:getSharedObject", function(obj)
         ESX = obj
     end)
@@ -34,6 +37,14 @@ function HasPhoneItem(source, number)
 
     if GetResourceState("ox_inventory") == "started" then
         return (exports.ox_inventory:Search(source, "count", Config.Item.Name) or 0) > 0
+    elseif GetResourceState("qs-inventory") then
+        local exportExists, result = pcall(function()
+            return exports["qs-inventory"]:GetItemTotalAmount(source, Config.Item.Name)
+        end)
+
+        if exportExists then
+            return (result or 0) > 0
+        end
     end
 
     local xPlayer = ESX.GetPlayerFromId(source)
@@ -46,6 +57,13 @@ function HasPhoneItem(source, number)
         ["@id"] = GetIdentifier(source),
         ["@number"] = number
     }) ~= nil
+end
+
+---Register an item as usable
+---@param item string
+---@param cb function
+function CreateUsableItem(item, cb)
+	ESX.RegisterUsableItem(item, cb)
 end
 
 ---Get a player's character name
@@ -134,40 +152,72 @@ function Notify(source, message)
 end
 
 -- GARAGE APP
-function GetPlayerVehicles(source, cb)
+
+---@param source number
+---@return VehicleData[] vehicles An array of vehicles that the player owns
+function GetPlayerVehicles(source)
     local vehicles = MySQL.Sync.fetchAll("SELECT * FROM owned_vehicles WHERE owner=@owner", {
         ["@owner"] = GetIdentifier(source)
     })
 
     local toSend = {}
 
-    for _, v in pairs(vehicles) do
-        if v.stored == nil or GetResourceState("qs-garages") == "started" then
-            v.stored = v.state
+    for i = 1, #vehicles do
+        local vehicle = vehicles[i] or {}
+        if vehicle.stored == nil or GetResourceState("qs-advancedgarages") == "started" then
+            vehicle.stored = vehicle.state
         end
 
-        if type(v.stored) ~= "boolean" then
-            v.stored = v.stored == 1
+        local impounded = false
+        if type(vehicle.stored) ~= "boolean" then
+            impounded = vehicle.stored == 2
+            vehicle.stored = vehicle.stored == 1
         end
 
         if GetResourceState("cd_garage") == "started" then
             debugprint("Using cd_garage")
-            v.stored = v.in_garage or v.in_garage == 1
-            v.garage = v.garage_id
-            v.type = v.garage_type
+            impounded = vehicle.in_garage == 2
+            vehicle.stored = vehicle.in_garage or vehicle.in_garage == 1
+            vehicle.garage = vehicle.garage_id
+            vehicle.type = vehicle.garage_type
         elseif GetResourceState("loaf_garage") == "started" then
-            v.stored = 1
+            vehicle.stored = 1
+        elseif GetResourceState("jg-advancedgarages") == "started" then
+            debugprint("Using jg-advancedgarages")
+            vehicle.stored = vehicle.in_garage
+            vehicle.garage = vehicle.garage_id
+
+            impounded = vehicle.impound == 1
+            if impounded and vehicle.impound_data then
+                vehicle.stored = false
+                vehicle.pound = "Impound"
+
+                local impoundInfo = json.decode(vehicle.impound_data)
+                vehicle.impoundReason = impoundInfo and {
+                    reason = impoundInfo.reason and #impoundInfo.reason > 0 and impoundInfo.reason or nil,
+                    retrievable = ConvertJSTimestamp and ConvertJSTimestamp(impoundInfo.retrieval_date) or nil,
+                    price = impoundInfo.retrieval_cost,
+                    impounder = impoundInfo.charname
+                }
+            end
+        end
+
+        local location = vehicle.stored and (vehicle.garage or "Garage") or "out"
+        if impounded and vehicle.pound then
+            location = vehicle.pound
         end
 
         local newCar = {
-            plate = v.plate,
-            type = v.type,
-            location = v.stored and (v.garage or "Garage") or "out",
-            statistics = {}
+            plate = vehicle.plate,
+            type = vehicle.type,
+            location = location,
+            impounded = impounded,
+            statistics = {},
+            impoundReason = vehicle.impoundReason
         }
 
-        if v.damages then
-            local damages = json.decode(v.damages)
+        if vehicle.damages then
+            local damages = json.decode(vehicle.damages)
             if damages?.engineHealth then
                 newCar.statistics.engine = math.floor(damages.engineHealth / 10 + 0.5)
             end
@@ -177,45 +227,53 @@ function GetPlayerVehicles(source, cb)
             end
         end
 
-        local vehicle = json.decode(v.vehicle)
-        if vehicle.fuel then
-            newCar.statistics.fuel = math.floor(vehicle.fuel + 0.5)
+        local vehicleMods = json.decode(vehicle.vehicle)
+        if vehicleMods.fuel then
+            newCar.statistics.fuel = math.floor(vehicleMods.fuel + 0.5)
         end
 
-        newCar.model = vehicle.model
+        newCar.model = vehicleMods.model
 
         toSend[#toSend+1] = newCar
     end
 
-    cb(toSend)
+    return toSend
 end
 
-function GetVehicle(source, cb, plate)
-    local storedColumn, storedValue = "stored", 1
-    if GetResourceState("cd_garage") == "started" then
+---Get a specific vehicle
+---@param source number
+---@param plate string
+---@return table? vehicleData
+function GetVehicle(source, plate)
+    local storedColumn, storedValue, outValue = "stored", 1, 0
+    if GetResourceState("cd_garage") == "started" or GetResourceState("jg-advancedgarages") == "started" then
         storedColumn = "in_garage"
-    elseif GetResourceState("qs-inventory") == "started" then
+    elseif GetResourceState("qs-advancedgarages") == "started" then
         storedColumn = "state"
     end
 
-    MySQL.Async.fetchAll(([[
+    local res = MySQL.Sync.fetchAll(([[
         SELECT * FROM owned_vehicles
         WHERE owner=@owner AND plate=@plate AND `%s`=@stored
     ]]):format(storedColumn), {
         ["@owner"] = GetIdentifier(source),
         ["@plate"] = plate,
         ["@stored"] = storedValue
-    }, function(res)
-        if not res[1] then
-            return cb(false)
-        end
+    })
 
-        MySQL.Async.execute(("UPDATE owned_vehicles SET `%s`=0 WHERE plate=@plate"):format(storedColumn), {
-            ["@plate"] = plate
-        })
+    local vehicle = res[1]
+    if not vehicle then
+        return
+    end
 
-        cb(res[1])
-    end)
+    MySQL.Async.execute(("UPDATE owned_vehicles SET `%s`=@outValue WHERE plate=@plate"):format(storedColumn), {
+        ["@plate"] = plate,
+        ["@outValue"] = outValue
+    })
+
+    vehicle.model = json.decode(vehicle.vehicle).model
+
+    return vehicle
 end
 
 function IsAdmin(source)
@@ -325,30 +383,52 @@ else
     print("^6[LB Phone] ^3[WARNING]^0: ESX.RegisterCommand not found, admin commands not registered. If you wish to use commands, update your ESX. The phone will still work.")
 end
 
--- COMPANIES APP
+-- Company / services app
+
+---@param source number
+---@return string
 function GetJob(source)
     local xPlayer = ESX.GetPlayerFromId(source)
-    return xPlayer.job?.name
+
+    return xPlayer.job?.name or "unemployed"
 end
 
 function RefreshCompanies()
+    if ESX.JobsPlayerCount then
+        for i = 1, #Config.Companies.Services do
+            local jobData = Config.Companies.Services[i]
+
+            jobData.open = (ESX.JobsPlayerCount[jobData.job] or 0) > 0
+        end
+
+        return
+    end
+
     local openJobs = {}
+
     if ESX.GetExtendedPlayers then
         local xPlayers = ESX.GetExtendedPlayers()
+
         for _, xPlayer in pairs(xPlayers) do
-            local job = xPlayer.job.name
-            openJobs[job] = true
+            openJobs[xPlayer.job.name] = true
         end
+
+        print("^6[LB Phone] ^3[WARNING]^7: You are running an outdated version of ESX. The script will still work, but you should consider updating. (you can remove this warning in server/custom/frameworks/esx.lua)")
     else
         local xPlayers = ESX.GetPlayers()
+
         for _, source in pairs(xPlayers) do
             local job = ESX.GetPlayerFromId(source).job.name
+
             openJobs[job] = true
         end
+
+        print("^6[LB Phone] ^3[WARNING]^7: You are running an extremely old version of ESX. The script will still work, but you should consider updating. (you can remove this warning in server/custom/frameworks/esx.lua)")
     end
 
     for i = 1, #Config.Companies.Services do
         local jobData = Config.Companies.Services[i]
-        Config.Companies.Services[i].open = openJobs[jobData.job] or false
+
+        jobData.open = openJobs[jobData.job] or false
     end
 end

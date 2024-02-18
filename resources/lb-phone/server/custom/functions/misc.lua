@@ -12,3 +12,11 @@ function CanCreateStory(source, username)
     -- implement your own logic here. by default, everyone can go live
     return true
 end
+
+if not Config.Item.Unique then
+    if CreateUsableItem then
+        CreateUsableItem(Config.Item.Name, function(src)
+            TriggerClientEvent("phone:toggleOpen", src, true)
+        end)
+    end
+end

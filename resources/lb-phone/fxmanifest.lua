@@ -2,9 +2,10 @@ fx_version "cerulean"
 game "gta5"
 lua54 "yes"
 
-version "1.4.5"
+version "1.5.3"
 
-shared_script {
+shared_scripts {
+    "@pmc-callbacks/import.lua",
     '@ox_lib/init.lua',
     "config/*.lua",
     "shared/**/*.lua"
@@ -13,7 +14,7 @@ shared_script {
 client_script "client/**/*.lua"
 
 server_scripts {
-    "@mysql-async/lib/MySQL.lua",
+    "@oxmysql/lib/MySQL.lua",
     "server/**/*.lua",
 }
 
@@ -27,7 +28,7 @@ ui_page "ui/dist/index.html"
 
 dependencies {
     "loaf_lib",
-    "mysql-async"
+    "oxmysql"
 }
 
 escrow_ignore {
@@ -44,6 +45,8 @@ escrow_ignore {
     "server/misc/debug.lua",
 
     "server/apiKeys.lua",
+
+    "types.lua"
 }
 
 dependency '/assetpacks'

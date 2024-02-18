@@ -2,10 +2,8 @@ if Config.Framework ~= "qb" then
     return
 end
 
-local lib = exports.loaf_lib:GetLib()
-
 debugprint("Loading QB")
-local QB = exports["qb-core"]:GetCoreObject()
+QB = exports["qb-core"]:GetCoreObject()
 debugprint("QB loaded")
 
 ---@param source number
@@ -29,6 +27,14 @@ function HasPhoneItem(source, number)
 
     if GetResourceState("ox_inventory") == "started" then
         return (exports.ox_inventory:Search(source, "count", Config.Item.Name) or 0) > 0
+    elseif GetResourceState("qs-inventory") then
+        local exportExists, result = pcall(function()
+            return exports["qs-inventory"]:GetItemTotalAmount(source, Config.Item.Name)
+        end)
+
+        if exportExists then
+            return (result or 0) > 0
+        end
     end
 
     local qPlayer = QB.Functions.GetPlayer(source)
@@ -41,6 +47,13 @@ function HasPhoneItem(source, number)
         ["@id"] = GetIdentifier(source),
         ["@number"] = number
     }) ~= nil
+end
+
+---Register an item as usable
+---@param item string
+---@param cb function
+function CreateUsableItem(item, cb)
+	QB.Functions.CreateUseableItem(item, cb)
 end
 
 ---Get a player's character name
@@ -108,58 +121,87 @@ function Notify(source, message)
 end
 
 -- GARAGE APP
-function GetPlayerVehicles(source, cb)
+
+---@param source number
+---@return VehicleData[] vehicles An array of vehicles that the player owns
+function GetPlayerVehicles(source)
     local vehicles = MySQL.Sync.fetchAll("SELECT * FROM player_vehicles WHERE citizenid = @citizenid", {
         ["@citizenid"] = GetIdentifier(source)
     })
 
     local toSend = {}
 
-    for _, v in pairs(vehicles) do
+    for i = 1, #vehicles do
+        local vehicle = vehicles[i] or {}
         if GetResourceState("cd_garage") == "started" then
-            debugprint("Using cd_garage")
-            v.state = v.in_garage
-            v.garage = v.garage_id
-            v.type = v.garage_type
+            vehicle.state = vehicle.in_garage
+            vehicle.garage = vehicle.garage_id
+            vehicle.type = vehicle.garage_type
         elseif GetResourceState("loaf_garage") == "started" then
-            v.state = 1
+            vehicle.state = 1
+        elseif GetResourceState("jg-advancedgarages") == "started" then
+            vehicle.state = vehicle.in_garage
+            vehicle.garage = vehicle.garage_id
+
+            if vehicle.impound == 1 and vehicle.impound_data then
+                vehicle.state = 2
+                vehicle.garage = "Impound"
+
+                local impoundInfo = json.decode(vehicle.impound_data)
+                vehicle.impoundReason = impoundInfo and {
+                    reason = impoundInfo.reason and #impoundInfo.reason > 0 and impoundInfo.reason or nil,
+                    retrievable = ConvertJSTimestamp and ConvertJSTimestamp(impoundInfo.retrieval_date) or nil,
+                    price = impoundInfo.retrieval_cost,
+                    impounder = impoundInfo.charname
+                }
+            end
+        elseif GetResourceState("qs-advancedgarages") == "started" then
+            if vehicle.type == "vehicle" then
+                vehicle.type = "car"
+            end
         end
 
-        local state
-        if v.state == 0 then
-            state = "out"
-        elseif v.state == 1 then
-            state = v.garage or "Garage"
-        elseif v.state == 2 then
-            state = "impounded"
+        local location = "unknown"
+        if vehicle.state == 0 then
+            location = "out"
+        elseif vehicle.state == 1 or vehicle.state == true then
+            location = vehicle.garage or "Garage"
+        elseif vehicle.state == 2 then
+            location = vehicle.garage or "Impound"
         end
 
         local newCar = {
-            plate = v.plate,
-            type = QB.Shared.Vehicles[v.hash]?.category or v.type or "car",
-            location = state,
+            plate = vehicle.plate,
+            type = QB.Shared.Vehicles[vehicle.hash]?.category or vehicle.type or "car",
+            location = location,
+            impounded = vehicle.state == 2,
             statistics = {
-                engine = math.floor(v.engine / 10 + 0.5),
-                body = math.floor(v.body / 10 + 0.5),
-                fuel = v.fuel
+                engine = math.floor(vehicle.engine / 10 + 0.5),
+                body = math.floor(vehicle.body / 10 + 0.5),
+                fuel = vehicle.fuel
             },
+            impoundReason = vehicle.impoundReason
         }
 
-        newCar.model = tonumber(v.hash)
+        newCar.model = tonumber(vehicle.hash)
 
         toSend[#toSend+1] = newCar
     end
 
-    cb(toSend)
+    return toSend
 end
 
-function GetVehicle(source, cb, plate)
-    local storedColumn, storedValue = "state", 1
-    if GetResourceState("cd_garage") == "started" then
+---Get a specific vehicle
+---@param source number
+---@param plate string
+---@return table? vehicleData
+function GetVehicle(source, plate)
+    local storedColumn, storedValue, outValue = "state", 1, 0
+    if GetResourceState("cd_garage") == "started" or GetResourceState("jg-advancedgarages") == "started" then
         storedColumn = "in_garage"
     end
 
-    MySQL.Async.fetchAll(([[
+    local res = MySQL.Sync.fetchAll(([[
         SELECT plate, mods, `hash`, fuel
         FROM player_vehicles
         WHERE citizenid = @citizenid AND plate = @plate AND `%s`=@stored
@@ -167,17 +209,21 @@ function GetVehicle(source, cb, plate)
         ["@citizenid"] = GetIdentifier(source),
         ["@plate"] = plate,
         ["@stored"] = storedValue
-    }, function(res)
-        if not res[1] then
-            return cb(false)
-        end
+    })
 
-        MySQL.Async.execute(("UPDATE player_vehicles SET `%s`=0 WHERE plate=@plate"):format(storedColumn), {
-            ["@plate"] = plate
-        })
+    local vehicle = res[1]
+    if not vehicle then
+        return
+    end
 
-        cb(res[1])
-    end)
+    MySQL.Async.execute(("UPDATE player_vehicles SET `%s`=@outValue WHERE plate=@plate"):format(storedColumn), {
+        ["@plate"] = plate,
+        ["@outValue"] = outValue
+    })
+
+    vehicle.model = tonumber(vehicle.hash)
+
+    return vehicle
 end
 
 -- todo
@@ -244,7 +290,7 @@ QB.Commands.Add("changepassword", "Change a user's password", {
 
     if not allowedApps[app:lower()] then
         return
-    end         
+    end
 
     if not username then
         return
@@ -257,7 +303,10 @@ QB.Commands.Add("changepassword", "Change a user's password", {
     ChangePassword(app, username, password)
 end, "admin")
 
--- COMPANIES APP
+-- Company / services app
+
+---@param source number
+---@return string
 function GetJob(source)
     return QB.Functions.GetPlayer(source)?.PlayerData.job.name or "unemployed"
 end
@@ -265,12 +314,14 @@ end
 function RefreshCompanies()
     local openJobs = {}
     local players = QB.Functions.GetQBPlayers()
+
     for _, v in pairs(players) do
         if not v?.PlayerData.job.onduty then
             goto continue
         end
 
         local job = v.PlayerData.job.name
+
         if not openJobs[job] then
             openJobs[job] = true
         end
@@ -280,16 +331,76 @@ function RefreshCompanies()
 
     for i = 1, #Config.Companies.Services do
         local jobData = Config.Companies.Services[i]
+
         Config.Companies.Services[i].open = openJobs[jobData.job] or false
     end
 end
 
 lib.RegisterCallback("phone:services:getPlayerData", function(_, cb, player)
     local first, last = GetCharacterName(player)
+
     cb({
         name = first .. " " .. last,
         id = GetIdentifier(player),
     })
+end)
+
+local function getSocietyMoney(job)
+    local success, res = pcall(function()
+        return exports["qb-management"]:GetAccount(job)
+    end)
+
+    if success then
+        return res
+    end
+
+    return exports["qb-banking"]:GetAccountBalance(job)
+end
+
+lib.RegisterCallback("phone:services:getAccount", function(source, cb)
+    local job = GetJob(source)
+
+    cb(getSocietyMoney(job))
+end)
+
+lib.RegisterCallback("phone:services:addMoney", function(source, cb, amount)
+    local job = GetJob(source)
+
+    if amount < 0 or GetBalance(source) < amount then
+        return false
+    end
+
+    local success, _ = pcall(function()
+        return exports["qb-management"]:AddMoney(job, amount)
+    end)
+
+    if success or exports["qb-banking"]:AddMoney(job, amount) then
+        RemoveMoney(source, amount)
+    end
+
+    cb(getSocietyMoney(job))
+end)
+
+lib.RegisterCallback("phone:services:removeMoney", function(source, cb, amount)
+    local job = GetJob(source)
+
+    if amount < 0 or getSocietyMoney(job) < amount then
+        return
+    end
+
+    local success, res = pcall(function()
+        return exports["qb-management"]:RemoveMoney(job, amount)
+    end)
+
+    if not success then
+        res = exports["qb-banking"]:RemoveMoney(job, amount)
+    end
+
+    if res then
+        AddMoney(source, amount)
+    end
+
+    cb(getSocietyMoney(job))
 end)
 
 if Config.QBMailEvent then
@@ -299,6 +410,7 @@ if Config.QBMailEvent then
         end
 
         local address = exports["lb-phone"]:GetEmailAddress(phoneNumber)
+
         if not address then
             return
         end
@@ -331,16 +443,19 @@ if Config.QBMailEvent then
 
     RegisterNetEvent("qb-phone:server:sendNewMail", function(data)
         local phoneNumber = GetEquippedPhoneNumber(source)
+
         sendQBMail(phoneNumber, data)
     end)
 
     RegisterNetEvent("qb-phone:server:sendNewMailToOffline", function(citizenid, data)
         local phoneNumber = GetEquippedPhoneNumber(citizenid)
+
         sendQBMail(phoneNumber, data)
     end)
 
     AddEventHandler("__cfx_export_qb-phone_sendNewMailToOffline", function(citizenid, data)
         local phoneNumber = GetEquippedPhoneNumber(citizenid)
+
         sendQBMail(phoneNumber, data)
     end)
 end

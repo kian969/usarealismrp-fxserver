@@ -2,8 +2,6 @@ if Config.HouseScript ~= "qs-housing" then
     return
 end
 
-local lib = exports.loaf_lib:GetLib()
-
 local function getNameFromIdentifier(identifier)
     if Config.Framework == "esx" then
         local name = MySQL.Sync.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {
@@ -45,17 +43,17 @@ end
 
 lib.RegisterCallback("phone:home:getOwnedHouses", function(source, cb)
     local identifier = GetIdentifier(source)
-    local houses = MySQL.Sync.fetchAll([[
+    local identifierColumn = Config.Framework == "esx" and "identifier" or "citizenid"
+    local formattedHouses = {}
+    local houses = MySQL.Sync.fetchAll(([[
         SELECT 
             ph.house, ph.houseId, ph.keyholders, hl.label, hl.coords
         FROM player_houses ph
         JOIN houselocations hl ON hl.houseID = ph.houseID
-        WHERE ph.citizenid = @identifier
-    ]], {
+        WHERE ph.%s = @identifier
+    ]]):format(identifierColumn), {
         ["@identifier"] = identifier
     })
-
-    local formattedHouses = {}
 
     for i = 1, #houses do
         local house = houses[i]
@@ -78,7 +76,8 @@ lib.RegisterCallback("phone:home:getOwnedHouses", function(source, cb)
 end)
 
 lib.RegisterCallback("phone:home:getKeyholders", function(source, cb, house)
-    local keyholders = MySQL.Sync.fetchScalar("SELECT keyholders FROM player_houses WHERE house = @house AND citizenid = @identifier", {
+    local identifierColumn = Config.Framework == "esx" and "identifier" or "citizenid"
+    local keyholders = MySQL.Sync.fetchScalar("SELECT keyholders FROM player_houses WHERE house = @house AND " .. identifierColumn .. " = @identifier", {
         ["@house"] = house,
         ["@identifier"] = GetIdentifier(source)
     })
@@ -97,7 +96,8 @@ lib.RegisterCallback("phone:home:removeKeyholder", function(source, cb, house, i
         return cb(false)
     end
 
-    local keyholders = MySQL.Sync.fetchScalar("SELECT keyholders FROM player_houses WHERE house = @house AND citizenid = @identifier", {
+    local identifierColumn = Config.Framework == "esx" and "identifier" or "citizenid"
+    local keyholders = MySQL.Sync.fetchScalar("SELECT keyholders FROM player_houses WHERE house = @house AND " .. identifierColumn .. " = @identifier", {
         ["@house"] = house,
         ["@identifier"] = GetIdentifier(source)
     })
@@ -121,7 +121,7 @@ lib.RegisterCallback("phone:home:removeKeyholder", function(source, cb, house, i
         return cb(false)
     end
 
-    MySQL.Async.execute("UPDATE player_houses SET keyholders = @keyholders WHERE house = @house AND citizenid = @identifier", {
+    MySQL.Async.execute("UPDATE player_houses SET keyholders = @keyholders WHERE house = @house AND " .. identifierColumn .. " = @identifier", {
         ["@keyholders"] = json.encode(keyholders),
         ["@house"] = house,
         ["@identifier"] = GetIdentifier(source)
@@ -140,7 +140,8 @@ lib.RegisterCallback("phone:home:addKeyholder", function(source, cb, house, addS
         return cb(false)
     end
 
-    local keyholders = MySQL.Sync.fetchScalar("SELECT keyholders FROM player_houses WHERE house = @house AND citizenid = @identifier", {
+    local identifierColumn = Config.Framework == "esx" and "identifier" or "citizenid"
+    local keyholders = MySQL.Sync.fetchScalar("SELECT keyholders FROM player_houses WHERE house = @house AND " .. identifierColumn .. " = @identifier", {
         ["@house"] = house,
         ["@identifier"] = GetIdentifier(source)
     })
@@ -157,7 +158,7 @@ lib.RegisterCallback("phone:home:addKeyholder", function(source, cb, house, addS
 
     keyholders[#keyholders + 1] = addIdentifier
 
-    MySQL.Async.execute("UPDATE player_houses SET keyholders = @keyholders WHERE house = @house AND citizenid = @identifier", {
+    MySQL.Async.execute("UPDATE player_houses SET keyholders = @keyholders WHERE house = @house AND " .. identifierColumn .. " = @identifier", {
         ["@keyholders"] = json.encode(keyholders),
         ["@house"] = house,
         ["@identifier"] = GetIdentifier(source)

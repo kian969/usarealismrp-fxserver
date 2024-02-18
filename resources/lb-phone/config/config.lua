@@ -5,7 +5,7 @@ Config.Debug = false -- Set to true to enable debug mode
 Config.Framework = "auto"
 --[[
     Supported frameworks:
-        * auto: auto-detect framework (ONLY WORKS WITH THE ONE LISTED BELOW)
+        * auto: auto-detect framework (ONLY WORKS WITH THE ONES LISTED BELOW)
         * esx: es_extended, https://github.com/esx-framework/esx-legacy
         * qb: qb-core, https://github.com/qbcore-framework/qb-core
         * ox: ox_core, https://github.com/overextended/ox_core
@@ -29,7 +29,14 @@ Config.Item.Inventory = "auto" --[[
         * core_inventory - https://www.c8re.store/package/5121548
         * mf-inventory - https://modit.store/products/mf-inventory?variant=39985142268087
         * qs-inventory - https://buy.quasar-store.com/package/4770732
+        * codem-inventory - https://codem.tebex.io/package/5900973
 ]]
+
+Config.ServerSideSpawn = false -- should entities be spawned on the server? (phone prop, vehicles)
+
+Config.PhoneModel = `lb_phone_prop` -- the prop of the phone, if you want to use a custom phone model, you can change this here
+Config.PhoneRotation = vector3(0.0, 0.0, 180.0) -- the rotation of the phone when attached to a player
+Config.PhoneOffset = vector3(0.0, -0.005, 0.0) -- the offset of the phone when attached to a player
 
 Config.DynamicIsland = true -- if enabled, the phone will have a Iphone 14 Pro inspired Dynamic Island.
 Config.SetupScreen = true -- if enabled, the phone will have a setup screen when the player first uses the phone.
@@ -63,7 +70,7 @@ Config.Companies.Services = {
             }
         }
         -- customIcon = "IoShield", -- if you want to use a custom icon for the company, set it here: https://react-icons.github.io/react-icons/icons?name=io5
-        -- onCustomIconClick = function() 
+        -- onCustomIconClick = function()
         --    print("Clicked")
         -- end
     },
@@ -153,6 +160,10 @@ Config.CustomApps = {} -- https://docs.lbphone.com/phone/custom-apps
 Config.Valet = {}
 Config.Valet.Enabled = true -- allow players to get their vehicles from the phone
 Config.Valet.Price = 7500 -- price to get your vehicle
+Config.Valet.Model = `S_M_Y_XMech_01`
+Config.Valet.Drive = true -- should a ped bring the car, or should it just spawn in front of the player?
+Config.Valet.DisableDamages = false -- disable vehicle damages (engine & body health) on esx
+Config.Valet.FixTakeOut = false -- repair the vehicle after taking it out?
 
 Config.HouseScript = "auto" --[[
     The housing script you use on your server
@@ -176,7 +187,7 @@ Config.Voice.System = "mumble"
 
 Config.Voice.HearNearby = false --[[
     Only works with pma-voice
-    
+
     If true, players will be heard on instagram live if they are nearby
     If false, only the person who is live will be heard
 
@@ -315,11 +326,12 @@ Config.RealTime = true -- if true, the time will use real life time depending on
 Config.CustomTime = false -- NOTE: disable Config.RealTime if using this. you can set this to a function that returns custom time, as a table: { hour = 0-24, minute = 0-60 }
 
 Config.EmailDomain = "usarrp.gg"
+Config.AutoCreateEmail = false -- should the phone automatically create an email for the player when they set up the phone?
 
 Config.DeleteMessages = true -- allow players to delete messages in the messages app?
 
 Config.SyncFlash = true -- should flashlights be synced across all players? May have an impact on performance
-Config.EndLiveClose = false -- should IG live end when you close the phone?
+Config.EndLiveClose = false -- should InstaPic live end when you close the phone?
 
 Config.AllowExternal = { -- allow people to upload external images? (note: this means they can upload nsfw / gore etc)
     Twitter = false, -- set to true to enable external images on that specific app, set to false to disable it.
@@ -333,15 +345,43 @@ Config.AllowExternal = { -- allow people to upload external images? (note: this 
     Other = false, -- other apps that don't have a specific setting (ex: setting a profile picture for a contact, backgrounds for the phone etc)
 }
 
+Config.WordBlacklist = {}
+Config.WordBlacklist.Enabled = false
+Config.WordBlacklist.Apps = { -- apps that should use the word blacklist (if Config.WordBlacklist.Enabled is true)
+    Birdy = true,
+    InstaPic = true,
+    Trendy = true,
+    Spark = true,
+    Messages = true,
+    Pages = true,
+    MarketPlace = true,
+    DarkChat = true,
+    Mail = true,
+}
+Config.WordBlacklist.Words = {
+    -- array of blacklisted words, e.g. "badword", "anotherbadword"
+}
+
+Config.AutoFollow = {}
+Config.AutoFollow.Enabled = false
+
+Config.AutoFollow.Birdy = {}
+Config.AutoFollow.Birdy.Enabled = true
+Config.AutoFollow.Birdy.Accounts = {} -- array of usernames to automatically follow when creating an account. e.g. "username", "anotherusername"
+
+Config.AutoFollow.InstaPic = {}
+Config.AutoFollow.InstaPic.Enabled = true
+Config.AutoFollow.InstaPic.Accounts = {} -- array of usernames to automatically follow when creating an account. e.g. "username", "anotherusername"
+
+Config.AutoFollow.TikTok = {}
+Config.AutoFollow.TikTok.Enabled = true
+Config.AutoFollow.TikTok.Accounts = {} -- array of usernames to automatically follow when creating an account. e.g. "username", "anotherusername"
+
 Config.AutoBackup = true -- should the phone automatically create a backup when you get a new phone?
 
-Config.PhoneModel = `lb_phone_prop` -- the prop of the phone, if you want to use a custom phone model, you can change this here
-Config.PhoneRotation = vector3(0.0, 0.0, 180.0) -- the rotation of the phone when attached to a player
-Config.PhoneOffset = vector3(0.0, -0.005, 0.0) -- the offset of the phone when attached to a player
-
 Config.Post = {} -- What apps should send posts to discord? You can set your webhooks in server/webhooks.lua
-Config.Post.Twitter = true -- New tweets
-Config.Post.Instagram = true -- New posts
+Config.Post.Birdy = true -- Announce new posts on Birdy?
+Config.Post.InstaPic = true -- Anmnounce new posts on InstaPic?
 Config.Post.Accounts = {
     Birdy = {
         Username = "Birdy",
@@ -353,16 +393,16 @@ Config.Post.Accounts = {
     }
 }
 
-Config.TwitterTrending = {}
-Config.TwitterTrending.Enabled = true -- show trending hashtags?
-Config.TwitterTrending.Reset = 7 * 24 -- How often should trending hashtags be reset on twitter? (in hours)
+Config.BirdyTrending = {}
+Config.BirdyTrending.Enabled = true -- show trending hashtags?
+Config.BirdyTrending.Reset = 7 * 24 -- How often should trending hashtags be reset on birdy? (in hours)
 
-Config.TwitterNotifications = false -- should everyone get a notification when someone tweets?
+Config.BirdyNotifications = false -- should everyone get a notification when someone posts?
 
-Config.PromoteTwitter = {}
-Config.PromoteTwitter.Enabled = true -- should you be able to promote tweets?
-Config.PromoteTwitter.Cost = 2500 -- how much does it cost to promote a tweet?
-Config.PromoteTwitter.Views = 100 -- how many views does a promoted tweet get?
+Config.PromoteBirdy = {}
+Config.PromoteBirdy.Enabled = true -- should you be able to promote post?
+Config.PromoteBirdy.Cost = 2500 -- how much does it cost to promote a post?
+Config.PromoteBirdy.Views = 100 -- how many views does a promoted post get?
 
 Config.TikTok = {}
 Config.TikTok.TTS = {
@@ -423,6 +463,7 @@ Config.TikTok.TTS = {
 Config.ICEServers = false -- ICE Servers for WebRTC (ig live, facetim). If you don't know what you're doing, leave this as false.
 
 Config.Crypto = {}
+Config.Crypto.Enabled = false
 Config.Crypto.Coins = {"bitcoin","ethereum","tether","binancecoin","usd-coin","ripple","binance-usd","cardano","dogecoin","solana","shiba-inu","polkadot","litecoin","bitcoin-cash"}
 Config.Crypto.Currency = "usd" -- currency to use for crypto prices. https://api.coingecko.com/api/v3/simple/supported_vs_currencies
 Config.Crypto.Refresh = 5 * 60 * 1000 -- how often should the crypto prices be refreshed (client cache)? (Default 5 minutes)
@@ -491,15 +532,27 @@ Config.KeyBinds = {
 Config.KeepInput = true -- keep input when nui is focused (meaning you can walk around etc)
 
 --[[ PHOTO / VIDEO OPTIONS ]] --
--- Set your api keys in lb-phone/server/apiKeys.lua **NOT HERE**
+-- Set your api keys in lb-phone/server/apiKeys.lua
 Config.UploadMethod = {}
 -- You can edit the upload methods in lb-phone/shared/upload.lua
-Config.UploadMethod.Video = "Discord" -- "Discord" or "Imgur" or "Custom"
-Config.UploadMethod.Image = "Discord" -- "Discord" or "Imgur" or "Custom
-Config.UploadMethod.Audio = "Discord" -- "Discord" or "Custom"
+-- We recommend Fivemanage, https://fivemanage.com
+-- A video tutorial for how to set up Fivemanage can be found here: https://www.youtube.com/watch?v=y3bCaHS6Moc
+-- If you want to host uploads yourself, you can use LBUpload: https://github.com/lbphone/lb-upload
+-- We STRONGLY discourage using Discord as an upload method, as uploaded files may become inaccessible after a while.
+Config.UploadMethod.Video = "Fivemanage" -- "Fivemanage" or "Discord" or "LBUpload" or "Imgur" or "Custom"
+Config.UploadMethod.Image = "Fivemanage" -- "Fivemanage" or "Discord" or "LBUpload" or "Imgur" or "Custom
+Config.UploadMethod.Audio = "Fivemanage" -- "Fivemanage" or "Discord" or "LBUpload" or "Custom"
 
 Config.Video = {}
-Config.Video.Bitrate = 400 -- video bitrate (kbps)
-Config.Video.FrameRate = 24 -- video framerate (fps)
+Config.Video.Bitrate = 400 -- video bitrate (kbps), increase to improve quality, at the cost of file size
+Config.Video.FrameRate = 24 -- video framerate (fps), 24 fps is a good mix between quality and file size used in most movies
 Config.Video.MaxSize = 25 -- max video size (MB)
 Config.Video.MaxDuration = 60 -- max video duration (seconds)
+
+Config.Image = {}
+Config.Image.Mime = "image/webp"
+Config.Image.Quality = 0.95
+if Config.UploadMethod.Image == "Imgur" then
+    Config.Image.Mime = "image/png"
+    Config.Image.Quality = 1.0
+end

@@ -1,4 +1,3 @@
-
 if Config.Framework ~= "standalone" then
     return
 end
@@ -22,6 +21,11 @@ function HasPhoneItem(source, number)
     if not Config.Item.Require then
         return true
     end
+
+    if GetResourceState("ox_inventory") == "started" then
+        return (exports.ox_inventory:Search(source, "count", Config.Item.Name) or 0) > 0
+    end
+
     local char = exports["usa-characters"]:GetCharacter(source)
     if char ~= nil then
         local hasPhone = char.hasItem("Cell Phone")
@@ -122,13 +126,14 @@ function Notify(source, message)
         multiline = true,
         args = { "Phone", message }
     })
-    --TriggerClientEvent("usa:notify", source, false, message)
 end
 
--- todo:
-
 -- GARAGE APP
-function GetPlayerVehicles(source, cb)
+
+---@param source number
+---@return VehicleData[] vehicles An array of vehicles that the player owns
+function GetPlayerVehicles(source)
+    local ret = nil
     local char = exports["usa-characters"]:GetCharacter(source)
     local playerPlates = char.get("vehicles")
     local playerVehicles = {}
@@ -170,16 +175,26 @@ function GetPlayerVehicles(source, cb)
                     table.insert(playerVehicles, veh)
                 end
             end
-            cb(playerVehicles)
+            ret = playerVehicles
+        else
+            ret = false
         end
     end, "POST", json.encode({
         keys = playerPlates
     }), { ["Content-Type"] = 'application/json', Authorization = "Basic " .. exports["essentialmode"]:getAuth() })
+    while ret == nil do
+        Wait(1)
+    end
+    return ret
 end
 
-function GetVehicle(source, cb, plate)
+---Get a specific vehicle
+---@param source number
+---@param plate string
+---@return table? vehicleData
+function GetVehicle(source, plate)
     local vehicle = exports["essentialmode"]:getDocument("vehicles", plate)
-    cb(vehicle)
+    return vehicle
 end
 
 function IsAdmin(source)
@@ -295,6 +310,9 @@ end, {
     help = "Reloads the Phone (Use for any bugs!)",
 })
 
-lib.callback.register('lb-phone:hasPhone', function(source, number)
-    return HasPhoneItem(source, number)
-end)
+RegisterServerCallback {
+    eventName = "lb-phone:hasPhone",
+    eventCallback = function(source, number)
+        return HasPhoneItem(source, number)
+    end
+}

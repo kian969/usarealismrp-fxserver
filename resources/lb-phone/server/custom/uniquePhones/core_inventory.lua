@@ -2,29 +2,13 @@ if Config.Item.Inventory ~= "core_inventory" or not Config.Item.Unique or not Co
     return
 end
 
-local ESX, QB
-
 if Config.Framework == 'qb' then
-    QB = exports['qb-core']:GetCoreObject()
-
     QB.Functions.CreateUseableItem(Config.Item.Name, function(source, item)
         if item then
             TriggerClientEvent("lb-phone:usePhoneItem", source, item)
         end
     end)
 elseif Config.Framework == 'esx' then
-    export, ESX = pcall(function()
-        return exports.es_extended:getSharedObject()
-    end)
-    if not export then
-        while not ESX do
-            TriggerEvent("esx:getSharedObject", function(obj)
-                ESX = obj
-            end)
-            Wait(500)
-        end
-    end
-
     ESX.RegisterUsableItem(Config.Item.Name, function(source, itemName, item)
         if item then
             TriggerClientEvent("lb-phone:usePhoneItem", source, item)

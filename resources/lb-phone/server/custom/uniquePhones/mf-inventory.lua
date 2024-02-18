@@ -2,18 +2,6 @@ if Config.Item.Inventory ~= "mf-inventory" or not Config.Item.Unique or not Conf
     return
 end
 
-local export, ESX = pcall(function()
-    return exports.es_extended:getSharedObject()
-end)
-if not export then
-    while not ESX do
-        TriggerEvent("esx:getSharedObject", function(obj)
-            ESX = obj
-        end)
-        Wait(500)
-    end
-end
-
 ---Function to get all items a player has with a specific name
 ---@param source number
 ---@param name string

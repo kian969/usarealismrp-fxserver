@@ -3,8 +3,6 @@ CreateThread(function()
         return
     end
 
-    local lib = exports.loaf_lib:GetLib()
-
     lib.RegisterCallback("phone:home:toggleLocked", function(source, cb, id, uniqueId)
         local keyName = ("housing_key_%i_%s"):format(id, uniqueId)
         local hasKey = exports.loaf_keysystem:HasKey(source, keyName)
