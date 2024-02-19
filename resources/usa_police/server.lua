@@ -430,29 +430,11 @@ AddEventHandler("policestation2:saveOutfit", function(character, name)
     local src = source
     local char = exports["usa-characters"]:GetCharacter(src)
     if char.get("job") == "sheriff" then
-        -- get next free slot
-        local query = {
-            _id = {
-                ["$regex"] = char.get("_id")
-            }
-        }
-        local outfits = exports.essentialmode:getDocumentsByRows("sasp-outfits", query)
-        local nextSlot = 1
-        if outfits then
-            nextSlot = outfits[#outfits]._id:sub(#outfits[#outfits]._id, #outfits[#outfits]._id)
-            nextSlot = tonumber(nextSlot) + 1
-        end
         -- save
         character.name = name
-        print("SASP: saving outfit with ID = " .. char.get("_id") .. "-" .. nextSlot)
-        local ok = exports.essentialmode:createDocumentWithId(DB_NAME, char.get("_id") .. "-" .. nextSlot, character)
-        if ok then
-            print("outfit saved!")
-            TriggerClientEvent("usa:notify", src, "Outfit has been saved.")
-        else
-            print("error saving outfit")
-            TriggerClientEvent("usa:notify", src, "Error saving outfit")
-        end
+        character.ownerIdentifier = char.get("_id")
+        exports.essentialmode:createDocument(DB_NAME, character)
+        TriggerClientEvent("usa:notify", source, "Outfit saved")
     else
         TriggerClientEvent("usa:notify", source, "You must be on-duty to save a uniform.")
     end
@@ -600,16 +582,7 @@ RegisterServerCallback {
     eventName = "police:loadSavedOutfits",
     eventCallback = function(src)
         local char = exports["usa-characters"]:GetCharacter(src)
-        local query = {
-            _id = {
-                ["$regex"] = char.get("_id")
-            }
-        }
-        local outfits = (exports.essentialmode:getDocumentsByRows("sasp-outfits", query) or {})
-        local ret = {}
-        for i = 1, #outfits do
-            table.insert(ret, { name = (outfits[i].name or "Not named"), _id = outfits[i]._id })
-        end
-        return ret
+		local outfits = exports.essentialmode:getDocumentsByRows("sasp-outfits", { ownerIdentifier = char.get("_id") })
+		return (outfits or {})
     end
 }

@@ -610,7 +610,6 @@ exports("createDocumentWithId", function(db, id, doc)
 end)
 
 exports("createDocument", function(db, doc, cb)
-	print("creating doc")
 	PerformHttpRequest("http://" .. ip .. ":" .. port .. "/_uuids", function(err, rText, headers)
 		local data = json.decode(rText)
 		PerformHttpRequest("http://" .. ip .. ":" .. port .. "/" .. db .. "/" .. data.uuids[1], function(err, rText, headers)
