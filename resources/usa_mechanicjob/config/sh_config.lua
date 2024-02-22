@@ -281,11 +281,11 @@ Config = {
                 disable_blip = false
             }
         },
-        ["Alpha Auto Service Center"] = {
+        ["Hawick / San-Vitus Blvd"] = {
             duty = {
-                x = -328.0699,
-                y = -105.7707,
-                z = 39.064,
+                x = -344.11477661133,
+                y = -129.33358764648,
+                z = 38.009624481201,
             },
             truck_spawn = {
                 x = -370.5532,
