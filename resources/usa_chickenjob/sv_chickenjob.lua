@@ -17,7 +17,7 @@ function endItemRetrieval(character, src, chickenItemToGive, quantityToGive, chi
 			return
 		end
 
-		if math.random() < 0.1 then
+		if math.random() < 0.1 and chickenItemToGive ~= "Chicken carcass" and chickenItemToGive ~= "Featherless chicken carcass" and chickenItemToGive ~= "Raw chicken meat" then
 			TriggerClientEvent("chickenJob:endProcessingAnimation", src)
 			TriggerClientEvent("usa:notify", src, "The chicken escaped!")
 			TriggerClientEvent("chickenJob:spawnChicken", src, true)
