@@ -97,7 +97,7 @@ local ITEMS = {
                 { name = "Suppressor", value = "COMPONENT_AT_PI_SUPP", price = 1500, weapon_hash = 1593441988 }
             },
             [".50 Cal Pistol"] = {
-                { name = "Empty Pistol .50 Extended Mag", quantity = 1, type = "magazine", price = 250, weight = 7, receives = ".50 Cal", MAX_CAPACITY = 12, currentCapacity = 0, legality = "illegal", notStackable = true, magComponent = "COMPONENT_PISTOL50_CLIP_02", compatibleWeapon = GetHashKey("WEAPON_PISTOL50") },
+                { name = "Empty 50 Caliber Extended Mag", quantity = 1, type = "magazine", price = 250, weight = 7, receives = ".50 Cal", MAX_CAPACITY = 12, currentCapacity = 0, legality = "illegal", notStackable = true, magComponent = "COMPONENT_PISTOL50_CLIP_02", compatibleWeapon = GetHashKey("WEAPON_PISTOL50") },
                 { name = "Suppressor", value = "COMPONENT_AT_AR_SUPP_02", price = 1500, weapon_hash = -1716589765 }
             },
             ["Vintage Pistol"] = {
