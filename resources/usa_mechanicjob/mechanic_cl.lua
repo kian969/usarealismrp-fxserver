@@ -356,12 +356,12 @@ AddEventHandler("mechanic:repair", function(repairCount)
 end)
 
 RegisterNetEvent("mechanic:tryInstall")
-AddEventHandler("mechanic:tryInstall", function(upgrade, rank)
+AddEventHandler("mechanic:tryInstall", function(upgrade, rank, upgradesInstalledCount)
 	if isNearAnyRepairShop() then
 		local veh = MechanicHelper.getClosestVehicle(5)
 			if veh then
 				exports.globals:notify("Installing " .. upgrade.displayName .. " upgrade!")
-				MechanicHelper.installUpgrade(veh, upgrade, function(success)
+				MechanicHelper.installUpgrade(veh, upgrade, upgradesInstalledCount, function(success)
 					if success then
 						local plate = GetVehicleNumberPlateText(veh)
 						plate = exports.globals:trim(plate)

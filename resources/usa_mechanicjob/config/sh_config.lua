@@ -4,7 +4,8 @@ Config = {
     LEVEL_3_RANK_THRESH = 300,
 
     -- Install Times --
-    UPGRADE_INSTALL_TIME = 300000,
+    DEFAULT_INSTALL_TIME = 300000,
+    MINIMUM_INSTALL_TIME = 120000,
 
     -- Mechanic Locations --
     Mechanic_Locations = {

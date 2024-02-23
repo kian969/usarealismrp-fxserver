@@ -410,8 +410,10 @@ function tryInstallPart(src, part, plate)
 		end
 		MechanicHelper.getMechanicRank(char.get("_id"), function(rank)
 			if rank >= 2 then
-				TriggerClientEvent('mechanic:tryInstall', src, upgrade, rank)
-				installQueue[src] = upgrade.id
+				MechanicHelper.getMechanicInfo(char.get("_id"), function(mechInfo)
+					TriggerClientEvent('mechanic:tryInstall', src, upgrade, rank, (mechInfo.upgradesInstalled or 0))
+					installQueue[src] = upgrade.id
+				end)
 			else 
 				TriggerClientEvent("usa:notify", src, "Must be lvl 2 or higher to install upgrades!", "^3INFO: ^0Must be a level 2 mechanic to install upgrades! Respond to more player calls and repair vehicles to rank up!")
 			end
