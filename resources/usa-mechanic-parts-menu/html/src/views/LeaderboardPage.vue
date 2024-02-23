@@ -14,14 +14,16 @@
 						<th>Rank</th>
 						<th>Name</th>
 						<th>Repair Count</th>
+						<th>Upgrades Installed</th>
 					</tr>
 				<tr
 				v-for="(mech, index) in menuData.top50Mechanics"
 				:key="mech.name"
 				>
-					<td width="33%">{{ index + 1 }}</td>
-					<td width="33%" class="text-left">{{ mech.name }}</td>
-					<td width="33%" class="text-left">{{ mech.repairCount }}</td>
+					<td width="25%">{{ index + 1 }}</td>
+					<td width="25%" class="text-left">{{ mech.name }}</td>
+					<td width="25%" class="text-left">{{ mech.repairCount }}</td>
+					<td width="25%" class="text-left">{{ mech.upgradesInstalled ? mech.upgradesInstalled : 0 }}</td>
 				</tr>
 				</tbody>
 			</template>

@@ -136,7 +136,6 @@ end)
 
 RegisterServerEvent("mechanic:installedUpgrade")
 AddEventHandler("mechanic:installedUpgrade", function(plate, vehNetId, rank)
-	print("installed upgrade! veh net id: " .. vehNetId)
 	local usource = source
 	local upgrade = UPGRADES[installQueue[usource]]
 	local char = exports["usa-characters"]:GetCharacter(usource)
@@ -154,6 +153,9 @@ AddEventHandler("mechanic:installedUpgrade", function(plate, vehNetId, rank)
 			if upgrade.doSync then
 				TriggerClientEvent("mechanic:syncUpgrade", -1, vehNetId, upgrade)
 			end
+			MechanicHelper.incrementStat(char.get("_id"), "upgradesInstalled", function(updatedVal)
+				TriggerClientEvent("usa:notify", usource, "You have installed " .. updatedVal .. " upgrade(s)!", "^3INFO: ^0You have installed " .. updatedVal .. " upgrades(s)!")
+			end)
 		end)
 	end
 end)
