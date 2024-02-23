@@ -1,0 +1,3 @@
+CONFIG = {
+    PRIORITY_CHECK_IN_FEE = 5000
+}
