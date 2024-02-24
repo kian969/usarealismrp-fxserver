@@ -282,10 +282,10 @@ AddEventHandler("mechanic:fetchDeliveryProgress", function()
 end)
 
 RegisterServerEvent("mechanic:removeUpgrade")
-AddEventHandler("mechanic:removeUpgrade", function(plate, partId)
+AddEventHandler("mechanic:removeUpgrade", function(plate, upgradeId)
 	-- disabled for now
-	TriggerClientEvent("usa:notify", source, "Feature disabled", "^3INFO: ^0Removing vehicle upgrades has been disabled.")
-	if true then return end
+	--TriggerClientEvent("usa:notify", source, "Feature disabled", "^3INFO: ^0Removing vehicle upgrades has been disabled.")
+	--if true then return end
 
 	local src = source
 	local char = exports["usa-characters"]:GetCharacter(src)
@@ -306,12 +306,18 @@ AddEventHandler("mechanic:removeUpgrade", function(plate, partId)
 	MechanicHelper.getMechanicRank(char.get("_id"), function(rank)
 		if rank >= 3 then
 			-- continue
-			if MechanicHelper.doesVehicleHaveUpgrades(plate, { partId }) then
-				MechanicHelper.removeVehicleUpgrades(plate, { partId })
-				TriggerClientEvent("usa:notify", src, partId .. " upgrade removed!", "^3INFO: ^0" .. partId .. " upgrade removed! Store your vehicle to finish removing the upgrade.")
+			if MechanicHelper.doesVehicleHaveUpgrades(plate, { upgradeId }) then
+				MechanicHelper.removeVehicleUpgrades(plate, { upgradeId })
+				if UPGRADES[upgradeId].requiresItem then
+					local item = PARTS[UPGRADES[upgradeId].requiresItem]
+					char.giveItem(item)
+				end
+				TriggerClientEvent("usa:notify", src, upgradeId .. " upgrade removed!", "^3INFO: ^0" .. upgradeId .. " upgrade removed! Store your vehicle to finish removing the upgrade.")
 			else
-				TriggerClientEvent("usa:notify", src, "Vehicle does not have upgrade: " .. partId)
+				TriggerClientEvent("usa:notify", src, "Vehicle does not have upgrade: " .. upgradeId)
 			end
+		else
+			TriggerClientEvent("usa:notify", src, "Must be rank 3", "^3INFO: ^0You must be rank 3 or higher to remove parts")
 		end
 	end)
 end)
