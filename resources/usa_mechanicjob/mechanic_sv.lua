@@ -444,12 +444,18 @@ function getNameFromCharId(id)
 	end
 end
 
-function fetchLeaderboard()
+function fetchLeaderboard(filterVal)
 	local allMechanics = exports.essentialmode:getAllDocuments("mechanicjob")
 	local only50 = {}
-	table.sort(allMechanics, function(a, b)
-		return a.repairCount > b.repairCount
-	end)
+	if filterVal == "by repair count" then
+		table.sort(allMechanics, function(a, b)
+			return a.repairCount > b.repairCount
+		end)
+	elseif filterVal == "by upgrade count" then
+		table.sort(allMechanics, function(a, b)
+			return a.upgradesInstalled > b.upgradesInstalled
+		end)
+	end
 	for i = 1, 50 do
 		if allMechanics[i] then
 			allMechanics[i].name = getNameFromCharId(allMechanics[i].owner_identifier)
@@ -569,8 +575,8 @@ RegisterServerCallback {
 
 RegisterServerCallback {
 	eventName = "mechanic:fetchLeaderboard",
-	eventCallback = function(src)
-		return fetchLeaderboard()
+	eventCallback = function(src, filterVal)
+		return fetchLeaderboard(filterVal)
 	end
 }
 

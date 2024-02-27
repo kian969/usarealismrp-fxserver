@@ -7,6 +7,21 @@
 		indeterminate
 		color="primary"
 		></v-progress-circular>
+		<v-container>
+			<v-row>
+				<v-col>
+					<v-select
+						label="Select"
+						:items="['by repair count', 'by upgrade count']"
+						variant="outlined"
+						v-model="selectFilterValue"
+						@change="onChange($event)"
+					></v-select>
+				</v-col>
+				<v-col></v-col>
+				<v-col></v-col>
+			</v-row>
+		</v-container>
 		<v-simple-table height="75vh" v-if="!isLoading">
 			<template v-slot:default>
 				<tbody>
@@ -38,7 +53,9 @@ import { mapGetters } from "vuex";
 export default {
 	name: "OrdersPage",
 	data() {
-		return {};
+		return {
+			selectFilterValue: "by repair count"
+		};
 	},
 	computed: {
 		...mapGetters(["menuData"]),
@@ -49,11 +66,18 @@ export default {
 	methods: {
 		getItemImage(itemName) {
 			return this.$store.state.itemImages[itemName];
+		},
+		onChange() {
+			$.post("https://usa-mechanic-parts-menu/receiveData", JSON.stringify({
+				type: "fetchLeaderboard",
+				filterVal: this.selectFilterValue
+			}))
 		}
 	},
 	mounted() {
 		$.post("https://usa-mechanic-parts-menu/receiveData", JSON.stringify({
-			type: "fetchLeaderboard"
+			type: "fetchLeaderboard",
+			filterVal: "by repair count"
 		}))
 	}
 };
