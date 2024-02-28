@@ -1,5 +1,8 @@
 exports.globals:PerformDBCheck("usa-crafting", "craft-count")
 
+math.randomseed(os.time())
+math.random(); math.random(); math.random()
+
 RegisterServerEvent("crafting:fetchUnlockedRecipes")
 AddEventHandler("crafting:fetchUnlockedRecipes", function()
     local src = source
