@@ -2,7 +2,7 @@ local policeLockerRooms = {
 	-- {x = -1059.8253, y = -806.2991, z = 11.6244}, -- vespucci PD male
 	-- {x=-1071.4558, y=-809.0568, z=11.6252}, -- vespucci PD female
 	{x = -1108.5192871094, y = -847.15698242188, z = 19.316898345947}, -- vespuscci old
-	{x = 370.3, y = -1608.4, z = 29.5}, -- davis PD (OLD)
+	--{x = 370.3, y = -1608.4, z = 29.5}, -- davis PD (OLD)
 	-- {x = 362.76776123047, y = -1593.638671875, z = 25.451694488525}, -- DavisPD (NEW)
 	--{x = 826.5, y = -1291.3, z = 27.3}, -- la mesa PD
 	{x = 638.9, y = 1.9, z = 82.8}, -- vinewood PD, elgin ave.
