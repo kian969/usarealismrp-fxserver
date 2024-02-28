@@ -453,6 +453,12 @@ function fetchLeaderboard(filterVal)
 		end)
 	elseif filterVal == "by upgrade count" then
 		table.sort(allMechanics, function(a, b)
+			if not a.upgradesInstalled then
+				a.upgradesInstalled = 0
+			end
+			if not b.upgradesInstalled then
+				b.upgradesInstalled = 0
+			end
 			return a.upgradesInstalled > b.upgradesInstalled
 		end)
 	end
