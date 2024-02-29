@@ -73,6 +73,7 @@ SetDiscordRichPresenceAsset("5a158f46d2aefd14d3c7a16f3f4bc72b")
 SetDiscordRichPresenceAssetText("USARRP")
 SetDiscordRichPresenceAction(0, "Connect", "fivem://connect/cfx.re/join/8kgomm")
 SetDiscordRichPresenceAction(1, "Website", "https://usarrp.gg")
+SetRichPresence("USARRP.GG")
 
 -- REMOVE AI WEAPON DROPS:
 function RemoveWeaponDrops()
