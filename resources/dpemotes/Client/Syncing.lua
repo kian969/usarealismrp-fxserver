@@ -25,7 +25,7 @@ if Config.SharedEmotesEnabled then
                 SimpleNotify(Config.Languages[lang]['nobodyclose'])
             end
         else
-          MearbysOnCommand()
+            MearbysOnCommand()
         end
     end)
 end
@@ -36,9 +36,9 @@ AddEventHandler("SyncPlayEmote", function(emote, player)
     Wait(300)
     -- wait a little to make sure animation shows up right on both clients after canceling any previous emote
     if DP.Shared[emote] ~= nil then
-      if OnEmotePlay(DP.Shared[emote]) then end return
+        if OnEmotePlay(DP.Shared[emote]) then end return
     elseif DP.Dances[emote] ~= nil then
-      if OnEmotePlay(DP.Dances[emote]) then end return
+        if OnEmotePlay(DP.Dances[emote]) then end return
     end
 end)
 
@@ -48,20 +48,29 @@ AddEventHandler("SyncPlayEmoteSource", function(emote, player)
     local pedInFront = GetPlayerPed(GetClosestPlayer())
     local heading = GetEntityHeading(pedInFront)
     local coords = GetOffsetFromEntityInWorldCoords(pedInFront, 0.0, 1.0, 0.0)
-    if (DP.Shared[emote]) and (DP.Shared[emote].AnimationOptions) then
-      local SyncOffsetFront = DP.Shared[emote].AnimationOptions.SyncOffsetFront
-      if SyncOffsetFront then
-          coords = GetOffsetFromEntityInWorldCoords(pedInFront, 0.0, SyncOffsetFront, 0.0)
-      end
+    if (DP.Shared[emote] and DP.Shared[emote].AnimationOptions) then
+        local SyncOffsetFront = DP.Shared[emote].AnimationOptions.SyncOffsetFront
+        if SyncOffsetFront then
+            coords = GetOffsetFromEntityInWorldCoords(pedInFront, 0.0, SyncOffsetFront, 0.0)
+        end
+    end
+    if (DP.Shared[emote] and DP.Shared[emote].AnimationOptions and DP.Shared[emote].AnimationOptions.Atatchto == true) then
+        local xPos = DP.Shared[emote].AnimationOptions.xPos or 0.0
+        local yPos = DP.Shared[emote].AnimationOptions.yPos or 0.0
+        local zPos = DP.Shared[emote].AnimationOptions.zPos or 0.0
+        local xRot = DP.Shared[emote].AnimationOptions.xRot or 0.0
+        local yRot = DP.Shared[emote].AnimationOptions.yRot or 0.0
+        local zRot = DP.Shared[emote].AnimationOptions.zRot or 0.0
+        AttachEntityToEntity(GetPlayerPed(-1), pedInFront, 11816, xPos, yPos, zPos, xRot, yRot, zRot, false, false, false, false, 2, false)
     end
     SetEntityHeading(PlayerPedId(), heading - 180.1)
     SetEntityCoordsNoOffset(PlayerPedId(), coords.x, coords.y, coords.z, 0)
     EmoteCancel()
     Wait(300)
     if DP.Shared[emote] ~= nil then
-      if OnEmotePlay(DP.Shared[emote]) then end return
+        if OnEmotePlay(DP.Shared[emote]) then end return
     elseif DP.Dances[emote] ~= nil then
-      if OnEmotePlay(DP.Dances[emote]) then end return
+        if OnEmotePlay(DP.Dances[emote]) then end return
     end
 end)
 
