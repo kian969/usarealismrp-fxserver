@@ -310,7 +310,9 @@ AddEventHandler("mechanic:removeUpgrade", function(plate, upgradeId)
 				MechanicHelper.removeVehicleUpgrades(plate, { upgradeId })
 				if UPGRADES[upgradeId].requiresItem then
 					local item = PARTS[UPGRADES[upgradeId].requiresItem]
-					char.giveItem(item)
+					if not item.name:find("NOS Bottle") then
+						char.giveItem(item)
+					end
 				end
 				TriggerClientEvent("usa:notify", src, upgradeId .. " upgrade removed!", "^3INFO: ^0" .. upgradeId .. " upgrade removed! Store your vehicle to finish removing the upgrade.")
 			else
