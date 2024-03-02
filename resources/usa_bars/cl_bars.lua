@@ -20,7 +20,6 @@ local LOCATIONS = {
     {x = -192.63305664063, y = -1337.0927734375, z = 34.989784240723}, --Cookie Jar
     {x = 559.43096923828, y = -168.08848571777, z = 57.35274887085}, --Auto Exotic
     {x = -157.08692932129, y = -1610.5336914062, z = 33.649383544922}, --Blood Traphouse
-    {x = -344.0591, y = -154.9569, z = 39.06396} --Alpha Auto Service Center
 }
 
 local locationsData = {}
