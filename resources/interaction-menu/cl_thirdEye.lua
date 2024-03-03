@@ -78,6 +78,29 @@ function onVehicleOptionSelect(a, buttonInfo, hitHandle)
         else
             exports.globals:notify("No upgrades found!", "INFO: No upgrades found on vehicle with plate " .. vehPlate)
         end
+    elseif buttonInfo.label == "Remove Upgrade" then
+        local input = lib.inputDialog('Remove Upgrade', {'Name'})
+        if not input then return end
+        exports.globals:Draw3DTextForOthers("removing upgrades")
+        if lib.progressCircle({
+            duration = 300000, -- meant to match the time it takes to install an uprgade (see usa_mechanic config file)
+            label = 'Removing Upgrade',
+            position = 'bottom',
+            useWhileDead = false,
+            canCancel = true,
+            disable = {
+                car = true,
+                move = true,
+                combat = true,
+            },
+            anim = {
+                dict = "mini@repair",
+                clip = "fixing_a_player",
+                flag = 39,
+            }
+        }) then
+            TriggerServerEvent("mechanic:removeUpgrade", GetVehicleNumberPlateText(hitHandle), input[1])
+        end
     elseif buttonInfo.label == "Stickers" then
         TriggerEvent("rcore_stickers:open")
     elseif buttonInfo.label == "Slash Tire" then
@@ -451,6 +474,10 @@ function addMechanicVehicleOptions()
         {
             name = "checkUpgrades",
             label = "Check Upgrades"
+        },
+        {
+            name = "removeUpgrade",
+            label = "Remove Upgrade"
         }
     })
 end

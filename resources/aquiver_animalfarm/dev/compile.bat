@@ -1,1 +1,0 @@
-start cmd.exe /k "cd ../source-files/server-client && npm run build && cd ../nui && npm run build"

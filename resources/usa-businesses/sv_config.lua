@@ -1,4 +1,4 @@
-POLICE_NEEDED = 2
+POLICE_NEEDED = 0
 policeNeededForBonus = 3
 robberyCooldown = 2100
 
@@ -10,8 +10,8 @@ KEYS = {
 	E = 38
 }
 
-MAX_ROB_PERCENT = 0.6
-MIN_ROB_PERCENT = 0.3
+MAX_ROB_PERCENT = 0.4
+MIN_ROB_PERCENT = 0.2
 
 BASE_ROB_DURATION = 60000
 
@@ -446,7 +446,7 @@ BUSINESSES = {
 		price = 6000
 	},
 	["Casino"] = {
-		position = {1114.8431396484, 243.80151367188, -45.840980529785},
+		position = {2500.0202636719, -279.10437011719, -58.707805633545},
 		cameraID = 'casino',
 		isBeingRobbed = false,
 		lastRobbedTime = 0,

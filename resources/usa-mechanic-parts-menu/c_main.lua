@@ -53,7 +53,7 @@ RegisterNUICallback('receiveData', function(data)
    elseif data.type == "fetchLeaderboard" then
       local top50Mechanics = TriggerServerCallback {
          eventName = "mechanic:fetchLeaderboard",
-         args = {}
+         args = {data.filterVal}
       }
       SendDataToApp({
          top50Mechanics = top50Mechanics

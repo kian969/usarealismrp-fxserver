@@ -8,7 +8,10 @@ AddEventHandler('business:beginRobbery', function(storeName, isSuspectMale, play
 		local x, y, z = table.unpack(store.position)
 		local policeOnline = exports["usa-characters"]:GetNumCharactersWithJob("sheriff")
 		exports.globals:getNumCops(function(policeOnline)
-			if ((os.time() - store.lastRobbedTime) < robberyCooldown and store.lastRobbedTime ~= 0) or policeOnline < POLICE_NEEDED  or anyStoreBeingRobbed then
+			if not store.lastRobbedTime then
+				store.lastRobbedTime = 0
+			end
+			if ((os.time() - store.lastRobbedTime) < robberyCooldown) or policeOnline < POLICE_NEEDED or anyStoreBeingRobbed then
 				TriggerClientEvent('usa:notify', usource, "Couldn't find any money!")
 				return
 			end
@@ -53,7 +56,7 @@ AddEventHandler('business:finishRobbery', function(storeName)
 				end
 				char.giveMoney(reward + bonus)
 				print("ROBBERY: "..GetPlayerName(usource)..'['..GetPlayerIdentifier(usource).."] has been rewarded reward: "..(reward + bonus))
-				TriggerClientEvent('usa:notify', usource, 'You have stolen $'..exports["globals"]:comma_value(reward + bonus))
+				TriggerClientEvent('usa:notify', usource, 'You have stolen $'..exports["globals"]:comma_value(reward + bonus), '^3INFO: ^0You have stolen $'..exports["globals"]:comma_value(reward + bonus))
 			end
 		end)
 	else

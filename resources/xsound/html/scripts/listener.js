@@ -4,10 +4,16 @@ var isMutedAll = false;
 
 var playerPos = [-90000,-90000,-90000];
 $(function(){
+
+    $.post('https://xsound/init');
+
 	window.addEventListener('message', function(event) {
 		var item = event.data;
         switch(item.status)
         {
+            case "init":
+                setInterval(updateVolumeSounds, item.time);
+                break;
             case "position":
                 playerPos = [item.x,item.y,item.z];
                 break;
@@ -36,7 +42,31 @@ $(function(){
                     sound.setMaxVolume(item.volume);
                 }
                 break;
+            /*
+            case "textSpeech":
+                var sound = soundList[item.name];
 
+                if(sound != null)
+                {
+                    sound.destroyYoutubeApi();
+                    sound.delete();
+                    sound = null;
+                }
+
+                var sd = new SoundPlayer();
+                sd.IsTextToSpeech(true)
+                sd.setName(item.name);
+                sd.setTextToSpeech(item.text)
+                sd.setTextToSpeechLang(item.lang)
+                sd.setDynamic(item.dynamic);
+                sd.setLocation(item.x,item.y,item.z);
+                sd.create();
+
+                sd.setVolume(item.volume);
+                sd.play();
+                soundList[item.name] = sd;
+                break;
+            */
             case "url":
                 var sound = soundList[item.name];
 
@@ -110,6 +140,7 @@ $(function(){
                 {
                     sound.destroyYoutubeApi();
                     sound.delete();
+                    delete soundList[item.name];
                 }
                 break;
             case "repeat":
@@ -220,19 +251,19 @@ function updateVolumeSounds()
         for (var name in closeToPlayer)
         {
             sound = soundList[name];
-            if(sound.isDynamic())
-            {
-                var distance = Between(playerPos,sound.getLocation());
-                var distance_max = sound.getDistance();
-                if(distance < distance_max)
+            if(sound != null){
+                if(sound.isDynamic())
                 {
-                    sound.updateVolume(distance,distance_max);
-                    continue;
+                    var distance = Between(playerPos,sound.getLocation());
+                    var distance_max = sound.getDistance();
+                    if(distance < distance_max)
+                    {
+                        sound.updateVolume(distance,distance_max);
+                        continue;
+                    }
+                    sound.mute();
                 }
-                sound.mute();
             }
         }
     }
 }
-
-setInterval(updateVolumeSounds, refreshTime);

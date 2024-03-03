@@ -340,6 +340,14 @@ AddEventHandler("policestation2:checkWhitelistForLockerRoom", function()
     local job = char.get("job")
     if char.get("policeRank") > 0 then
         TriggerClientEvent("policestation2:isWhitelisted", source)
+        if char.get("job") ~= 'sheriff' then
+            char.set("job", JOB_NAME)
+            TriggerEvent('job:sendNewLog', source, JOB_NAME, true)
+            TriggerClientEvent("thirdEye:updateActionsForNewJob", source, JOB_NAME)
+            TriggerClientEvent("usa:notify", source, "You clocked on!")
+        end
+        TriggerClientEvent('interaction:setPlayersJob', source, 'sheriff')
+        TriggerEvent("eblips:add", {name = char.getName(), src = source, color = 3})
     else
         TriggerClientEvent("usa:notify", source, "~y~You are not whitelisted for POLICE. Apply at https://www.usarrp.gg.")
     end
@@ -397,15 +405,17 @@ AddEventHandler("policestation2:requestPurchase", function(index)
                 char.removeMoney(armoryItems[index].price)
                 TriggerClientEvent("mini:equipWeapon", usource, armoryItems[index].hash, attachments, false) -- equip
                 TriggerClientEvent('usa:notify', usource, 'Purchased: ~y~'..weapon.name..'\n~s~Price: ~y~$'..armoryItems[index].price)
-                TriggerEvent('es:exposeDBFunctions', function(couchdb)
-                    couchdb.createDocumentWithId("legalweapons", weaponDB, weaponDB.serialNumber, function(success)
-                        if success then
-                            print("* Weapon created serial["..weaponDB.serialNumber.."] name["..weaponDB.name.."] owner["..weaponDB.ownerName.."] *")
-                        else
-                            print("* Error: Weapon failed to be created!! *")
-                        end
+                if weapon.type and weapon.type == "weapon" then
+                    TriggerEvent('es:exposeDBFunctions', function(couchdb)
+                        couchdb.createDocumentWithId("legalweapons", weaponDB, weaponDB.serialNumber, function(success)
+                            if success then
+                                print("* Weapon created serial["..weaponDB.serialNumber.."] name["..weaponDB.name.."] owner["..weaponDB.ownerName.."] *")
+                            else
+                                print("* Error: Weapon failed to be created!! *")
+                            end
+                        end)
                     end)
-                end)
+                end
             else
                 TriggerClientEvent("usa:notify", usource, "Not enough money!")
             end
@@ -416,51 +426,47 @@ AddEventHandler("policestation2:requestPurchase", function(index)
 end)
 
 RegisterServerEvent("policestation2:saveOutfit")
-AddEventHandler("policestation2:saveOutfit", function(character, slot)
+AddEventHandler("policestation2:saveOutfit", function(character, name)
     local src = source
     local char = exports["usa-characters"]:GetCharacter(src)
     if char.get("job") == "sheriff" then
-        TriggerEvent('es:exposeDBFunctions', function(db)
-            local docID = char.get("_id") .. "-" .. slot
-            db.createDocumentWithId(DB_NAME, character, docID, function(ok)
-                if ok then
-                    TriggerClientEvent("usa:notify", src, "Outfit in slot "..slot.." has been saved.")
-                else
-                    db.updateDocument(DB_NAME, docID, character, function(ok)
-                        if ok then
-                            TriggerClientEvent("usa:notify", src, "Outfit in slot "..slot.." has been updated.")
-                        else
-                            TriggerClientEvent("usa:notify", src, "Error saving outfit")
-                        end
-                    end)
-                end
-            end)
-        end)
+        -- save
+        character.name = name
+        character.ownerIdentifier = char.get("_id")
+        exports.essentialmode:createDocument(DB_NAME, character)
+        TriggerClientEvent("usa:notify", source, "Outfit saved")
     else
         TriggerClientEvent("usa:notify", source, "You must be on-duty to save a uniform.")
     end
 end)
 
-RegisterServerEvent("policestation2:loadOutfit")
-AddEventHandler("policestation2:loadOutfit", function(slot)
+RegisterServerEvent("police:loadOutfitById")
+AddEventHandler("police:loadOutfitById", function(id)
     local src = source
     local char = exports["usa-characters"]:GetCharacter(src)
     if char.get("policeRank") > 0 then
-        local docID = char.get("_id") .. "-" .. slot
-        TriggerEvent('es:exposeDBFunctions', function(db)
-            db.getDocumentById(DB_NAME, docID, function(outfit)
-                TriggerClientEvent("policestation2:setCharacter", src, outfit)
-                if char.get("job") ~= 'sheriff' then
-                    char.set("job", JOB_NAME)
-                    TriggerEvent('job:sendNewLog', src, JOB_NAME, true)
-                    TriggerClientEvent("thirdEye:updateActionsForNewJob", src, JOB_NAME)
-                end
-                TriggerClientEvent('interaction:setPlayersJob', src, 'sheriff')
-                TriggerEvent("eblips:add", {name = char.getName(), src = src, color = 3})
-            end)
-        end)
+        local outfit = exports.essentialmode:getDocument("sasp-outfits", id)
+        TriggerClientEvent("policestation2:setCharacter", src, outfit)
+        if char.get("job") ~= 'sheriff' then
+            char.set("job", JOB_NAME)
+            TriggerEvent('job:sendNewLog', src, JOB_NAME, true)
+            TriggerClientEvent("thirdEye:updateActionsForNewJob", src, JOB_NAME)
+        end
+        TriggerClientEvent('interaction:setPlayersJob', src, 'sheriff')
+        TriggerEvent("eblips:add", {name = char.getName(), src = src, color = 3})
     else
         DropPlayer(source, "Exploiting. Your information has been logged and staff has been notified. If you feel this was by mistake, let a staff member know.")
+    end
+end)
+
+RegisterServerEvent("police:deleteOutfit")
+AddEventHandler("police:deleteOutfit", function(id)
+    local src = source
+    local ok = exports.essentialmode:deleteDocument("sasp-outfits", id)
+    if ok then
+        TriggerClientEvent("usa:notify", src, "Outfit deleted")
+    else
+        TriggerClientEvent("usa:notify", src, "Error deleting outfit")
     end
 end)
 
@@ -571,3 +577,12 @@ function GetMakeModelPlate(plates, cb)
 		--keys = { "86CSH075" }
 	}), { ["Content-Type"] = 'application/json', Authorization = "Basic " .. exports["essentialmode"]:getAuth() })
 end
+
+RegisterServerCallback {
+    eventName = "police:loadSavedOutfits",
+    eventCallback = function(src)
+        local char = exports["usa-characters"]:GetCharacter(src)
+		local outfits = exports.essentialmode:getDocumentsByRows("sasp-outfits", { ownerIdentifier = char.get("_id") })
+		return (outfits or {})
+    end
+}

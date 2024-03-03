@@ -339,7 +339,7 @@ AddEventHandler('doormanager:thermiteDoor', function()
                 TriggerServerEvent('doormanager:checkDoorLock', i, door.x, door.y, door.z, true, true)
                 exports.globals:notify("You've damaged the jewelry store door locks!", "^3INFO: ^0You've damaged the jewelry store door locks!")
                 Wait(5000)
-                exports.globals:notify('Once you have collected the goods head to Jamestown and locate the buyer!', "^3INFO: ^0Once you have collected the goods head to Jamestown and locate the buyer!")
+                exports.globals:notify('Once you have collected the goods head to West Vinewood and locate the buyer!', "^3INFO: ^0Once you have collected the goods head to West Vinewood and locate the buyer! He's usually somewhere near the comedy club!")
             end
         end
     end

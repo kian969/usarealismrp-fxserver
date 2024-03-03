@@ -9,7 +9,7 @@ cfg.dispatch = "standalone" --nunoradioman,ps_dispatch,cd_dispatch,core_dispatch
 
 cfg.police = {
 	groups = {"sheriff","corrections"}, -- police groups
-	amount = 4, -- police amount
+	amount = 0, -- police amount
 }
 cfg.timers = {
 	reset_timer = 60, -- minutes
@@ -18,7 +18,7 @@ cfg.timers = {
 cfg.notification = {
     selected = "gtav", -- gtav,qbcore,esx
     notifications = {
-        noitem = "You dont have the item needed for this action.", -- message
+        noitem = "You need a bank laptop and black hat usb drive!", -- message
         nopolice = "There are too many Security Personnel monitoring the network. Try again later.", -- message
     },
 }
@@ -64,6 +64,7 @@ cfg.robbery = {
     reset = false,
     npcs = {},
     interactables = {
+        --[[
         { -- 1
             type = "securitypanel01", -- type of loot
             pos = {960.78088378906, 20.195, 111.28333282471 + 0.4,0.0,0.0,147.50}, -- {pos_x,pos_y,pos_z,rot_x,rot_y,rot_z}
@@ -170,6 +171,7 @@ cfg.robbery = {
                 },
             },
         },
+        --]]
         { -- 3
             type = "securitypanel01", -- type of loot
             pos = {-2947.91, 485.52276611328, 15.458961486816 + 0.4,0.0,0.0,88.46}, -- {pos_x,pos_y,pos_z,rot_x,rot_y,rot_z}
@@ -269,7 +271,7 @@ cfg.robbery = {
                             type = "bombtruck_01",
         
                             item_needed = {
-                                {"Armed Truck Bomb",1,100}, -- {item_name,item_amount,chance_to_remove}
+                                {"Sticky Bomb",1,100}, -- {item_name,item_amount,chance_to_remove}
                             },
         
                             explosivetimer = 60, -- seconds
@@ -314,7 +316,7 @@ cfg.robbery = {
         
                                         item_to_give_type = "normal", -- "normal" or "random" | "normal" trys to spawn every item, "random" gets an random item, not by rarity.
                                         item_to_give = {
-                                            {"money",2000,5000,100}, -- {item_name,amount_min,amount_max,item_rarity} Min: $20,000 | Max: $50,000
+                                            {"money",5000,15000,100}, -- {item_name,amount_min,amount_max,item_rarity}
                                             {"Stolen Goods",1,7,15}, -- 15% chance
                                             {"Chris Cortega",1,1,1}, -- 1% chance cuz am the best
                                         },
@@ -324,7 +326,7 @@ cfg.robbery = {
                                         polyzone = {"Collect","fa-solid fa-money-bill"},-- {label,targeticon,length,width,minZextra,maxZextra,offset_x,offset_y,offset_z}
 
                                         camera = true, -- if you want the cinematic camera system put "true" otherwise put "false".
-                                        checkforpolice = true, -- if true when you try to interact it will check for the police before you start the animation.
+                                        checkforpolice = false, -- if true when you try to interact it will check for the police before you start the animation.
                                         dispatch = nil,
                                     },
                                 },

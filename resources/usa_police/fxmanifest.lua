@@ -2,7 +2,10 @@ fx_version 'bodacious'
 game 'gta5'
 lua54 'yes'
 
-shared_script "@ox_lib/init.lua"
+shared_scripts {
+    "@ox_lib/init.lua",
+    "@pmc-callbacks/import.lua"
+}
 
 client_script {
 	"@NativeUI/Wrapper/Utility.lua",

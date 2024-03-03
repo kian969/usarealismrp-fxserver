@@ -46,6 +46,7 @@ local PRISON_GUARD_SIGN_IN_LOCATIONS = {
     {x = 853.53967285156, y = -1313.1147460938, z = 28.244941711426}, -- La Mesa PD
     {x = -449.33654785156, y = 6010.4638671875, z = 31.716360092163}, -- Paleto SO
     {x = -1787.9445800781, y = 2997.0026855469, z = 32.809375762939}, -- Zancudo
+    {x = 377.27685546875, y = -1610.7155761719, z = 29.759447097778, vehSpawn = vector3(352.4009, -1595.017, 29.29168)} -- davis pd
     -- {x=-1052.9510, y=-802.8206, z=11.6252}, -- vespucci male locker room
     -- {x=-1074.5692, y=-802.1264, z=11.6252}, -- vespucci female locker room
 }
@@ -137,58 +138,91 @@ _menuPool = NativeUI.CreatePool()
 mainMenu = NativeUI.CreateMenu("BCSO", "~b~Blaine County Sheriff's Office", 0 --[[X COORD]], 320 --[[Y COORD]])
 _menuPool:Add(mainMenu)
 
+RegisterNetEvent("bcso:saveOutfit", function(character)
+	-- get name input
+	local input = lib.inputDialog('New Outfit', {'Name'})
+	if not input then return end
+	-- save
+  character.name = input[1]
+	TriggerServerEvent("bcso:saveOutfit", character)
+end)
+
+RegisterNetEvent("bcso:showOutfitSelectedMenu", function(id, name)
+	TriggerEvent('nh-context:createMenu', {
+        {
+          header = "Outfit: " .. name
+        },
+        {
+          header = "Put on",
+          event = "bcso:loadOutfit",
+          server = true,
+          args = {
+            id
+          }
+        },
+        {
+          header = "Delete",
+          event = "bcso:deleteOutfit",
+          server = true,
+          args = {
+            id
+          }
+        },
+    })
+end)
+
 function CreateUniformMenu(menu)
-    local ped = GetPlayerPed(-1)
+  local ped = GetPlayerPed(-1)
 
-    local submenu2 = _menuPool:AddSubMenu(menu, "Outfits", "Save and load outfits", true)
-    local selectedSaveSlot = 1
-    local selectedLoadSlot = 1
-    local saveslot = UIMenuListItem.New("Slot to Save", policeoutfitamount)
-    local saveconfirm = UIMenuItem.New('Confirm Save', 'Save outfit into the above number')
-    saveconfirm:SetRightBadge(BadgeStyle.Tick)
-    local loadslot = UIMenuListItem.New("Slot to Load", policeoutfitamount)
-    local loadconfirm = UIMenuItem.New('Load Outfit', 'Load outfit from above number')
-    loadconfirm:SetRightBadge(BadgeStyle.Clothes)
-    submenu2.SubMenu:AddItem(loadslot)
-    submenu2.SubMenu:AddItem(loadconfirm)
-    submenu2.SubMenu:AddItem(saveslot)
-    submenu2.SubMenu:AddItem(saveconfirm)
-
-    submenu2.SubMenu.OnListChange = function(sender, item, index)
-        if item == saveslot then
-            selectedSaveSlot = item:IndexToItem(index)
-        elseif item == loadslot then
-            selectedLoadSlot = item:IndexToItem(index)
-        end
-    end
-    submenu2.SubMenu.OnItemSelect = function(sender, item, index)
-        if item == saveconfirm then
-            local character = {
-      ["components"] = {},
-      ["componentstexture"] = {},
-      ["props"] = {},
-      ["propstexture"] = {}
-      }
-      local ply = GetPlayerPed(-1)
-      for i=0,2 do -- instead of 3?
-        character.props[i] = GetPedPropIndex(ply, i)
-        character.propstexture[i] = GetPedPropTextureIndex(ply, i)
-      end
-      for i=0,11 do
-        character.components[i] = GetPedDrawableVariation(ply, i)
-        character.componentstexture[i] = GetPedTextureVariation(ply, i)
-      end
-      TriggerServerEvent("doc:saveOutfit", character, selectedSaveSlot)
-        elseif item == loadconfirm then
-            DoScreenFadeOut(500)
-            Citizen.Wait(500)
-            TriggerServerEvent('doc:loadOutfit', selectedLoadSlot)
-      TriggerServerEvent('InteractSound_SV:PlayWithinDistance', 1, 'zip-close', 1.0)
-      Citizen.Wait(2000)
-      DoScreenFadeIn(500)
-            TriggerEvent("usa:playAnimation", 'clothingshirt', 'try_shirt_positive_d', -8, 1, -1, 48, 0, 0, 0, 0, 3)
-        end
-    end
+  local outfitsItem = NativeUI.CreateItem("Outfits", "Saved outfits")
+	outfitsItem.Activated = function(parentmenu, selected)
+		-- load saved items
+		local savedOutfits = TriggerServerCallback {
+			eventName = "bcso:loadSavedOutfits",
+			args = {}
+		}
+		-- create menu
+		local outfitMenu = {}
+		for i = 1, #savedOutfits do
+			table.insert(outfitMenu, {
+				header = savedOutfits[i].name,
+				subMenu = true,
+				event = "bcso:showOutfitSelectedMenu",
+				args = {
+					savedOutfits[i]._id,
+					savedOutfits[i].name
+				}
+			})
+		end
+		local character = {
+			["components"] = {},
+			["componentstexture"] = {},
+			["props"] = {},
+			["propstexture"] = {}
+			}
+			local ply = GetPlayerPed(-1)
+			for i=0,2 -- instead of 3?
+				do
+				character.props[i] = GetPedPropIndex(ply, i)
+				character.propstexture[i] = GetPedPropTextureIndex(ply, i)
+			end
+			for i=0,11
+				do
+				character.components[i] = GetPedDrawableVariation(ply, i)
+				character.componentstexture[i] = GetPedTextureVariation(ply, i)
+			end
+		table.insert(outfitMenu, {
+			header = "Save current outfit",
+			event = "bcso:saveOutfit",
+			args = {
+				character
+			}
+		})
+		TriggerEvent('nh-context:createMenu', outfitMenu)
+		mainMenu:Visible(false)
+		mainMenu:Clear()
+	end
+	menu:AddItem(outfitsItem)
   -- Components --
   local submenu = _menuPool:AddSubMenu(menu, "Components", "Modify components", true --[[KEEP POSITION]])
   for i = 1, #components do
@@ -275,6 +309,32 @@ function CreateUniformMenu(menu)
     TriggerEvent("ptt:isEmergency", false)
   end
   menu:AddItem(item)
+  -- custom peds --
+  local pedsubmenu = _menuPool:AddSubMenu(menu, "Custom Peds", "Custom Peds", true)
+  local ped1 = NativeUI.CreateItem("Fat Andreas", "Chubby Cop")
+	ped1.Activated = function(parentmenu, selected)
+		local modelhashed = GetHashKey("pw_andreas")
+		RequestModel(modelhashed)
+		while not HasModelLoaded(modelhashed) do
+			Citizen.Wait(100)
+		end
+		SetPlayerModel(PlayerId(), modelhashed)
+		local ped = PlayerPedId()
+		local isMPPed = IsPedModel(ped, GetHashKey("mp_m_freemode_01")) or IsPedModel(ped, GetHashKey("mp_f_freemode_01"))
+		if isMPPed then return end
+		local currentPed = GetEntityModel(ped)
+		DeleteEntity(ped)
+		RequestModel(currentPed)
+		while not HasModelLoaded(currentPed) do
+			Wait(500)
+		end
+		Wait(1000)
+		SetPlayerModel(PlayerId(), currentPed)
+		SetPedDefaultComponentVariation(ped)
+		SetPedComponentVariation(PlayerPedId(), 0, 0, 0, 0)
+		SetEntityVisible(ped, true)
+	end
+	pedsubmenu.SubMenu:AddItem(ped1)
 end
 
 function CreateWeaponsMenu(menu)

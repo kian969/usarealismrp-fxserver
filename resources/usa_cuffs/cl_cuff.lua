@@ -11,6 +11,9 @@ local uncuff_locations = {
 	{x = 605.73565673828, y = -3091.7116699219, z = 6.069260597229}
 }
 
+local FEMALE_CUFF_COMPONENT_NUM = 23
+local MALE_CUFF_COMPONENT_NUM = 34
+
 -- falling when running
 Citizen.CreateThread(function()
 	while true do
@@ -350,6 +353,8 @@ AddEventHandler('character:setCharacter', function()
 end)
 
 function CuffPlayer()
+	local lPed = PlayerPedId()
+
 	count = 0
 	isCuffed = true
 	isHardcuffed = false
@@ -361,10 +366,10 @@ function CuffPlayer()
 	
 	if IsPedModel(lPed,"mp_f_freemode_01") then
 		prevFemaleVariation = GetPedDrawableVariation(lPed, 7)
-		SetPedComponentVariation(lPed, 7, 23, 0, 0)
+		SetPedComponentVariation(lPed, 7, FEMALE_CUFF_COMPONENT_NUM, 0, 0)
 	elseif IsPedModel(lPed,"mp_m_freemode_01") then
 		prevMaleVariation = GetPedDrawableVariation(lPed, 7)
-		SetPedComponentVariation(lPed, 7, 34, 0, 0)
+		SetPedComponentVariation(lPed, 7, MALE_CUFF_COMPONENT_NUM, 0, 0)
 	end
 end
 

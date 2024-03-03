@@ -3,7 +3,7 @@ Config = {}
 --[[ All Discord config and Entry locations are inside server/main.lua ]]--
 Config.PrintCoords = 'both' -- (server | discord | both) It will print the warehouse coords on server console, Discord or both. Never on client.
 Config.DefaultCoords = {1234.189, -3201.101, 5.528} -- If a player reconnects inside warehouse they will get teleported to this spot.
-Config.MinCops = 4 -- Min Cops required?
+Config.MinCops = 0 -- Min Cops required?
 Config.PoliceJobName = 'police' -- Your police job name
 Config.PoliceCanRaid = true -- Police can access warehouse? They won't be able to open the crates.
 Config.UseItem = true -- Use Item for Door?
@@ -216,6 +216,7 @@ Config.Rewards = {
 			[1] = { name = "Sticky Bomb", type = "weapon", hash = `WEAPON_STICKYBOMB`, quantity = 1, weight = 25, objectModel = "prop_bomb_01_s" },
 			[2] = { name = "Sticky Bomb", type = "weapon", hash = `WEAPON_STICKYBOMB`, quantity = 1, weight = 25, objectModel = "prop_bomb_01_s" },
 			[3] = { name = "Sticky Bomb", type = "weapon", hash = `WEAPON_STICKYBOMB`, quantity = 1, weight = 25, objectModel = "prop_bomb_01_s" },
+			[4] = { name = "Blackhat USB Drive", type = "misc", quantity = 1, weight = 1, objectModel = "hei_prop_hst_usb_drive"},
 		}
 	},
 	[15] = {

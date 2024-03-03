@@ -253,12 +253,16 @@ MechanicHelper.useRepairKit = function(veh, repairCount, cb)
     end
 end
 
-MechanicHelper.installUpgrade = function(veh, upgrade, cb)
+MechanicHelper.installUpgrade = function(veh, upgrade, upgradesInstalledCount, cb)
     TriggerEvent("interaction:setBusy", true)
     SetVehicleDoorOpen(veh, 4, false, false)
 
+    local upgradeInstallTime = Config.DEFAULT_INSTALL_TIME
+
+    upgradeInstallTime = math.max(upgradeInstallTime - (2200 * upgradesInstalledCount), Config.MINIMUM_INSTALL_TIME)
+
     if lib.progressBar({
-        duration = Config.UPGRADE_INSTALL_TIME,
+        duration = upgradeInstallTime,
         label = 'Installing Part...',
         useWhileDead = false,
         canCancel = true,

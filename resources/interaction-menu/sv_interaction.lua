@@ -277,7 +277,7 @@ AddEventHandler("inventory:moveItem", function(data)
 		elseif data.secondaryInventoryType == "property" then
 			TriggerEvent("properties-og:moveItemFromProperty", usource, data)
 		elseif data.secondaryInventoryType == "nearbyItems" then
-			TriggerEvent("interaction:attemptPickupByUUID", data.itemUUID, data.toSlot, source)
+			TriggerEvent("interaction:attemptPickupByUUID", data.itemUUID, data.toSlot, source, quantity)
 		end
 	elseif data.fromType == "secondary" and data.toType == "secondary" then
 		if data.secondaryInventoryType == "vehicle" then

@@ -10,8 +10,6 @@ end)
 
 -- also going to throw in an anticheese flag suppressor bit of code here for now:
 
-print("yessss!")
-
 function isModelATV(model)
     local tvModels = {
         "prop_tv_flat_01",
@@ -54,9 +52,11 @@ Citizen.CreateThread(function()
                 if isModelATV(model) then
                     local mycoords = GetEntityCoords(PlayerPedId())
                     local objcoords = GetEntityCoords(object)
-                    if #(mycoords - objcoords) < Config.closestObjectRadius then
-                        anticheeseDisabled = true
-                        exports._anticheese:Disable()
+                    if #(mycoords - objcoords) and Config.closestObjectRadius then
+                        if #(mycoords - objcoords) < Config.closestObjectRadius then
+                            anticheeseDisabled = true
+                            exports._anticheese:Disable()
+                        end
                     end
                 end
             end

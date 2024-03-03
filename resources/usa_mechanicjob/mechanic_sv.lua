@@ -136,7 +136,6 @@ end)
 
 RegisterServerEvent("mechanic:installedUpgrade")
 AddEventHandler("mechanic:installedUpgrade", function(plate, vehNetId, rank)
-	print("installed upgrade! veh net id: " .. vehNetId)
 	local usource = source
 	local upgrade = UPGRADES[installQueue[usource]]
 	local char = exports["usa-characters"]:GetCharacter(usource)
@@ -154,6 +153,9 @@ AddEventHandler("mechanic:installedUpgrade", function(plate, vehNetId, rank)
 			if upgrade.doSync then
 				TriggerClientEvent("mechanic:syncUpgrade", -1, vehNetId, upgrade)
 			end
+			MechanicHelper.incrementStat(char.get("_id"), "upgradesInstalled", function(updatedVal)
+				TriggerClientEvent("usa:notify", usource, "You have installed " .. updatedVal .. " upgrade(s)!", "^3INFO: ^0You have installed " .. updatedVal .. " upgrades(s)!")
+			end)
 		end)
 	end
 end)
@@ -279,6 +281,49 @@ AddEventHandler("mechanic:fetchDeliveryProgress", function()
 	end)
 end)
 
+RegisterServerEvent("mechanic:removeUpgrade")
+AddEventHandler("mechanic:removeUpgrade", function(plate, upgradeId)
+	-- disabled for now
+	--TriggerClientEvent("usa:notify", source, "Feature disabled", "^3INFO: ^0Removing vehicle upgrades has been disabled.")
+	--if true then return end
+
+	local src = source
+	local char = exports["usa-characters"]:GetCharacter(src)
+	-- security checks
+	if not char.get("job") == "mechanic" then
+		return
+	end
+	plate = exports.globals:trim(plate)
+	local isNearVehicleAndMechanicShop = TriggerClientCallback {
+		source = src,
+		eventName = "mechanic:isNearVehicleAndMechanicShop",
+		args = { plate }
+	}
+	if not isNearVehicleAndMechanicShop then
+		return false 
+	end
+	-- level check
+	MechanicHelper.getMechanicRank(char.get("_id"), function(rank)
+		if rank >= 3 then
+			-- continue
+			if MechanicHelper.doesVehicleHaveUpgrades(plate, { upgradeId }) then
+				MechanicHelper.removeVehicleUpgrades(plate, { upgradeId })
+				if UPGRADES[upgradeId].requiresItem then
+					local item = PARTS[UPGRADES[upgradeId].requiresItem]
+					if not item.name:find("NOS Bottle") then
+						char.giveItem(item)
+					end
+				end
+				TriggerClientEvent("usa:notify", src, upgradeId .. " upgrade removed!", "^3INFO: ^0" .. upgradeId .. " upgrade removed! Store your vehicle to finish removing the upgrade.")
+			else
+				TriggerClientEvent("usa:notify", src, "Vehicle does not have upgrade: " .. upgradeId)
+			end
+		else
+			TriggerClientEvent("usa:notify", src, "Must be rank 3", "^3INFO: ^0You must be rank 3 or higher to remove parts")
+		end
+	end)
+end)
+
 AddEventHandler("playerDropped", function(reason)
 	if installQueue[source] then 
 		installQueue[source] = nil
@@ -373,8 +418,10 @@ function tryInstallPart(src, part, plate)
 		end
 		MechanicHelper.getMechanicRank(char.get("_id"), function(rank)
 			if rank >= 2 then
-				TriggerClientEvent('mechanic:tryInstall', src, upgrade, rank)
-				installQueue[src] = upgrade.id
+				MechanicHelper.getMechanicInfo(char.get("_id"), function(mechInfo)
+					TriggerClientEvent('mechanic:tryInstall', src, upgrade, rank, (mechInfo.upgradesInstalled or 0))
+					installQueue[src] = upgrade.id
+				end)
 			else 
 				TriggerClientEvent("usa:notify", src, "Must be lvl 2 or higher to install upgrades!", "^3INFO: ^0Must be a level 2 mechanic to install upgrades! Respond to more player calls and repair vehicles to rank up!")
 			end
@@ -399,12 +446,24 @@ function getNameFromCharId(id)
 	end
 end
 
-function fetchLeaderboard()
+function fetchLeaderboard(filterVal)
 	local allMechanics = exports.essentialmode:getAllDocuments("mechanicjob")
 	local only50 = {}
-	table.sort(allMechanics, function(a, b)
-		return a.repairCount > b.repairCount
-	end)
+	if filterVal == "by repair count" then
+		table.sort(allMechanics, function(a, b)
+			return a.repairCount > b.repairCount
+		end)
+	elseif filterVal == "by upgrade count" then
+		table.sort(allMechanics, function(a, b)
+			if not a.upgradesInstalled then
+				a.upgradesInstalled = 0
+			end
+			if not b.upgradesInstalled then
+				b.upgradesInstalled = 0
+			end
+			return a.upgradesInstalled > b.upgradesInstalled
+		end)
+	end
 	for i = 1, 50 do
 		if allMechanics[i] then
 			allMechanics[i].name = getNameFromCharId(allMechanics[i].owner_identifier)
@@ -524,8 +583,8 @@ RegisterServerCallback {
 
 RegisterServerCallback {
 	eventName = "mechanic:fetchLeaderboard",
-	eventCallback = function(src)
-		return fetchLeaderboard()
+	eventCallback = function(src, filterVal)
+		return fetchLeaderboard(filterVal)
 	end
 }
 

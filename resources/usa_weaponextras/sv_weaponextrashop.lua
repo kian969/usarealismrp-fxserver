@@ -97,7 +97,7 @@ local ITEMS = {
                 { name = "Suppressor", value = "COMPONENT_AT_PI_SUPP", price = 1500, weapon_hash = 1593441988 }
             },
             [".50 Cal Pistol"] = {
-                { name = "Empty Pistol .50 Extended Mag", quantity = 1, type = "magazine", price = 250, weight = 7, receives = ".50 Cal", MAX_CAPACITY = 12, currentCapacity = 0, legality = "illegal", notStackable = true, magComponent = "COMPONENT_PISTOL50_CLIP_02", compatibleWeapon = GetHashKey("WEAPON_PISTOL50") },
+                { name = "Empty 50 Caliber Extended Mag", quantity = 1, type = "magazine", price = 250, weight = 7, receives = ".50 Cal", MAX_CAPACITY = 12, currentCapacity = 0, legality = "illegal", notStackable = true, magComponent = "COMPONENT_PISTOL50_CLIP_02", compatibleWeapon = GetHashKey("WEAPON_PISTOL50") },
                 { name = "Suppressor", value = "COMPONENT_AT_AR_SUPP_02", price = 1500, weapon_hash = -1716589765 }
             },
             ["Vintage Pistol"] = {
@@ -295,8 +295,8 @@ local ITEMS = {
                 { name = "Suppressor", value = "COMPONENT_AT_M4GOLDBEAST_SUPP_02", price = 3500, weapon_hash = GetHashKey("WEAPON_M4GOLDBEAST") }
             },
             ["Carbine Rifle"] = {
-                { name = "Empty Carbine Extended Mag", quantity = 1, type = "magazine", price = 500, weight = 7, receives = "5.56mm", MAX_CAPACITY = 60, currentCapacity = 0, legality = "illegal", notStackable = true, magComponent = "COMPONENT_CARBINERIFLE_CLIP_02", compatibleWeapon = GetHashKey("WEAPON_CARBINERIFLE") },
-                { name = "Empty Carbine Box Mag", quantity = 1, type = "magazine", price = 700, weight = 7, receives = "5.56mm", MAX_CAPACITY = 100, currentCapacity = 0, legality = "illegal", notStackable = true, magComponent = "COMPONENT_CARBINERIFLE_CLIP_03", compatibleWeapon = GetHashKey("WEAPON_CARBINERIFLE") },
+                { name = "Empty Carbine Rifle Extended Mag", quantity = 1, type = "magazine", price = 500, weight = 7, receives = "5.56mm", MAX_CAPACITY = 60, currentCapacity = 0, legality = "illegal", notStackable = true, magComponent = "COMPONENT_CARBINERIFLE_CLIP_02", compatibleWeapon = GetHashKey("WEAPON_CARBINERIFLE") },
+                { name = "Empty Carbine Rifle Box Mag", quantity = 1, type = "magazine", price = 700, weight = 7, receives = "5.56mm", MAX_CAPACITY = 100, currentCapacity = 0, legality = "illegal", notStackable = true, magComponent = "COMPONENT_CARBINERIFLE_CLIP_03", compatibleWeapon = GetHashKey("WEAPON_CARBINERIFLE") },
                 { name = "Scope", value = "COMPONENT_AT_SCOPE_MEDIUM", price = 2500, weapon_hash = -2084633992 },
                 { name = "Suppressor", value = "COMPONENT_AT_AR_SUPP", price = 4500, weapon_hash = -2084633992 },
                 { name = "Grip", value = "COMPONENT_AT_AR_AFGRIP", price = 1500, weapon_hash = -2084633992 },

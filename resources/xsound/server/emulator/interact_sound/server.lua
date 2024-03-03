@@ -1,5 +1,4 @@
 if config.interact_sound_enable then
-
     RegisterServerEvent('InteractSound_SV:PlayOnOne')
     AddEventHandler('InteractSound_SV:PlayOnOne', function(clientNetId, soundFile, soundVolume)
         TriggerClientEvent('InteractSound_CL:PlayOnOne', clientNetId, soundFile, soundVolume)
@@ -19,5 +18,4 @@ if config.interact_sound_enable then
     AddEventHandler('InteractSound_SV:PlayWithinDistance', function(maxDistance, soundFile, soundVolume)
         TriggerClientEvent('InteractSound_CL:PlayWithinDistance', -1, source, maxDistance, soundFile, soundVolume)
     end)
-
 end

@@ -1,13 +1,16 @@
 isRobbingStore = false
 
+local xSound = exports.xsound
+
 RegisterNetEvent('business:robStore')
 AddEventHandler('business:robStore', function(storeName)
 	local x, y, z = table.unpack(BUSINESSES[storeName].position)
 	local playerPed = PlayerPedId()
 	local beginTime = GetGameTimer()
 	isRobbingStore = true
-  Citizen.CreateThread(function()
-    local randomizedRobDuration = BASE_ROB_DURATION + math.random(10000, 50000) -- base duration + (10 or 50 seconds)
+    Citizen.CreateThread(function()
+        playStoreAlarm(vector3(x, y, z))
+        local randomizedRobDuration = BASE_ROB_DURATION + math.random(10000, 50000) -- base duration + (10 or 50 seconds)
 		while GetGameTimer() - beginTime < randomizedRobDuration and isRobbingStore do
 			Citizen.Wait(0)
 			local playerCoords = GetEntityCoords(playerPed)
@@ -24,6 +27,26 @@ AddEventHandler('business:robStore', function(storeName)
 		end
 	end)
 end)
+
+function playStoreAlarm(coords, duration)
+    if not duration then
+        duration = 60000
+    end
+    Citizen.CreateThread(function()
+        local startTime = GetGameTimer()
+        local soundId = "storeAlarm" .. tostring(math.random(1,100))
+        print("playing sound: " .. soundId)
+        xSound:PlayUrlPos(soundId,"https://usarrp.gg/sounds/storealarm.wav", 0.25, coords, true)
+		xSound:Distance(soundId, 30)
+        while GetGameTimer() - startTime < duration do
+            Wait(1)
+        end
+        print("destroying sound")
+        xSound:Destroy(soundId)
+    end)
+end
+
+exports("playStoreAlarm", playStoreAlarm)
 
 function DrawTimer(beginTime, duration, x, y, text)
     if not HasStreamedTextureDictLoaded('timerbars') then

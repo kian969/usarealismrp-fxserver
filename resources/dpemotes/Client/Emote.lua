@@ -104,6 +104,7 @@ function EmoteCancel()
     PtfxStop()
     ClearPedTasks(GetPlayerPed(-1))
     DestroyAllProps()
+    DetachEntity(GetPlayerPed(-1), true, false) --Das ist die Änderung hier ;) mehr nicht.
     IsInAnimation = false
   end
 end

@@ -1,8 +1,8 @@
-CreateThread(function()
-    if Config.Framework ~= "ox" then
-        return
-    end
+if Config.Framework ~= "ox" then
+    return
+end
 
+CreateThread(function()
     debugprint("Loading OX")
     while GetResourceState("ox_core") ~= "started" do
         debugprint("Waiting for ox_core to start")
@@ -104,12 +104,18 @@ CreateThread(function()
     end
 
     -- GARAGE APP
-    function GetPlayerVehicles(source, cb)
-        cb({})
+
+    ---@param source number
+    ---@return VehicleData[] vehicles An array of vehicles that the player owns
+    function GetPlayerVehicles(source)
+        return {}
     end
 
-    function GetVehicle(source, cb, plate)
-        cb(false)
+    ---Get a specific vehicle
+    ---@param source number
+    ---@param plate string
+    ---@return table? vehicleData
+    function GetVehicle(source, plate)
     end
 
     function IsAdmin(source)

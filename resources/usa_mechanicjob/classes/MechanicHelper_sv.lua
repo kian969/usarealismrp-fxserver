@@ -7,24 +7,28 @@ end)
 MechanicHelper.incrementStat = function(ident, stat, cb)
     MechanicHelper.db.getDocumentByRow("mechanicjob", "owner_identifier", ident, function(doc)
         if doc then
-            MechanicHelper.db.updateDocument("mechanicjob", doc._id, {[stat] = doc[stat] + 1}, function(doc)
+            MechanicHelper.db.updateDocument("mechanicjob", doc._id, {[stat] = ((doc[stat] or 0) + 1)}, function(doc)
                 cb(doc[stat])
             end)
         else
+            local repairCount = 0
+            local upgradesInstalled = 0
             if stat == "repairCount" then
-                MechanicHelper.createMechanicDoc(ident, 1)
-            else
-                MechanicHelper.createMechanicDoc(ident)
+                repairCount = 1
+            elseif stat == "upgradesInstalled" then
+                upgradesInstalled = 1
             end
-            cb(0)
+            MechanicHelper.createMechanicDoc(ident, repairCount, upgradesInstalled)
+            cb(1)
         end
     end)
 end
 
-MechanicHelper.createMechanicDoc = function(ident, repairCount)
+MechanicHelper.createMechanicDoc = function(ident, repairCount, upgradesInstalled)
     local newMechanic = {}
     newMechanic.owner_identifier = ident
     newMechanic.repairCount = (repairCount or 0)
+    newMechanic.upgradesInstalled = (upgradesInstalled or 0)
     MechanicHelper.db.createDocument("mechanicjob", newMechanic, function(docId) end)
 end
 

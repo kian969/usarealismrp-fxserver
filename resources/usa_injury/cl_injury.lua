@@ -166,6 +166,8 @@ injuredParts = {} -- injured body parts, and their wounds as the value
 
 local lastNotifyTime = nil
 
+local checkingIn = false
+
 RegisterNetEvent('injuries:showMyInjuries')
 AddEventHandler('injuries:showMyInjuries', function()
     local hadInjury = false
@@ -611,7 +613,6 @@ end)
 local BASE_CHECKIN_PRICE = 25
 
 Citizen.CreateThread(function()
-    local checkingIn = false
     while true do
         Citizen.Wait(0)
         local playerPed = PlayerPedId()
@@ -625,25 +626,46 @@ Citizen.CreateThread(function()
                         totalPrice = totalPrice + data.treatmentPrice
                     end
                 end
-                DrawText3Ds(x, y, z, '[E] - Check In (~g~$'..totalPrice..'~s~)')
+                DrawText3Ds(x, y, z, '[E] - Check In')
                 if IsControlJustPressed(0, 38) and Vdist(playerCoords, x, y, z) < 1.5 and not checkingIn then
-                    PlayDoorAnimation()
-                    checkingIn = true
-                    local beginTime = GetGameTimer()
-                    while GetGameTimer() - beginTime < 3000 do
-                        Citizen.Wait(0)
-                        DrawTimer(beginTime, 3000, 1.42, 1.475, 'CHECKING IN')
-                    end
-                    checkingIn = false
-                    playerCoords = GetEntityCoords(playerPed)
-                    if Vdist(playerCoords, x, y, z) < 3 then
-                        local x, y, z = table.unpack(playerCoords)
-                        TriggerServerEvent('injuries:validateCheckin', injuredParts, IsPedDeadOrDying(playerPed), x, y, z, IsPedMale(playerPed))
-                    end
+                    local priorityCheckInCost = totalPrice + CONFIG.PRIORITY_CHECK_IN_FEE
+                    local CHECK_IN_MENU = {
+                        {
+                            header = "Choose a check in option"
+                        },
+                        {
+                            header = "Priority check in (+$" .. exports.globals:comma_value(CONFIG.PRIORITY_CHECK_IN_FEE) .. ")",
+                            context = "Total: $" .. exports.globals:comma_value(priorityCheckInCost),
+                            event = "hospital:checkIn",
+                            args = { true }
+                        },
+                        {
+                            header = "Regular check in",
+                            context = "Total: $" .. exports.globals:comma_value(totalPrice),
+                            event = "hospital:checkIn",
+                            args = { false }
+                        }
+                    }
+                    TriggerEvent('nh-context:createMenu', CHECK_IN_MENU)
                 end
             end
         end
     end
+end)
+
+RegisterNetEvent('hospital:checkIn')
+AddEventHandler('hospital:checkIn', function(priorityCheckIn)
+    PlayDoorAnimation()
+    checkingIn = true
+    local beginTime = GetGameTimer()
+    while GetGameTimer() - beginTime < 3000 do
+        Citizen.Wait(0)
+        DrawTimer(beginTime, 3000, 1.42, 1.475, 'CHECKING IN')
+    end
+    checkingIn = false
+    local playerPed = PlayerPedId()
+    local playerCoords = GetEntityCoords(PlayerPedId())
+    TriggerServerEvent('injuries:validateCheckin', injuredParts, IsPedDeadOrDying(playerPed), playerCoords.x, playerCoords.y, playerCoords.z, IsPedMale(playerPed), priorityCheckIn)
 end)
 
 RegisterNetEvent('injuries:checkin')

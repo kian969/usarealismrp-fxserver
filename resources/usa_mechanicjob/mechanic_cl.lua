@@ -356,12 +356,12 @@ AddEventHandler("mechanic:repair", function(repairCount)
 end)
 
 RegisterNetEvent("mechanic:tryInstall")
-AddEventHandler("mechanic:tryInstall", function(upgrade, rank)
+AddEventHandler("mechanic:tryInstall", function(upgrade, rank, upgradesInstalledCount)
 	if isNearAnyRepairShop() then
 		local veh = MechanicHelper.getClosestVehicle(5)
 			if veh then
 				exports.globals:notify("Installing " .. upgrade.displayName .. " upgrade!")
-				MechanicHelper.installUpgrade(veh, upgrade, function(success)
+				MechanicHelper.installUpgrade(veh, upgrade, upgradesInstalledCount, function(success)
 					if success then
 						local plate = GetVehicleNumberPlateText(veh)
 						plate = exports.globals:trim(plate)
@@ -672,3 +672,21 @@ function isNearSignOnSpot(range)
 	end
 	return false
 end
+
+RegisterClientCallback {
+	eventName = "mechanic:isNearVehicleAndMechanicShop",
+	eventCallback = function(plate)
+		if not isNearAnyRepairShop() then
+			return false
+		end
+		local closestVeh = MechanicHelper.getClosestVehicle()
+		if not closestVeh or not DoesEntityExist(closestVeh) then
+			return false
+		end
+		local closestVehPlate = exports.globals:trim(GetVehicleNumberPlateText(closestVeh))
+		if closestVehPlate ~= plate then
+			return false
+		end
+		return true
+	end
+}

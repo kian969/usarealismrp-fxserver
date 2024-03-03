@@ -230,7 +230,7 @@ end, {
 })
 
 RegisterServerEvent('injuries:validateCheckin')
-AddEventHandler('injuries:validateCheckin', function(playerInjuries, isPedDead, x, y, z, isMale)
+AddEventHandler('injuries:validateCheckin', function(playerInjuries, isPedDead, x, y, z, isMale, priorityCheckIn)
 	local usource = source
 	local treatmentTimeMinutes = 2
 	local char = exports["usa-characters"]:GetCharacter(usource)
@@ -249,7 +249,6 @@ AddEventHandler('injuries:validateCheckin', function(playerInjuries, isPedDead, 
 					copsCalled = true
 				end
 			end
-			-- print(chance) -- DEBUG
 			totalPrice = totalPrice + injuries[injury].treatmentPrice
 			if injuries[injury].string == "High-speed Projectile" then
 				treatmentTimeMinutes = treatmentTimeMinutes + 3
@@ -265,6 +264,27 @@ AddEventHandler('injuries:validateCheckin', function(playerInjuries, isPedDead, 
 	if treatmentTimeMinutes > 15 then
 		treatmentTimeMinutes = 15
 	end
+	if priorityCheckIn then
+		treatmentTimeMinutes = math.ceil(treatmentTimeMinutes / 2)
+		print("was priority check in, treatment time is: " .. treatmentTimeMinutes .. " minutes")
+	end
+	local admitMessage = '^3^*[HOSPITAL] ^r^7You have been admitted to the hospital, please wait while you are treated.'
+	if priorityCheckIn then
+		admitMessage = '^3^*[HOSPITAL] ^r^7You have been admitted to the hospital with priority, you will be treated as soon as possible.'
+	end
+	if char.get('job') == 'sheriff' or char.get("job") == "corrections" or char.get("job") == "ems" then
+		totalPrice = 0
+	end
+	if priorityCheckIn then
+		totalPrice = totalPrice + CONFIG.PRIORITY_CHECK_IN_FEE
+		if char.get("bank") < totalPrice then
+			TriggerClientEvent("usa:notify", usource, "Insufficent funds", "^3INFO: ^0Not enough funds for priority check in! Please try a regular check in.")
+			return
+		end
+	end
+	char.removeBank(totalPrice, "Pillbox Hospital")
+	TriggerClientEvent("chatMessage", usource, admitMessage)
+	TriggerClientEvent('chatMessage', usource, 'The payment has been deducted from your bank balance.')
 	TriggerEvent('injuries:getHospitalBeds', function(hospitalBeds)
 		local playerCoords = GetEntityCoords(GetPlayerPed(usource))
 		for i = 1, #hospitalBeds do
@@ -283,12 +303,6 @@ AddEventHandler('injuries:validateCheckin', function(playerInjuries, isPedDead, 
 			end
 		end
 	end)
-	TriggerClientEvent("chatMessage", usource, '^3^*[HOSPITAL] ^r^7You have been admitted to the hospital, please wait while you are treated.')
-	TriggerClientEvent('chatMessage', usource, 'The payment has been deducted from your bank balance.')
-	print('INJURIES: '..PlayerName(usource) .. ' has checked-in to hospital and was charged amount['..totalPrice..']')
-	if char.get('job') ~= 'sheriff' and char.get("job") ~= "corrections" and char.get("job") ~= "ems" then
-		char.removeBank(totalPrice, "Pillbox Hospital")
-	end
 end)
 
 RegisterServerEvent('injuries:sendLog')

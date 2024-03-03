@@ -1,0 +1,1 @@
+DROP TRIGGER IF EXISTS phone_tiktok_update_last_message;

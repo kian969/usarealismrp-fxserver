@@ -48,11 +48,11 @@ AddEventHandler('ems:admitMe', function(bed, reasonForAdmission)
     for bone, injuries in pairs(playerInjuries) do
         for injury, data in pairs(playerInjuries[bone]) do
             if injuries[injury].string == "High-speed Projectile" then 
-                treatmentTimeMinutes = treatmentTimeMinutes + 4
+                treatmentTimeMinutes = treatmentTimeMinutes + 3
             elseif injuries[injury].string == "Knife Puncture" then 
                 treatmentTimeMinutes = treatmentTimeMinutes + 2
             elseif injuries[injury].string == "Explosion" then 
-                treatmentTimeMinutes = treatmentTimeMinutes + 4
+                treatmentTimeMinutes = treatmentTimeMinutes + 3
             elseif injuries[injury].string == "Large Sharp Object" then 
                 treatmentTimeMinutes = treatmentTimeMinutes + 2
             end
@@ -61,6 +61,7 @@ AddEventHandler('ems:admitMe', function(bed, reasonForAdmission)
     if treatmentTimeMinutes > 15 then
         treatmentTimeMinutes = 15
     end
+    treatmentTimeMinutes = math.ceil(treatmentTimeMinutes / 2) -- automatic priority check in due to being admitted
     TriggerEvent('ems:hospitalize', treatmentTimeMinutes, bed)
     TriggerEvent("chatMessage", '^3^*[HOSPITAL] ^r^7You have been admitted to the hospital. (' .. reasonForAdmission .. ')')
 end)
