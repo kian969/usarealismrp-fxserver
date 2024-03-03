@@ -22,7 +22,7 @@ local VEHICLE_RANKS = {
 		},
 		["p21tah"] = {
 			rank = 4,
-			allowedLiveries = {1, 2, 3},
+			allowedLiveries = {1, 2, 3, 4, 5},
 			hash = GetHashKey("p21tah")
 		},
 		["p21dur"] = {
@@ -184,7 +184,7 @@ local VEHICLE_RANKS = {
 		},
 		["p21tah"] = {
 			rank = 4,
-			allowedLiveries = {1, 2, 3},
+			allowedLiveries = {1, 2, 3, 4, 5},
 			hash = GetHashKey("p21tah")
 		},
 		["p21dur"] = {
@@ -331,7 +331,7 @@ local VEHICLE_RANKS = {
 		},
 		["p21tah"] = {
 			rank = 3,
-			allowedLiveries = {1, 2, 3, 4},
+			allowedLiveries = {1, 2, 3, 4, 5},
 			hash = GetHashKey("p21tah")
 		},
 		["pierce1"] = {
