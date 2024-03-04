@@ -662,13 +662,13 @@ AddEventHandler("doormanager:firstJoin", function()
   TriggerClientEvent("doormanager:update", source, DOORS)
 end)
 
-TriggerEvent('es:addGroupCommand', 'lockdebug', 'owner', function(source, args, char)
+TriggerEvent('es:addGroupCommand', 'lockdebug', 'admin', function(source, args, char)
   TriggerClientEvent("doormanager:debug", source)
 end, {
 	help = "DEBUG: Debug the door lock system"
 })
 
-TriggerEvent('es:addGroupCommand', 'copydoor', 'owner', function(source, args, char)
+TriggerEvent('es:addGroupCommand', 'copydoor', 'admin', function(source, args, char)
   TriggerClientEvent('doormanager:DoorClipboard', source, args[2], args[3], args[4])
 end, {
   help = "Copies Door to clipboard.",
@@ -680,7 +680,7 @@ end, {
   }
 })
 
-TriggerEvent('es:addGroupCommand', 'copystaticdoor', 'owner', function(source, args, char)
+TriggerEvent('es:addGroupCommand', 'copystaticdoor', 'admin', function(source, args, char)
   TriggerClientEvent('doormanager:StaticClipboard', source, args[2], args[3], args[4])
 end, {
   help = "Copies Static (Disabled) Door to clipboard.",
@@ -691,7 +691,7 @@ end, {
   }
 })
 
-TriggerEvent('es:addGroupCommand', 'copygate', 'owner', function(source, args, char)
+TriggerEvent('es:addGroupCommand', 'copygate', 'admin', function(source, args, char)
   TriggerClientEvent('doormanager:GateClipboard', source, args[2], args[3], args[4])
 end, {
   help = "Copies Gate to clipboard.",
@@ -703,7 +703,7 @@ end, {
   }
 })
 
-TriggerEvent('es:addGroupCommand', 'copycell', 'owner', function(source, args, char)
+TriggerEvent('es:addGroupCommand', 'copycell', 'admin', function(source, args, char)
   TriggerClientEvent('doormanager:CellClipboard', source, args[2], args[3], args[4])
 end, {
   help = "Copies CellDoor to clipboard.",
