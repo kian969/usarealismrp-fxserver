@@ -17,6 +17,7 @@ ITEM_IMAGES = {
     ["Doritos"] = "https://i.imgur.com/akWHCH9.png",
     ["Water"] = "https://i.imgur.com/2eHVqiY.png",
     ["Arizona Iced Tea"] = "https://i.imgur.com/WOlsjSH.png",
+    ["Sex on the Beach"] = "https://i.imgur.com/9uHJAIn.png",
     ["Gatorade"] = "https://i.imgur.com/KlJ1OaF.png",
     ["Caramel Iced Coffee"] = "https://i.imgur.com/hgcuQDV.png",
     ["Mocha Iced Coffee"] = "https://i.imgur.com/hgcuQDV.png",
