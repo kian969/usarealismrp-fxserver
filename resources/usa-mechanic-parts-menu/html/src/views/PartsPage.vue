@@ -27,7 +27,7 @@
 				</tr>
 				<tr v-if="menuData.availableParts.length == 0">
 					<td width="100%">
-						You must be mechanic rank 2 or higher to order parts ({{ menuData.lvl2RequiredRepairCount }} or more repairs)
+						You must be mechanic rank 2 or higher to order parts ({{ menuData.lvl2RequiredRepairCount }} or more XP)
 					</td>
 				</tr>
 				</tbody>

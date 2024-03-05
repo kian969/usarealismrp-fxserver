@@ -61,10 +61,10 @@ end
 MechanicHelper.getMechanicRank = function(ident, cb)
     MechanicHelper.db.getDocumentByRow("mechanicjob", "owner_identifier", ident, function(doc)
         if doc then
-
-            if doc.repairCount >= Config.LEVEL_3_RANK_THRESH then
+            local totalXp = (doc.repairCount or 0) + (doc.upgradesInstalled or 0)
+            if totalXp >= Config.LEVEL_3_RANK_THRESH then
                 cb(3)
-            elseif doc.repairCount >= Config.LEVEL_2_RANK_THRESH then
+            elseif totalXp >= Config.LEVEL_2_RANK_THRESH then
                 cb(2)
             else 
                 cb(1)
