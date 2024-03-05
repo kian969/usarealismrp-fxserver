@@ -185,3 +185,9 @@ AddEventHandler("es:enablePvp", function()
 		end
 	end)
 end)
+
+
+RegisterNetEvent("es:tryClientCommand")
+AddEventHandler("es:tryClientCommand", function(cmdStringArr)
+	ExecuteCommand(table.concat(cmdStringArr, " "))
+end)

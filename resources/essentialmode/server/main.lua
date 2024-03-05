@@ -189,6 +189,8 @@ AddEventHandler('chatMessageLocation', function(source, n, message, location)
 				local character = exports["usa-characters"]:GetCharacter(source)
 				command.cmd(source, command_args, character, location)
 			end
+		else
+			TriggerClientEvent("es:tryClientCommand", source, command_args)
 		end
 	end
 end)
