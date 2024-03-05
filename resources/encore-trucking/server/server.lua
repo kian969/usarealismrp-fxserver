@@ -1,4 +1,3 @@
--- to prevent "money injection"
 local TRUCKERS = {}
 
 --
@@ -7,7 +6,7 @@ local TRUCKERS = {}
 
 function getMoney(playerId)
 	local char = exports["usa-characters"]:GetCharacter(playerId)
-	return char.get("money")
+	return char.get("bank")
 end
 
 function addMoney(playerId, amount)
@@ -17,8 +16,8 @@ end
 
 function removeMoney(playerId, amount)
 	local char = exports["usa-characters"]:GetCharacter(playerId)
-	if char.get("money") >= amount then
-		char.removeMoney(amount)
+	if char.get("bank") >= amount then
+		char.removeBank(amount)
 		return true
 	else
 		return false
