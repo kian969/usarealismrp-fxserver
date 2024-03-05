@@ -326,6 +326,13 @@ AddEventHandler("properties-og:moveItemFromProperty", function(src, data)
     return
   end
   -- try to store in player's inventory
+  if item.type and (item.type == "food" or item.type == "drink") and not item.createdTime then -- old food/water item, delete this ('expired')
+    inv[data.fromSlot] = nil
+    PROPERTIES[data.propertyName].storage.items = inv
+    SavePropertyData(data.propertyName)
+    TriggerClientEvent("usa:notify", src, "Food/water item expired", "^3INFO: ^0That food/water item has expired")
+    return
+  end
   local char = exports["usa-characters"]:GetCharacter(src)
   if char.canHoldItem(item, (data.quantity or item.quantity)) then
     char.putItemInSlot(item, data.toSlot, (data.quantity or item.quantity), function(success)
