@@ -1159,6 +1159,7 @@ function interactionMenuUse(index, itemName, wholeItem)
 		TriggerEvent('evidence:returnData', function(data)
 			TriggerEvent('evidence:updateData', 'levelBAC', data['levelBAC'] + wholeItem.strength)
 		end)
+		TriggerServerEvent("usa:removeItem", wholeItem, 1)
 	elseif string.find(itemName, "Parachute") then
 		GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("GADGET_PARACHUTE"), 150, true, true)
 		SetPedComponentVariation(GetPlayerPed(-1), 5, 1, 0, 0)

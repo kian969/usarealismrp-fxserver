@@ -112,18 +112,11 @@ Citizen.CreateThread(function()
 			Intoxicate(false, 'move_m@drunk@moderatedrunk', 0.5)
 		elseif playerBAC >= 0.30 and playerBAC < 0.40 then
 			Intoxicate(false, 'move_m@drunk@verydrunk', 0.5)
-			if math.random() < 0.2 then
-				DoScreenFadeOut(2000)
-				Citizen.Wait(1000)
-				DoScreenFadeIn(2000)
-			end
 		elseif playerBAC >= 0.40 and not IsEntityDead(playerPed) then
 			Intoxicate(false, 'move_m@drunk@verydrunk', 0.5)
-			DoScreenFadeOut(4000)
-			Citizen.Wait(4000)
-			SetEntityHealth(playerPed, 0)
-			DoScreenFadeIn(4000)
 			exports.globals:notify("You have passed out!")
+			SetEntityHealth(playerPed, 0)
+			playerData['levelBAC'] = 0
 		end
 		if GetEntitySpeed(playerPed) > 3.0 and (IsPedSprinting(playerPed) or IsPedRunning(playerPed)) then
 			timeRunning = timeRunning + 1
@@ -543,16 +536,12 @@ function Intoxicate(playScenario, clipset, shakeCam)
 			if playScenario then
 			TaskStartScenarioInPlace(playerPed, "WORLD_HUMAN_DRUG_DEALER", 0, 1)
 			end
-			Citizen.Wait(5000)
-			DoScreenFadeOut(500)
-			Citizen.Wait(500)
 			SetTimecycleModifier("spectator5")
 			SetPedMotionBlur(playerPed, true)
 			if clipset then
 				TriggerEvent('civ:forceWalkStyle', clipset)
 			end
 			SetPedIsDrunk(playerPed, true)
-			DoScreenFadeIn(500)
 			if shakeCam then
 				ShakeGameplayCam("DRUNK_SHAKE", shakeCam)
 			end
@@ -563,9 +552,6 @@ function Intoxicate(playScenario, clipset, shakeCam)
 
  function StopEffects()
  	Citizen.CreateThread(function()
- 		DoScreenFadeOut(500)
-		Citizen.Wait(500)
-		DoScreenFadeIn(500)
 		ClearTimecycleModifier()
 		ResetScenarioTypesEnabled()
 		TriggerEvent('civ:resetWalkStyle')
