@@ -96,13 +96,13 @@ function DepositPayCheck(char)
         elseif bcsoRank == 7 then
             paycheckAmount = 1450 -- Sergeant
         elseif bcsoRank == 8 then
-            paycheckAmount = 1550 -- Captain
+            paycheckAmount = 1850 -- Captain
         elseif bcsoRank == 9 then
-            paycheckAmount = 1650 -- Commander
+            paycheckAmount = 1950 -- Commander
         elseif bcsoRank == 10 then
-            paycheckAmount = 1750 -- Undersheriff
+            paycheckAmount = 2000 -- Undersheriff
         elseif bcsoRank == 11 then
-            paycheckAmount = 1850 -- Sheriff
+            paycheckAmount = 2100 -- Sheriff
         end
     elseif job == "lawyer" then
         paycheckAmount = 1500
