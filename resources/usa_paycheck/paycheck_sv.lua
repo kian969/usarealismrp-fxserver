@@ -56,23 +56,23 @@ function DepositPayCheck(char)
         end
     elseif job == "ems" then
         local rank = char.get("emsRank")
-        paycheckAmount = 1100 -- Probationary Fire Paramedic
+        paycheckAmount = 1200 -- Probationary Fire Paramedic
         if rank == 2 then
-            paycheckAmount = 1200 -- Fire Paramedic
+            paycheckAmount = 1350 -- Fire Paramedic
         elseif rank == 3 then
-            paycheckAmount = 1300 -- Sr. Fire Paramedic
+            paycheckAmount = 1500 -- Sr. Fire Paramedic
         elseif rank == 4 then
-            paycheckAmount = 1400 -- Engineer
+            paycheckAmount = 1750 -- Engineer
         elseif rank == 5 then
-            paycheckAmount = 1500 -- Lieutenant
+            paycheckAmount = 1900 -- Lieutenant
         elseif rank == 6 then
-            paycheckAmount = 1600 -- Captain
+            paycheckAmount = 1950 -- Captain
         elseif rank == 7 then
-            paycheckAmount = 1700 -- Battalion Chief
+            paycheckAmount = 2000 -- Battalion Chief
         elseif rank == 8 then
-            paycheckAmount = 1750 -- Assistant Fire Chief
+            paycheckAmount = 2100 -- Assistant Fire Chief
         elseif rank == 9 then
-            paycheckAmount = 1800 -- Fire Chief
+            paycheckAmount = 2200 -- Fire Chief
         end
     elseif job == "mechanic" then
         paycheckAmount = 1000
@@ -108,19 +108,19 @@ function DepositPayCheck(char)
         paycheckAmount = 1500
     elseif job == "doctor" then
         local rank = char.get("doctorRank")
-        paycheckAmount = 1600 -- Intern Nurse/Doctor
+        paycheckAmount = 1800 -- Intern Nurse/Doctor
         if rank == 2 then
-            paycheckAmount = 1750 -- Registered Nurse/Resident Doctor
+            paycheckAmount = 1900 -- Registered Nurse/Resident Doctor
         elseif rank == 3 then
-            paycheckAmount = 1900 -- Attending Doctor/Psychiatrist
+            paycheckAmount = 2000 -- Attending Doctor/Psychiatrist
         elseif rank == 4 then
-            paycheckAmount = 2050 -- Team Leader
+            paycheckAmount = 2250 -- Team Leader
         elseif rank == 5 then
-            paycheckAmount = 2200 -- Director of Department
+            paycheckAmount = 2400 -- Director of Department
         elseif rank == 6 then
-            paycheckAmount = 2350 -- Co-Dean of Med
+            paycheckAmount = 2500 -- Co-Dean of Med
         elseif rank == 7 then
-            paycheckAmount = 2500 -- Dean of Med
+            paycheckAmount = 2700 -- Dean of Med
         end
     elseif job == "da" then
         paycheckAmount = 1700
