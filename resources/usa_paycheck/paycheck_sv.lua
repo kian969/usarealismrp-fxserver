@@ -79,7 +79,7 @@ function DepositPayCheck(char)
     elseif job == "reporter" then
         paycheckAmount = 750
     elseif job == "judge" then
-        paycheckAmount = 1700
+        paycheckAmount = 2800
     elseif job == "corrections" then
         local bcsoRank = char.get("bcsoRank")
         paycheckAmount = 850 --Correctional Deputy
@@ -105,7 +105,7 @@ function DepositPayCheck(char)
             paycheckAmount = 2100 -- Sheriff
         end
     elseif job == "lawyer" then
-        paycheckAmount = 1500
+        paycheckAmount = 1800
     elseif job == "doctor" then
         local rank = char.get("doctorRank")
         paycheckAmount = 1800 -- Intern Nurse/Doctor
