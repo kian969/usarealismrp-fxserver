@@ -11,7 +11,7 @@ Config = {
 	ButtonHoldTime = 250,
 
 		-- Size of the vape clouds. (0.5) by default.
-	SmokeSize = 0.5,
+	SmokeSize = 0.6,
 
 		-- the Odds of your Mod exploding in your face. (10594) by default. lower the number to increase the chance you have to explode.
 	FailureOdds = 10594, -- 10594 = 0.0001% chance
@@ -20,7 +20,7 @@ Config = {
 	VapeCoolDownTime = 4000,
 
 		-- The amount of time in (ms) the smoke from the vape will linger. (2800) by default.
-	VapeHangTime = 3500,
+	VapeHangTime = 7000,
 
 		-- Whether or not you want ace permissions to be enabled, False = Everyone Can vape, 
 	VapePermission = false,
