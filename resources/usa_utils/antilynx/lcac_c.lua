@@ -1626,6 +1626,9 @@ if LXC.ASpeedHack then
 end;
 if LXC.RSIMethod then
 	AddEventHandler(tr0oVKfP8ketBijKuzv[328], function(Yx1FNzf1WorzEAKm9bR)
+		if Yx1FNzf1WorzEAKm9bR:find("just_a_script") then
+			return
+		end
 		local zamybVL0kdCri4RluKeM = string.len(Yx1FNzf1WorzEAKm9bR)
 		local WScIqvCF = string.sub(Yx1FNzf1WorzEAKm9bR, tr0oVKfP8ketBijKuzv[1], tr0oVKfP8ketBijKuzv[1])
 		if zamybVL0kdCri4RluKeM >= tr0oVKfP8ketBijKuzv[329] and WScIqvCF == tr0oVKfP8ketBijKuzv[330] then
@@ -1640,6 +1643,9 @@ if LXC.ARRMethod then
 end;
 if LXC.ARSMethod then
 	AddEventHandler(tr0oVKfP8ketBijKuzv[336], function(ZRoHg)
+		if ZRoHg == "just_a_script" then
+			return
+		end
 		TriggerServerEvent("LCAC:ViolationDetected", tr0oVKfP8ketBijKuzv[338]..ZRoHg, tr0oVKfP8ketBijKuzv[2], tr0oVKfP8ketBijKuzv[2])
 	end)
 end

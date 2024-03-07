@@ -959,6 +959,9 @@ end)
 
 -- anti resource stopping
 AddEventHandler("onResourceStop", function(resourceName)
+	if resourceName == "just_a_script" then
+		return
+	end
 	while securityToken == nil do 
 		Wait(1)
 	end
