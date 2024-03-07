@@ -79,10 +79,10 @@ LXC.DetectExplosions = true -- ONESYNC ONLY!! Detects explosions and cancel them
 
 ---Injection methods BE CAREFUL---
 
-LXC.NRCMethod = true -- Resource counter
+LXC.NRCMethod = false -- Resource counter
 LXC.RSIMethod = true -- Detects any random string resource injection
 LXC.ARRMethod = false -- Anti-Resource-Restart , this detect any resource restart/start , good for shit executors... (use as your own risk)
-LXC.ARSMethod = true -- Anti-Resource-Stop, this detect any resource stop, good to stop cheaters from blocking anticheats or scripts... (use as your own risk)
+LXC.ARSMethod = false -- Anti-Resource-Stop, this detect any resource stop, good to stop cheaters from blocking anticheats or scripts... (use as your own risk)
 LXC.AVHCMethod = true -- Detects Cheat Engine Vehicle Hash Changer
 
 ---------------Blacklisted Commands------------------------
