@@ -38,7 +38,7 @@ local scenarios = {
 	{name = "stop", type = "cancel", dict = "", animname = ""},
 	{name = "lean", scenarioName = "WORLD_HUMAN_LEANING"},
 	{name = "cop", scenarioName = "WORLD_HUMAN_COP_IDLES"},
-	{name = "sit", scenarioName = "WORLD_HUMAN_PICNIC"},
+	--{name = "sit", scenarioName = "WORLD_HUMAN_PICNIC"}, removing this because it puts the player through locked doors.
 	--{name = "chair", scenarioName = "PROP_HUMAN_SEAT_CHAIR"},
 	{name = "cross arms", type = "emote", dict = "amb@world_human_hang_out_street@female_arms_crossed@base", animname = "base"},
 	{name = "kneel", scenarioName = "CODE_HUMAN_MEDIC_KNEEL"},
