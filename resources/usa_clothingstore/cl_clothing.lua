@@ -22,6 +22,7 @@ local CLOTHING_STORE_LOCATIONS = {
 	{x = -3173.408203125, y = 1049.2631835938, z = 20.86333656311}, -- Chumash (Suburban)
 	{x = 619.32312011719, y = 2759.2216796875, z = 42.088272094727}, -- Route 68 (Suburban)
 	{x = 536.79077148438, y = -168.53829956055, z = 57.68217086792}, -- Auto Exotic
+	{x = 4494.5498046875, y = -4525.2172851562, z = 4.412371635437}, -- Cayo Perico Island (for events, etc)
 
 }
 local me = nil
