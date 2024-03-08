@@ -46,7 +46,7 @@ local policeGarages = {
 	{x = -1077.8362, y = -815.5814, z = 4.8650, _x = -1072.4160, _y = -803.8643, _z = 4.8650, _heading = 129.8831}, -- Vespucci 
 	-- {x = 378.16, y = -1613.96, z = 29.29, _x = 394.39, _y = -1625.57, _z = 29.29, _heading = 51.66}, -- Davis (OLD)
 	--{x = 397.1947, y = -1624.0338, z = 29.2921, _x = 390.5051, _y = -1629.9517, _z = 29.2921, _heading = 317.4876}, -- DavisPD (NEW)
-	{x = 357.98400878906, y = -1584.8127441406, z = 29.291793823242}, -- davis SO (NEW)
+	{x = 357.98400878906, y = -1584.8127441406, z = 29.291793823242, _x = 352.84036254883, _y = -1593.1799316406, _z = 29.290971755981}, -- davis SO (NEW)
 	{x = 560.04, y = -60.305, z = 71.186, _x = 534.24, _y = -26.13, _z = 70.62, _heading = 210.88}, -- Vinewood
 	{x = -85.21, y = -807.60, z = 36.49, _x = -73.97, _y = -818.25, _z = 36.05, _heading = 295.0}, -- DA Office
 	--hospitals
@@ -143,7 +143,6 @@ function AddGarageMenuItems(menu, vehs, job)
 	        	for i = 1, #policeGarages do
 	        		if Vdist(px,py,pz,policeGarages[i].x,policeGarages[i].y,policeGarages[i].z)  <  7 and waiting < 5000 then
 						spawnedVeh = CreateVehicle(vehicleHash, policeGarages[i]._x,policeGarages[i]._y,policeGarages[i]._z, policeGarages[i]._heading, true)
-						TriggerEvent('persistent-vehicles/register-vehicle', spawnedVeh)
 						SetVehicleHasBeenOwnedByPlayer(spawnedVeh, true)
 						SetVehicleExplodesOnHighExplosionDamage(spawnedVeh, false)
 						SetVehicleEngineOn(spawnedVeh, true, true, false)
