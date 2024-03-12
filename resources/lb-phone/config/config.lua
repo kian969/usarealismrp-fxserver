@@ -133,6 +133,21 @@ Config.Companies.Services = {
                 y = -393.89321899414
             }
         }
+    },
+    {
+        job = "burgershot",
+        name = "Burgershot",
+        icon = "https://prod.cloud.rockstargames.com/crews/sc/3778/13530944/publish/emblem/emblem_256.png",
+        canCall = true, -- if true, players can call the company
+        canMessage = true, -- if true, players can message the company
+        bossRanks = {}, -- ranks that can manage the company
+        location = {
+            name = "Burgershot",
+            coords = {
+                x = -1186.5853271484,
+                y = -877.85235595703
+            }
+        }
     }
 }
 

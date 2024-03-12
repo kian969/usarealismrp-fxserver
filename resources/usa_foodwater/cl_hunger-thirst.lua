@@ -31,6 +31,8 @@ local showText = true
 
 local HUD_ENABLED = false
 
+local MAX_REPLENISH_NON_PLAYER_MADE = 50.0
+
 ---------------
 -- API FUNCS --
 ---------------
@@ -52,20 +54,22 @@ AddEventHandler("hungerAndThirst:replenish", function(type, item)
 			duration = 18
 		}
 		local new_hunger_level = person.hunger_level + item.substance
+		if not item.playerMade and person.hunger_level < 50.0 then
+			new_hunger_level = math.min(50.0, new_hunger_level)
+		end
+		if not item.playerMade and person.hunger_level >= 50.0 then
+			new_hunger_level = person.hunger_level -- no change
+		end
 		-- adjust level, notify and remove item
 		if new_hunger_level <= 100.0 then
 			person.hunger_level = new_hunger_level
 			TriggerEvent("usa:notify", "Consumed: ~y~" .. item.name)
 		else
 			local diff = new_hunger_level - 100.0
-			--print("went over by: " .. diff)
 			person.hunger_level = 100.0
 			TriggerEvent("usa:notify", "You are now totally full!")
 		end
-		--print("playing food animation!")
 		-- play animation:
-		--TriggerEvent("usa:playAnimation", animation.name, animation.dict, animation.duration)
-		--TriggerEvent("usa:playAnimation", animation.dict, animation.name, 5, 1, animation.duration * 1000, 31, 0, 0, 0, 0)
 		TriggerEvent("usa:playAnimation", animation.dict, animation.name, -8, 1, -1, 53, 0, 0, 0, 0,  animation.duration)
 	elseif type == "drink" then
 		-- revive if passed out --
@@ -78,20 +82,22 @@ AddEventHandler("hungerAndThirst:replenish", function(type, item)
 			duration = 12
 		}
 		local new_thirst_level = person.thirst_level + item.substance
+		if not item.playerMade and person.thirst_level < 50.0 then
+			new_thirst_level = math.min(50.0, new_thirst_level)
+		end
+		if not item.playerMade and person.thirst_level >= 50.0 then
+			new_thirst_level = person.thirst_level -- no change
+		end
 		-- adjust level, notify and remove item
 		if new_thirst_level <= 100.0 then
 			person.thirst_level = new_thirst_level
 			TriggerEvent("usa:notify", "Consumed: ~y~" .. item.name)
 		else
 			local diff = new_thirst_level - 100.0
-			--print("went over by: " .. diff)
 			person.thirst_level = 100.0
 			TriggerEvent("usa:notify", "You are now totally hydrated!")
 		end
-		--print("playing drink animation!")
 		-- play animation:
-		--TriggerEvent("usa:playAnimation", animation.name, animation.dict, animation.duration)
-		--TriggerEvent("usa:playAnimation", animation.dict, animation.name, 5, 1, animation.duration * 1000, 31, 0, 0, 0, 0)
 		TriggerEvent("usa:playAnimation", animation.dict, animation.name, -8, 1, -1, 53, 0, 0, 0, 0,  animation.duration)
 	else
 		print("error: no item type specified!")

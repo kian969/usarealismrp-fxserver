@@ -104,12 +104,6 @@ AddEventHandler("vehicle:moveItemToPlayerInv", function(src, plate, fromSlot, to
     end
     -- move item --
     if item then
-        if item.type and (item.type == "food" or item.type == "drink") and not item.createdTime then -- old food/water item, delete this ('expired')
-            VehInventoryManager.removeItemInSlot(plate, inv, fromSlot, item.quantity)
-            TriggerClientEvent("usa:notify", usource, "Food/water item expired", "^3INFO: ^0That food/water item has expired")
-            exports["usa_vehinv"]:removeVehicleBusy(plate)
-            return
-        end
         if char.canHoldItem(item, quantity) then
             char.putItemInSlot(item, toSlot, quantity, function(success)
                 if success == true then

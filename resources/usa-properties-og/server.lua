@@ -197,6 +197,15 @@ AddEventHandler("properties-og:storeMoney", function(name, amount)
 	end
 end)
 
+RegisterServerEvent("properties-og:depositCash")
+AddEventHandler("properties-og:depositCash", function(name, amount)
+  if source and source ~= "" then return end
+  -- add to property --
+  PROPERTIES[name].storage.money = PROPERTIES[name].storage.money + amount
+  -- save property --
+  SavePropertyData(name)
+end)
+
 -- try to store item --
 --[[
 RegisterServerEvent("properties:store")
@@ -326,13 +335,6 @@ AddEventHandler("properties-og:moveItemFromProperty", function(src, data)
     return
   end
   -- try to store in player's inventory
-  if item.type and (item.type == "food" or item.type == "drink") and not item.createdTime then -- old food/water item, delete this ('expired')
-    inv[data.fromSlot] = nil
-    PROPERTIES[data.propertyName].storage.items = inv
-    SavePropertyData(data.propertyName)
-    TriggerClientEvent("usa:notify", src, "Food/water item expired", "^3INFO: ^0That food/water item has expired")
-    return
-  end
   local char = exports["usa-characters"]:GetCharacter(src)
   if char.canHoldItem(item, (data.quantity or item.quantity)) then
     char.putItemInSlot(item, data.toSlot, (data.quantity or item.quantity), function(success)
@@ -606,9 +608,17 @@ end)
 RegisterServerEvent("properties:withdraw")
 AddEventHandler("properties:withdraw", function(name, amount, savedSource, give_money_to_player)
   if savedSource then source = savedSource end -- if called from server file
+  local player = exports["usa-characters"]:GetCharacter(tonumber(source))
   if not ownsProperty(name, source) then
     TriggerClientEvent("usa:notify", source, "Not property owner")
     return
+  end
+  -- only allow managers to remove money if business
+  if PROPERTIES[name].type == "business" then
+    if not isBusinessManager(name, source) then
+      TriggerClientEvent("usa:notify", source, "Must be manager", "^3INFO: ^0Only managers can withdraw money from a business")
+      return
+    end
   end
   if PROPERTIES[name].storage.money - amount >= 0 then
     -- remove from store --
@@ -616,7 +626,6 @@ AddEventHandler("properties:withdraw", function(name, amount, savedSource, give_
     -- only take money if asked to --
     if give_money_to_player then
       -- add to player --
-      local player = exports["usa-characters"]:GetCharacter(tonumber(source))
       if player then
         local user_money = player.get("money")
         player.giveMoney(amount)
@@ -646,9 +655,6 @@ AddEventHandler("properties:purchaseProperty", function(property)
 		--if property.type == "business" then ownership_length = BUSINESS_PAY_PERIOD_DAYS
 		--elseif property.type == "house" then ownership_length = HOUSE_PAY_PERIOD_DAYS end
 
-		local final_time = nil
-		local today = os.date("*t", os.time())
-
 		print("player #" .. user_source .. " wants to purchase " .. property.name)
 		local user_money = player.get("money")
 		local char_name = player.getFullName()
@@ -660,12 +666,10 @@ AddEventHandler("properties:purchaseProperty", function(property)
 			PROPERTIES[property.name].fee.paid = true
 			if property.type == "business" then
 				PROPERTIES[property.name].fee.due_days = BUSINESS_PAY_PERIOD_DAYS
-				final_time = {day = today.day + BUSINESS_PAY_PERIOD_DAYS, month = today.month, year = today.year}
 			elseif property.type == "house" then
 				PROPERTIES[property.name].fee.due_days = HOUSE_PAY_PERIOD_DAYS
-				final_time = {day = today.day, month = today.month + 1, year = today.year}
 			end
-			local endtime = os.time(final_time)
+			local endtime = os.time() + PROPERTIES[property.name].fee.due_days * 24 * 60 * 60
 			PROPERTIES[property.name].fee.due_time = endtime
 			PROPERTIES[property.name].fee.end_date = os.date("%x", endtime)
 			PROPERTIES[property.name].owner.name = char_name
@@ -727,10 +731,15 @@ end)
 -- ADD PROPERTY CO-OWNER --
 ---------------------------
 RegisterServerEvent("properties:addCoOwner")
-AddEventHandler("properties:addCoOwner", function(property_name, id)
+AddEventHandler("properties:addCoOwner", function(property_name, input)
   if not ownsProperty(property_name, source) then
     TriggerClientEvent("usa:notify", source, "Not property owner")
     return
+  end
+  local id = tonumber(input[1])
+  local isManager = nil
+  if PROPERTIES[property_name].type == "business" then
+    isManager = input[2]
   end
   if GetPlayerName(id) then
     -- check if property has any co owners already --
@@ -741,7 +750,8 @@ AddEventHandler("properties:addCoOwner", function(property_name, id)
     local person = exports["usa-characters"]:GetCharacter(id)
     local coowner = {
       name = person.getFullName(),
-      identifier = person.get("_id")
+      identifier = person.get("_id"),
+      isManager = isManager
     }
     -- add person to list of co owners --
     table.insert(PROPERTIES[property_name].coowners, coowner)
@@ -921,7 +931,8 @@ AddEventHandler("properties:removeCoOwner", function(property_name, index)
     -- save --
     SavePropertyData(property_name)
     -- notify --
-    TriggerClientEvent("usa:notify", source, "Co-owner removed!")
+    local personType = (PROPERTIES[property_name].type == "business" and "Employee" or "Co-owner")
+    TriggerClientEvent("usa:notify", source, personType .. " removed!")
   end
 end)
 
@@ -1016,58 +1027,40 @@ function Evict_Owners()
           max_ownable_days = HOUSE_PAY_PERIOD_DAYS
       end
       if GetWholeDaysFromTime(info.fee.paid_time) >= max_ownable_days then
-        if info.type == "house" then
-          local ownerPlayer = exports["essentialmode"]:getDocument("characters", PROPERTIES[name].owner.identifier)
-          if type(ownerPlayer) ~= "boolean" then
-            if ownerPlayer.bank >= info.fee.price and not info.will_leave then
-              print("** Money from bank of (" .. ownerPlayer.name.first .. " " .. ownerPlayer.name.last .. ") was used to pay for a month of rent. **")
-              ownerPlayer.bank = ownerPlayer.bank - info.fee.price
-              exports["essentialmode"]:updateDocument("characters", PROPERTIES[name].owner.identifier, ownerPlayer, true)
-              PROPERTIES[name].fee.paid_time = os.time()
-              PROPERTIES[name].fee.paid = true
-              local final_time = nil
-              local today = os.date("*t", os.time())
-              PROPERTIES[name].fee.due_days = HOUSE_PAY_PERIOD_DAYS
-              final_time = {day = today.day, month = (today.month + 1) % 12, year = today.year}
-              local endtime = os.time(final_time)
-              PROPERTIES[name].fee.due_time = endtime
-              PROPERTIES[name].fee.end_date = os.date("%x", endtime)
-              SavePropertyData(name)
+        local ownerPlayer = exports["essentialmode"]:getDocument("characters", PROPERTIES[name].owner.identifier)
+        if type(ownerPlayer) ~= "boolean" then
+          if ownerPlayer.bank >= info.fee.price and not info.will_leave then
+            print("** Money from bank of (" .. ownerPlayer.name.first .. " " .. ownerPlayer.name.last .. ") was used to pay for a month of rent. **")
+            ownerPlayer.bank = ownerPlayer.bank - info.fee.price
+            exports["essentialmode"]:updateDocument("characters", PROPERTIES[name].owner.identifier, ownerPlayer, true)
+            PROPERTIES[name].fee.paid_time = os.time()
+            PROPERTIES[name].fee.paid = true
+            if PROPERTIES[name].type == "business" then
+              PROPERTIES[name].fee.due_days = BUSINESS_PAY_PERIOD_DAYS
             else
-              print("***Not enough money or choosing not to stay, evicting owner of the " .. name .. " today, owner identifier: " .. PROPERTIES[name].owner.identifier .. "***")
-              -- remove property owner information, make available for purchase --
-              PROPERTIES[name].fee.end_date = 0
-              PROPERTIES[name].fee.due_days = 0
-              PROPERTIES[name].fee.paid_time = 0
-              PROPERTIES[name].fee.paid = 0
-              PROPERTIES[name].will_leave = false
-              PROPERTIES[name].owner.name = nil
-              PROPERTIES[name].owner.purchase_date = 0
-              PROPERTIES[name].owner.identifier = "undefined"
-              PROPERTIES[name].coowners = {}
-              --PROPERTIES[name].storage.money = 0
-              --PROPERTIES[name].storage.items = {}
-              -- save property --
-              SavePropertyData(name)
+              PROPERTIES[name].fee.due_days = HOUSE_PAY_PERIOD_DAYS 
             end
+            local endtime = os.time() + PROPERTIES[name].fee.due_days * 24 * 60 * 60
+            PROPERTIES[name].fee.due_time = endtime
+            PROPERTIES[name].fee.end_date = os.date("%x", endtime)
+            SavePropertyData(name)
           else
-            print("noone owns this house")
+            print("***Not enough money or choosing not to stay, evicting owner of the " .. name .. " today, owner identifier: " .. PROPERTIES[name].owner.identifier .. "***")
+            -- remove property owner information, make available for purchase --
+            PROPERTIES[name].fee.end_date = 0
+            PROPERTIES[name].fee.due_days = 0
+            PROPERTIES[name].fee.paid_time = 0
+            PROPERTIES[name].fee.paid = 0 
+            PROPERTIES[name].will_leave = false
+            PROPERTIES[name].owner.name = nil
+            PROPERTIES[name].owner.purchase_date = 0
+            PROPERTIES[name].owner.identifier = "undefined"
+            PROPERTIES[name].coowners = {}
+            -- save property --
+            SavePropertyData(name)
           end
         else
-          print("***Evicting owner of the " .. name .. " business today, owner identifier: " .. PROPERTIES[name].owner.identifier .. "***")
-          -- remove property owner information, make available for purchase --
-          PROPERTIES[name].fee.end_date = 0
-          PROPERTIES[name].fee.due_days = 0
-          PROPERTIES[name].fee.paid_time = 0
-          PROPERTIES[name].fee.paid = 0
-          PROPERTIES[name].owner.name = nil
-          PROPERTIES[name].owner.purchase_date = 0
-          PROPERTIES[name].owner.identifier = "undefined"
-          PROPERTIES[name].coowners = {}
-          --PROPERTIES[name].storage.money = 0
-          --PROPERTIES[name].storage.items = {}
-          -- save property --
-          SavePropertyData(name)
+          print("noone owns this house")
         end
       end
     end
@@ -1714,6 +1707,22 @@ function ownsProperty(name, src)
   for i = 1, #owned do
     if owned[i].name == name then
       return true
+    end
+  end
+  return false
+end
+
+function isBusinessManager(name, src)
+  local char = exports["usa-characters"]:GetCharacter(src)
+  local owned = GetOwnedProperties(char.get("_id"), true)
+  for i = 1, #owned do
+    if owned[i].owner.identifier == char.get("_id") then
+      return true
+    end
+    for j = 1, #owned[i].coowners do
+      if owned[i].coowners[j].isManager and owned[i].coowners[j].identifier == char.get("_id") then
+        return true
+      end
     end
   end
   return false

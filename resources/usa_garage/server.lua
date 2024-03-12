@@ -18,6 +18,29 @@ AddEventHandler("garage:notifyOfPlateChange", function(src, oldPlate, newPlate)
 	recentlyChangedPlates[c.get("_id")][oldPlate] = newPlate
 end)
 
+RegisterServerEvent("garage:giveKeyWithPlate")
+AddEventHandler("garage:giveKeyWithPlate", function(src, plate)
+	print("giving key with plate: " .. plate)
+	if src then source = src end
+	local key = {
+		name = "Key -- " .. plate,
+		quantity = 1,
+		type = "key",
+		owner = 'unknown',
+		make = 'unknown',
+		model = 'unknown',
+		plate = plate
+	}
+	local char = exports["usa-characters"]:GetCharacter(source)
+	local invKey = char.getItemWithField("plate", key.plate)
+	print("checking")
+	if not invKey then
+		print("giving")
+		char.giveItem(key)
+	end
+	TriggerEvent("lock:addPlate", key.plate)
+end)
+
 RegisterServerEvent("garage:giveKey")
 AddEventHandler("garage:giveKey", function(key, src)
 	if src then source = src end

@@ -676,10 +676,12 @@ Citizen.CreateThread(function()
                                         ----------------------------
                                         -- create main menu  --
                                         ----------------------------
+                                        local propertyType = (nearest_property_info.type == "business" and "business" or "property")
                                         if can_open.owner == true then
-                                          mainMenu = NativeUI.CreateMenu(name, "~b~You own this property!", 50 --[[X COORD]], 320 --[[Y COORD]])
+                                            mainMenu = NativeUI.CreateMenu(name, "~b~You own this " .. propertyType, 50 --[[X COORD]], 320 --[[Y COORD]])
                                         else
-                                          mainMenu = NativeUI.CreateMenu(name, "~b~You co-own this property!", 50 --[[X COORD]], 320 --[[Y COORD]])
+                                            local headerText = (nearest_property_info.type == "business" and "work here" or "co-own this property")
+                                            mainMenu = NativeUI.CreateMenu(name, "~b~You " .. headerText, 50 --[[X COORD]], 320 --[[Y COORD]])
                                         end
                                         ---------------------------
                                         -- next fee due date  --
@@ -871,109 +873,114 @@ Citizen.CreateThread(function()
                                         end
                                         mainMenu:AddItem(spawnbtn)
                                         if can_open.owner == true then -- only allow true owners (non co owners) to modify co owners
-                                          ----------------------------
-                                          -- add / remove property co-owners --
-                                          ----------------------------
-                                          local coowners_submenu = _menuPool:AddSubMenu(mainMenu, "Owners", "Manage property co-owners.", true --[[KEEP POSITION]])
-                                          -- transfer ownership
-                                          local transferOwner = NativeUI.CreateItem("Transfer Ownership", "Transfer the property to another player")
-                                          transferOwner.Activated = function(parentmenu, selected)
-                                            RemoveMenuPool(_menuPool)
-                                            Citizen.CreateThread( function()
-                                                TriggerEvent("hotkeys:enable", false)
-                                                DisplayOnscreenKeyboard( false, "", "", "", "", "", "", 9 )
-                                                while true do
-                                                    if ( UpdateOnscreenKeyboard() == 1 ) then
-                                                        local server_id = GetOnscreenKeyboardResult()
-                                                        if ( string.len( server_id ) > 0 ) then
-                                                            local server_id = tonumber( server_id )
-                                                            if ( server_id > 0 ) then
-                                                                local confirmed = false
-                                                                local before = GetGameTimer()
-                                                                while not confirmed and (GetGameTimer() - before) < 30000 do
-                                                                    Citizen.Wait(0)
-                                                                    alert("~r~Transfer Ownership to "..server_id.."? ~INPUT_MP_TEXT_CHAT_TEAM~~r~/~INPUT_REPLAY_ENDPOINT~")
-                                                                    if IsControlJustPressed(0, 246) then
-                                                                        confirmed = true
-                                                                        TriggerServerEvent("properties:requestChangeOwner", nearest_property_info.name, server_id)
-                                                                    elseif IsControlJustPressed(0, 306) then
-                                                                        confirmed = true
-                                                                        TriggerEvent("usa:notify", "You stopped the transfer!")
+                                            ----------------------------
+                                            -- add / remove property co-owners --
+                                            ----------------------------
+                                            local coownersSubmenuText = "Manage co-owners"
+                                            if nearest_property_info.type == "business" then
+                                                coownersSubmenuText = "Manage employees"
+                                            end
+                                            local coowners_submenu = _menuPool:AddSubMenu(mainMenu, coownersSubmenuText, coownersSubmenuText, true --[[KEEP POSITION]])
+                                            -- transfer ownership
+                                            local transferOwner = NativeUI.CreateItem("Transfer Ownership", "Transfer ownership")
+                                            transferOwner.Activated = function(parentmenu, selected)
+                                                RemoveMenuPool(_menuPool)
+                                                Citizen.CreateThread( function()
+                                                    TriggerEvent("hotkeys:enable", false)
+                                                    DisplayOnscreenKeyboard( false, "", "", "", "", "", "", 9 )
+                                                    while true do
+                                                        if ( UpdateOnscreenKeyboard() == 1 ) then
+                                                            local server_id = GetOnscreenKeyboardResult()
+                                                            if ( string.len( server_id ) > 0 ) then
+                                                                local server_id = tonumber( server_id )
+                                                                if ( server_id > 0 ) then
+                                                                    local confirmed = false
+                                                                    local before = GetGameTimer()
+                                                                    while not confirmed and (GetGameTimer() - before) < 30000 do
+                                                                        Citizen.Wait(0)
+                                                                        alert("~r~Transfer Ownership to "..server_id.."? ~INPUT_MP_TEXT_CHAT_TEAM~~r~/~INPUT_REPLAY_ENDPOINT~")
+                                                                        if IsControlJustPressed(0, 246) then
+                                                                            confirmed = true
+                                                                            TriggerServerEvent("properties:requestChangeOwner", nearest_property_info.name, server_id)
+                                                                        elseif IsControlJustPressed(0, 306) then
+                                                                            confirmed = true
+                                                                            TriggerEvent("usa:notify", "You stopped the transfer!")
+                                                                        end
+                                                                    end
+                                                                    if not confirmed then
+                                                                        TriggerEvent("usa:notify", "Transfer Timed Out")
                                                                     end
                                                                 end
-                                                                if not confirmed then
-                                                                    TriggerEvent("usa:notify", "Transfer Timed Out")
-                                                                end
+                                                                break
+                                                            else
+                                                                DisplayOnscreenKeyboard( false, "", "", "", "", "", "", 9 )
                                                             end
+                                                        elseif ( UpdateOnscreenKeyboard() == 2 ) then
                                                             break
-                                                        else
-                                                            DisplayOnscreenKeyboard( false, "", "", "", "", "", "", 9 )
                                                         end
-                                                    elseif ( UpdateOnscreenKeyboard() == 2 ) then
-                                                        break
+                                                        Wait( 0 )
                                                     end
-                                                    Wait( 0 )
-                                                end
-                                                TriggerEvent("hotkeys:enable", true)
-                                            end )
-                                          end
-                                          coowners_submenu.SubMenu:AddItem(transferOwner)
-                                          TriggerServerEvent("properties:getCoOwners", nearest_property_info.name)
-                                          while not menu_data.coowners do
-                                            Wait(1)
-                                          end
-                                          for i = 1, #menu_data.coowners do
-                                            local coowner_submenu = _menuPool:AddSubMenu(coowners_submenu.SubMenu, menu_data.coowners[i].name, "Manage this person's ownership status" , true --[[KEEP POSITION]])
-                                            -- remove as owner --
-                                            local removeownerbtn = NativeUI.CreateItem("Remove", "Click to remove this person as a co-owner.")
-                                            removeownerbtn.Activated = function(pmenu, selected)
-                                              RemoveMenuPool(_menuPool)
-                                              TriggerServerEvent("properties:removeCoOwner", nearest_property_info.name, i)
+                                                    TriggerEvent("hotkeys:enable", true)
+                                                end )
                                             end
-                                            coowner_submenu.SubMenu:AddItem(removeownerbtn)
-                                          end
-                                          local add_owner_btn = NativeUI.CreateItem("Add Co-Owner", "Add a co-owner to this property.")
-                                          add_owner_btn.Activated = function(parentmenu, selected)
-                                            ------------------------------------------------
-                                            -- get server ID of player to add as co-owner --
-                                            ------------------------------------------------
-                                            -- 1) close menu
-                                            RemoveMenuPool(_menuPool)
-                                            -- 2) get input
-                                            Citizen.CreateThread( function()
-                                                TriggerEvent("hotkeys:enable", false)
-                                                DisplayOnscreenKeyboard( false, "", "", "", "", "", "", 9 )
-                                                while true do
-                                                    if ( UpdateOnscreenKeyboard() == 1 ) then
-                                                        local server_id = GetOnscreenKeyboardResult()
-                                                        if ( string.len( server_id ) > 0 ) then
-                                                            local server_id = tonumber( server_id )
-                                                            if ( server_id > 0 ) then
-                                                                TriggerServerEvent("properties:addCoOwner", nearest_property_info.name, server_id)
-                                                            end
-                                                            break
-                                                        else
-                                                            DisplayOnscreenKeyboard( false, "", "", "", "", "", "", 9 )
-                                                        end
-                                                    elseif ( UpdateOnscreenKeyboard() == 2 ) then
-                                                        break
-                                                    end
-                                                    Wait( 0 )
-                                                end
-                                                TriggerEvent("hotkeys:enable", true)
-                                            end )
-                                          end
-                                          coowners_submenu.SubMenu:AddItem(add_owner_btn)
-                                        else
-                                              local coowners_submenu = _menuPool:AddSubMenu(mainMenu, "Co-Owners", "See co-owners.", true --[[KEEP POSITION]])
-                                              TriggerServerEvent("properties:getCoOwners", nearest_property_info.name)
-                                              while not menu_data.coowners do
+                                            coowners_submenu.SubMenu:AddItem(transferOwner)
+                                            TriggerServerEvent("properties:getCoOwners", nearest_property_info.name)
+                                            while not menu_data.coowners do
                                                 Wait(1)
-                                              end
-                                              for i = 1, #menu_data.coowners do
-                                                local coowner = NativeUI.CreateItem(menu_data.coowners[i].name, "Lives Here")
-                                                coowners_submenu.SubMenu:AddItem(coowner)
-                                              end
+                                            end
+                                            for i = 1, #menu_data.coowners do
+                                                local coownerSubmenuText = "co-owner"
+                                                if nearest_property_info.type == "business" then
+                                                    coownerSubmenuText = "employee"
+                                                end
+                                                local coowner_submenu = _menuPool:AddSubMenu(coowners_submenu.SubMenu, menu_data.coowners[i].name, "Manage this person's " .. coownerSubmenuText .. " status" , true --[[KEEP POSITION]])
+                                                -- remove as owner --
+                                                local removeownerbtn = NativeUI.CreateItem("Remove", "Click to remove this person as an " .. coownerSubmenuText)
+                                                removeownerbtn.Activated = function(pmenu, selected)
+                                                RemoveMenuPool(_menuPool)
+                                                TriggerServerEvent("properties:removeCoOwner", nearest_property_info.name, i)
+                                                end
+                                                coowner_submenu.SubMenu:AddItem(removeownerbtn)
+                                            end
+                                            local addOwnerPersonTypeText = "co-owner"
+                                            if nearest_property_info.type == "business" then
+                                                addOwnerPersonTypeText = "employee"
+                                            end
+                                            local add_owner_btn = NativeUI.CreateItem("Add " .. addOwnerPersonTypeText, "Add a new " .. addOwnerPersonTypeText)
+                                            add_owner_btn.Activated = function(parentmenu, selected)
+                                                ------------------------------------------------
+                                                -- get server ID of player to add as co-owner --
+                                                ------------------------------------------------
+                                                -- 1) close menu
+                                                RemoveMenuPool(_menuPool)
+                                                -- 2) get SSN + employee type input (if business)
+                                                local input = nil
+                                                if nearest_property_info.type == "business" then
+                                                    input = lib.inputDialog('New Employee', {
+                                                        {type = "input", label = "SSN", description = "SSN of new employee", required = true},
+                                                        {type = "checkbox", label = "Manager?"}
+                                                    })
+                                                else
+                                                    input = lib.inputDialog('New Co-Owner', {"SSN"})
+                                                end
+                                                if not input then return end
+                                                TriggerServerEvent("properties:addCoOwner", nearest_property_info.name, input)
+                                            end
+                                            coowners_submenu.SubMenu:AddItem(add_owner_btn)
+                                        else
+                                            local coowners_submenuText = "Co-owners"
+                                            if nearest_property_info.type == "business" then
+                                                coowners_submenuText = "Employees"
+                                            end
+                                            local coowners_submenu = _menuPool:AddSubMenu(mainMenu, coowners_submenuText, "See " .. coowners_submenuText, true)
+                                            TriggerServerEvent("properties:getCoOwners", nearest_property_info.name)
+                                            while not menu_data.coowners do
+                                            Wait(1)
+                                            end
+                                            for i = 1, #menu_data.coowners do
+                                            local coowner = NativeUI.CreateItem(menu_data.coowners[i].name, (nearest_property_info.type ~= "business" and "Lives Here" or "Works here"))
+                                            coowners_submenu.SubMenu:AddItem(coowner)
+                                            end
                                         end
                                         -- tell owner about /casinoveh command if Diamond Casino --
                                         if nearest_property_info.name == "Diamond Casino" then
