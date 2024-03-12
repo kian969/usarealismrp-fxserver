@@ -368,8 +368,13 @@ AddEventHandler('storeRobberies:server:registerMoney', function(source, store, p
                 print("getting register money")
                 local char = exports["usa-characters"]:GetCharacter(source)
                 local randomAmount = math.random(Config.Shops[store].registerMoney[1], Config.Shops[store].registerMoney[2])
-                char.giveMoney(randomAmount)
-                TriggerClientEvent("usa:notify", source, "You stole: $" .. exports.globals:comma_value(randomAmount), "^3INFO: ^0You stole: $" .. exports.globals:comma_value(randomAmount))
+                exports.globals:getNumCops(function(numCops)
+                    if numCops == 0 then
+                        randomAmount = math.ceil(randomAmount / 2)
+                    end
+                    char.giveMoney(randomAmount)
+                    TriggerClientEvent("usa:notify", source, "You stole: $" .. exports.globals:comma_value(randomAmount), "^3INFO: ^0You stole: $" .. exports.globals:comma_value(randomAmount))
+                end)
             end
         else
             DropPlayer(source, 'Cheating')  
@@ -404,8 +409,13 @@ AddEventHandler('storeRobberies:server:safeMoney', function(source, store, passw
                     print("getting safe money")
                     local char = exports["usa-characters"]:GetCharacter(source)
                     local randomAmount = math.random(Config.Shops[store].safeMoney[1], Config.Shops[store].safeMoney[2])
-                    char.giveMoney(randomAmount)
-                    TriggerClientEvent("usa:notify", source, "You stole: $" .. exports.globals:comma_value(randomAmount), "^3INFO: ^0You stole: $" .. exports.globals:comma_value(randomAmount))
+                    exports.globals:getNumCops(function(numCops)
+                        if numCops == 0 then
+                            randomAmount = math.ceil(randomAmount / 2)
+                        end
+                        char.giveMoney(randomAmount)
+                        TriggerClientEvent("usa:notify", source, "You stole: $" .. exports.globals:comma_value(randomAmount), "^3INFO: ^0You stole: $" .. exports.globals:comma_value(randomAmount))
+                    end)
                 end
             else
                 DropPlayer(source, 'Safe Abusing') 

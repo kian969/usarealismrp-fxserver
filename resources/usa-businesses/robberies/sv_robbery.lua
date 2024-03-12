@@ -46,18 +46,23 @@ AddEventHandler('business:finishRobbery', function(storeName)
 		while randomPercentage > MAX_ROB_PERCENT or randomPercentage < MIN_ROB_PERCENT do
 			randomPercentage = math.random()
 		end
-		RobPercentageOfCashFromBusiness(storeName, randomPercentage, function(reward)
-			if reward then
-				reward = reward + math.random(25, 2000) -- boost reward a little to be nice
-				local policeOnline = exports["usa-characters"]:GetNumCharactersWithJob("sheriff")
-				local bonus = 0
-				if policeOnline >= policeNeededForBonus then
-					bonus = math.floor(reward * 0.40)
-				end
-				char.giveMoney(reward + bonus)
-				print("ROBBERY: "..GetPlayerName(usource)..'['..GetPlayerIdentifier(usource).."] has been rewarded reward: "..(reward + bonus))
-				TriggerClientEvent('usa:notify', usource, 'You have stolen $'..exports["globals"]:comma_value(reward + bonus), '^3INFO: ^0You have stolen $'..exports["globals"]:comma_value(reward + bonus))
+		exports.globals:getNumCops(function(numCops)
+			if numCops == 0 then
+				randomPercentage = randomPercentage / 2.5
 			end
+			RobPercentageOfCashFromBusiness(storeName, randomPercentage, function(reward)
+				if reward then
+					reward = reward + math.random(25, 2000) -- boost reward a little to be nice
+					local policeOnline = exports["usa-characters"]:GetNumCharactersWithJob("sheriff")
+					local bonus = 0
+					if policeOnline >= policeNeededForBonus then
+						bonus = math.floor(reward * 0.40)
+					end
+					char.giveMoney(reward + bonus)
+					print("ROBBERY: "..GetPlayerName(usource)..'['..GetPlayerIdentifier(usource).."] has been rewarded reward: "..(reward + bonus))
+					TriggerClientEvent('usa:notify', usource, 'You have stolen $'..exports["globals"]:comma_value(reward + bonus), '^3INFO: ^0You have stolen $'..exports["globals"]:comma_value(reward + bonus))
+				end
+			end)
 		end)
 	else
 		DropPlayer(usource, "Exploiting. Your information has been logged and staff has been notified. If you feel this was by mistake, let a staff member know.")
