@@ -3,7 +3,7 @@ var emoteOptions = ["Cancel", "Cop", "Sit", "Cross Arms", "Kneel", "CPR", "Notep
     "Whatup", "Kiss", "Handshake", "Surrender", "Aim", "Fail", "No", "Palm", "Finger"
 ];
 
-const DEFAULT_ITEM_IMAGE = "https://i.imgur.com/JlvKMeQ.png";
+const DEFAULT_ITEM_IMAGE =  "images/default.png"
 
 const NO_TOOLTIP_WEAPONS = new Set();
 NO_TOOLTIP_WEAPONS.add("Flashlight");
@@ -449,22 +449,29 @@ var interactionMenu = new Vue({
         getItemImage: function(item) {
             let name = item.name || item;
             if (item.type == "weaponParts") {
-                return "https://i.imgur.com/LbHY4fF.png"
+                return "images/weaponparts.png"
             } else if (item.type == "magazine") {
                 name = name.split(" ");
                 name.splice(0, 1);
                 let strippedName = name.join(" "); // to remove the 'empty' or 'loaded' prefix
                 strippedName = strippedName.trim();
-                return itemImages[strippedName];
+                if (itemImages[strippedName].includes("http")) {
+                    return itemImages[strippedName]
+                } else {
+                    return "images/" + itemImages[strippedName];
+                }
             } else if (name.includes("Cell Phone")) {
-                return itemImages["Cell Phone"];
+                return "images/" + itemImages["Cell Phone"];
             } else if (name.includes("Key")) {
-                return itemImages["Key"];
+                return "images/" + itemImages["Key"];
             } else if (itemImages[name]) {
-                return itemImages[name];
-
+                if (itemImages[name].includes("http")) {
+                    return itemImages[name]
+                } else {
+                    return "images/" + itemImages[name];
+                }
             } else if (name.includes(" Potion")) {
-                return itemImages.Potion
+                return "images/" + itemImages.Potion
             } else {
                 return DEFAULT_ITEM_IMAGE;
             }

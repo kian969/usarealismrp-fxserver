@@ -30,5 +30,8 @@ files {
   'ui/js/FitText.min.js',
   'ui/js/vue.min.js',
   'ui/js/script.js',
-  'ui/css/style.css'
+  'ui/css/style.css',
+  'ui/images/*.png',
+  'ui/images/*.gif',
+  'ui/images/*.webp',
 }
