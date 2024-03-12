@@ -94,6 +94,7 @@ target.addPoint("bsMainMenu", "Register", "fas fa-hamburger", vector3(-1195.634,
             SetVehicleLivery(deliveryVehicle, 1)
             local plate = GetVehicleNumberPlateText(deliveryVehicle)
             TriggerServerEvent("garage:giveKeyWithPlate", false, plate)
+            TriggerServerEvent("fuel:setFuelAmount", plate, 100)
             TriggerEvent("usa:notify", "Retrieved", "^3INFO: ^0Delivery vehicle retrieved!")
         end
     },
