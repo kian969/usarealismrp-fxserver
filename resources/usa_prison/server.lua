@@ -18,7 +18,7 @@ local WEAPONS = {
 	{ name = "Carbine Rifle", type = "weapon", hash = -2084633992, rank = 3, price = 1000, weight = 15},
     { name = "Beanbag Shotgun", type = "weapon", hash = GetHashKey("WEAPON_BEANBAGSHOTGUN"), price = 700, weight = 10 },
 	{ name = "SMG MK2", type = "weapon", hash = 0x78A97CD0, price = 750, rank = 2, weight = 20 },
-	{ name = "Sniper Rifle", type = "weapon", hash = 100416529, rank = 2, weight = 30, price = 2000},
+	--{ name = "Sniper Rifle", type = "weapon", hash = 100416529, rank = 2, weight = 30, price = 2000},
 	{ name = "Spike Strips", type = "misc", rank = 4 },
     { name = "Police Radio", type = "misc", rank = 1, weight = 5, price = 300 },
 	{ name = "7.62mm Bullets", type = "ammo", price = 50, weight = 0.5, quantity = 10 },
