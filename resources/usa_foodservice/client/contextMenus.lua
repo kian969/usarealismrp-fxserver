@@ -197,7 +197,7 @@ RegisterNetEvent("bs:prepareMeal", function(number)
     end
     print("total cook time: " .. minutesToCook)
     if lib.progressBar({
-        duration = minutesToCook * 60 * 500,
+        duration = minutesToCook * 60 * 1000,
         label = 'Preparing',
         useWhileDead = false,
         canCancel = true,
