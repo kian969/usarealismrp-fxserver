@@ -597,6 +597,8 @@ Citizen.CreateThread(function()
 								count_ind_timer = 0
 								count_bcast_timer = delay_bcast_timer
 							-- IND H
+							end
+							--[[
 							elseif IsControlJustReleased(0, 202) then -- INPUT_FRONTEND_CANCEL / Backspace
 								if GetLastInputMethod(0) then -- last input was with kb
 									local cstate = state_indic[veh]
@@ -611,7 +613,7 @@ Citizen.CreateThread(function()
 									count_bcast_timer = delay_bcast_timer
 								end
 							end
-						
+							--]]
 						end
 						
 						
