@@ -193,7 +193,7 @@ RegisterNetEvent("bs:prepareMeal", function(number)
     local orderItems = currentOrders[number]
     local minutesToCook = 0
     for i = 1, #orderItems do
-        minutesToCook = minutesToCook + (0.4 * orderItems[i].quantity)
+        minutesToCook = minutesToCook + (1.0 * orderItems[i].quantity)
     end
     print("total cook time: " .. minutesToCook)
     if lib.progressBar({
