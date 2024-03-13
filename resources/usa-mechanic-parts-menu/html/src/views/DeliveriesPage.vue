@@ -44,7 +44,7 @@ export default {
 	},
 	methods: {
 		getItemImage(partName) {
-			return this.$store.state.itemImages[partName];
+			return "https://cfx-nui-interaction-menu/ui/images/" + this.$store.state.itemImages[itemName]
 		},
 		claimPart(partId) {
 			$.post("https://usa-mechanic-parts-menu/receiveData", JSON.stringify({

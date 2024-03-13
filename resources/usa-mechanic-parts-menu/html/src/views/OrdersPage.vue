@@ -36,7 +36,7 @@ export default {
 	},
 	methods: {
 		getItemImage(itemName) {
-			return this.$store.state.itemImages[itemName];
+			return "https://cfx-nui-interaction-menu/ui/images/" + this.$store.state.itemImages[itemName]
 		}
 	}
 };
