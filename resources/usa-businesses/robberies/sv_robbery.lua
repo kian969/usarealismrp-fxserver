@@ -52,15 +52,11 @@ AddEventHandler('business:finishRobbery', function(storeName)
 			end
 			RobPercentageOfCashFromBusiness(storeName, randomPercentage, function(reward)
 				if reward then
-					reward = reward + math.random(25, 2000) -- boost reward a little to be nice
-					local policeOnline = exports["usa-characters"]:GetNumCharactersWithJob("sheriff")
-					local bonus = 0
-					if policeOnline >= policeNeededForBonus then
-						bonus = math.floor(reward * 0.40)
-					end
-					char.giveMoney(reward + bonus)
-					print("ROBBERY: "..GetPlayerName(usource)..'['..GetPlayerIdentifier(usource).."] has been rewarded reward: "..(reward + bonus))
-					TriggerClientEvent('usa:notify', usource, 'You have stolen $'..exports["globals"]:comma_value(reward + bonus), '^3INFO: ^0You have stolen $'..exports["globals"]:comma_value(reward + bonus))
+					local policeMultiplier = (numCops * 1.25)
+					reward = reward + (math.random(25, 2000) * policeMultiplier) -- Reward + bonus with police online
+					char.giveMoney(reward)
+					print("ROBBERY: "..GetPlayerName(usource)..'['..GetPlayerIdentifier(usource).."] has been rewarded reward: "..(reward))
+					TriggerClientEvent('usa:notify', usource, 'You have stolen $'..exports["globals"]:comma_value(reward), '^3INFO: ^0You have stolen $'..exports["globals"]:comma_value(reward))
 				end
 			end)
 		end)
