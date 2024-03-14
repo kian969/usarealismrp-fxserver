@@ -39,7 +39,8 @@ client_scripts {
     "@NativeUI/UIMenu/UIMenu.lua",
 	"@NativeUI/UIMenu/MenuPool.lua",
 	"@NativeUI/NativeUI.lua",
-    "client.lua"
+    "client.lua",
+    "client_ui.lua"
 }
 
 server_script "server.lua"
@@ -47,4 +48,15 @@ server_script "server.lua"
 server_exports {
     "GetOwnedProperties",
     "ownsProperty"
+}
+
+ui_page {
+    "ui/dist/index.html"
+}
+
+files {
+    "ui/dist/index.html",
+    "ui/dist/house.png",
+    "ui/dist/js/*.*",
+    "ui/dist/css/*.*"
 }

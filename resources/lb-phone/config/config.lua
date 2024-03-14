@@ -170,7 +170,30 @@ Config.Companies.Management = {
     Promote = true, -- if true, the boss can promote employees
 }
 
-Config.CustomApps = {} -- https://docs.lbphone.com/phone/custom-apps
+Config.CustomApps = {
+    ["realestate"] = { -- do not have any spaces in this name
+        name = "Real Estate", -- the name of the app
+        description = "View available real estate", -- the description of the app
+        developer = "USARRP", -- OPTIONAL the developer of the app
+        defaultApp = true, -- OPTIONAL if set to true, app should be added without having to download it,
+        game = false, -- OPTIONAL if set to true, app will be added to the game section
+        size = 59812, -- OPTIONAL in kB
+        --images = {"https://example.com/photo.jpg"}, -- OPTIONAL array of images for the app on the app store
+        --ui = "resource-name/ui/index.html", -- OPTIONAL
+        icon = "https://r2.fivemanage.com/mGekYUReDw2ozOsYxZm5q/apple-home.png", -- OPTIONAL app icon
+        --price = 0, -- OPTIONAL, Make players pay with in-game money to download the app
+        --landscape = false, -- OPTIONAL, if set to true, the app will be displayed in landscape mode
+        --keepOpen = true, -- OPTIONAL, if set to true, the app will not close when the player opens the app (only works if ui is not defined)
+        onUse = function() -- OPTIONAL function to be called when the app is opened
+            -- do something
+            print("opening real estate interface")
+            TriggerEvent("properties:openListingsInterface")
+        end,
+        onServerUse = function(source) -- OPTIONAL server side function to be called when the app is opened
+            -- do something
+        end
+    }
+} -- https://docs.lbphone.com/phone/custom-apps
 
 Config.Valet = {}
 Config.Valet.Enabled = true -- allow players to get their vehicles from the phone
