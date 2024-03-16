@@ -13,6 +13,8 @@ files {
     'html/style.css',
     'html/reset.css',
     'html/main.js',
+    'html/*.png',
+    'html/*.gif'
 }
 
 fx_version 'adamant'

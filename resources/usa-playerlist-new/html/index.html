@@ -9,7 +9,7 @@
 		<div id="app">
 			<div id="wrap">
 				<div id="list">
-					<h2 id="title"><img src="https://i.imgur.com/mUrzSob.png" width="150px"></h2>
+					<h2 id="title"><img src="USARRP-LOGO.png" width="150px"></h2>
 					<table v-if="playerData.length > 0" id="ptbl" width="100%">
 						<tr class="heading"><th>ID</th><th>Identifier</th></tr>
 						<tr v-for="item in playerData" @mouseover="currentHoveredPlayerChar = item.currentCharacter" @mouseleave="currentHoveredPlayerChar = null">
@@ -18,7 +18,7 @@
 						</tr>
 					</table>
 					<div v-if="isLoading" id="loading">
-						<img src="https://i.imgur.com/02bbcxg.gif" alt="loading">
+						<img src="figdetspinner.gif" alt="loading">
 						<span>Loading...</span>
 					</div>
 				</div>

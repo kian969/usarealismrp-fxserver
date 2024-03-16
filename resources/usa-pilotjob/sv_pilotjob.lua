@@ -4,7 +4,7 @@
 -- PERFORM FIRST TIME DB CHECK--
 exports["globals"]:PerformDBCheck("usa-pilotjob", "pilotjob")
 
-local BASE_PAY_PER_MISSION = 1750
+local BASE_PAY_PER_MISSION = 500
 
 -- MISSIONS --
 local MISSIONS = {

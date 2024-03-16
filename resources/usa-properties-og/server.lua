@@ -1735,6 +1735,50 @@ RegisterServerCallback {
   end
 }
 
+RegisterServerCallback {
+  eventName = "properties:fetchListings",
+  eventCallback = function(src, filterVal, sortBy)
+    local ret = {}
+    for name, property in pairs(PROPERTIES) do
+      table.insert(ret, {
+        photo = property.photo or "house.png",
+        name = property.name,
+        type = property.type,
+        fee = property.fee,
+        occupiedStatus = getOccupiedStatus(property),
+        x = property.x,
+        y = property.y,
+        z = property.z
+      })
+      if filterVal and filterVal ~= "" then
+        if not name:lower():find(filterVal:lower()) and not getOccupiedStatus(property):lower():find(filterVal:lower()) and not property.type:lower():find(filterVal:lower()) then
+          table.remove(ret)
+        end
+      end
+    end
+    if sortBy then
+      if sortBy == "Price (Low to high)" then
+        table.sort(ret, function(a, b)
+          return a.fee.price < b.fee.price
+        end)
+      elseif sortBy == "Price (High to low)" then
+        table.sort(ret, function(a, b)
+          return a.fee.price > b.fee.price
+        end)
+      end
+    end
+    return ret
+  end
+}
+
+function getOccupiedStatus(info)
+  if info.owner and info.owner.identifier and info.owner.identifier ~= "undefined" then
+    return "Occupied"
+  else 
+    return "Available"
+  end
+end
+
 --[[
 -- send nearby property data to clients every CLIENT_UPDATE_INTERVAL seconds
 Citizen.CreateThread(function()

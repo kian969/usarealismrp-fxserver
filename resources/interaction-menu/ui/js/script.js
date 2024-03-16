@@ -455,14 +455,14 @@ var interactionMenu = new Vue({
                 name.splice(0, 1);
                 let strippedName = name.join(" "); // to remove the 'empty' or 'loaded' prefix
                 strippedName = strippedName.trim();
-                if (itemImages[strippedName].includes("http")) {
+                if (itemImages[strippedName] && itemImages[strippedName].includes("http")) {
                     return itemImages[strippedName]
                 } else {
                     return "images/" + itemImages[strippedName];
                 }
-            } else if (name.includes("Cell Phone")) {
+            } else if (name && name.includes("Cell Phone")) {
                 return "images/" + itemImages["Cell Phone"];
-            } else if (name.includes("Key")) {
+            } else if (name && name.includes("Key")) {
                 return "images/" + itemImages["Key"];
             } else if (itemImages[name]) {
                 if (itemImages[name].includes("http")) {
@@ -470,7 +470,7 @@ var interactionMenu = new Vue({
                 } else {
                     return "images/" + itemImages[name];
                 }
-            } else if (name.includes(" Potion")) {
+            } else if (name && name.includes(" Potion")) {
                 return "images/" + itemImages.Potion
             } else {
                 return DEFAULT_ITEM_IMAGE;
