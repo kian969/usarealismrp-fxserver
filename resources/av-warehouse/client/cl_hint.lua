@@ -3,13 +3,13 @@
 local NPC_SPAWN_DISTANCE = 100.0
 local DRAW_3D_TEXT_DIST = 5
 
-local TRUCK_COORDS = vector3(5067.7, -5597.3, 33.9)
-local TRUCK_HEADING = 20.0
+local TRUCK_COORDS = vector3(2986.2736816406, 3492.3737792969, 71.381782531738)
+local TRUCK_HEADING = 20.0 -- not able to get heading myself... tried doing the heading command but don't think it's accessible to me
 local TRUCK_MODEL = GetHashKey("bison")
 
 local PED_MODEL = "a_m_o_acult_02"
-local PED_COORDS = vector3(5071.2470703125, -5599.5297851563, 34.549381256104)
-local PED_HEADING = 320.0
+local PED_COORDS = vector3(2973.5588378906, 3479.8020019531, 71.442314147949)
+local PED_HEADING = 320.0 -- not able to get heading myself... tried doing the heading command but don't think it's accessible to me
 
 local HINT_KEY = 38 -- e
 
