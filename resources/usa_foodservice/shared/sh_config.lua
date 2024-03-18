@@ -101,7 +101,8 @@ CONFIG = {
                     X = -1204.4656982422,
                     Y = -901.98754882812,
                     Z = 13.473096847534
-                }
+                },
+                LIVERY_NUM = 1
             },
             PROPERTY_NAME = "Burgershot",
             OUTFIT = {
@@ -307,12 +308,13 @@ CONFIG = {
                 },
             },
             JOB_VEHICLE = { -- todo: add heading
-                MODEL = "rumpo",
+                MODEL = "nspeedo",
                 SPAWN = {
                     X = -561.71411132812,
                     Y = -1071.2105712891,
                     Z = 22.178901672363
-                }
+                },
+                LIVERY_NUM = 3
             },
             PROPERTY_NAME = "Cat Cafe",
             OUTFIT = {

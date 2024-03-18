@@ -35,7 +35,7 @@ for name, info in pairs(CONFIG.RESTAURANTS) do
                     Wait(1)
                 end
                 local deliveryVehicle = CreateVehicle(GetHashKey(info.JOB_VEHICLE.MODEL), info.JOB_VEHICLE.SPAWN.X, info.JOB_VEHICLE.SPAWN.Y, info.JOB_VEHICLE.SPAWN.Z, 32.7, true)
-                SetVehicleLivery(deliveryVehicle, 1)
+                SetVehicleLivery(deliveryVehicle, info.JOB_VEHICLE.LIVERY_NUM)
                 local plate = GetVehicleNumberPlateText(deliveryVehicle)
                 TriggerServerEvent("garage:giveKeyWithPlate", false, plate)
                 TriggerServerEvent("fuel:setFuelAmount", plate, 100)
