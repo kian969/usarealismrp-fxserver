@@ -1,161 +1,113 @@
 local orderTargetPlayerId = 2
 local newOrderItems = {}
 
-local NEW_ORDER_MENU = {
-    {
-        header = "($500) Money Shot Burger",
-        context = "Double patty burger",
-        event = "bs:addOrderItem",
-        args = {
-            "Money Shot Burger"
-        }
-    },
-    {
-        header = "($375) The Bleeder Burger",
-        context = "Single patty burger",
-        event = "bs:addOrderItem",
-        args = {
-            "The Bleeder Burger"
-        }
-    },
-    {
-        header = "($375) Torpedo Sandwich",
-        context = "Sandwich",
-        event = "bs:addOrderItem",
-        args = {
-            "Torpedo Sandwich"
-        }
-    },
-    {
-        header = "($375) Meat Free Burger",
-        context = "Plant based burger",
-        event = "bs:addOrderItem",
-        args = {
-            "Meat Free Burger"
-        }
-    },
-    {
-        header = "($175) French Fries",
-        context = "Crispy french fries",
-        event = "bs:addOrderItem",
-        args = {
-            "French Fries"
-        }
-    },
-    {
-        header = "($350) Coca Cola",
-        context = "A refreshing beverage",
-        event = "bs:addOrderItem",
-        args = {
-            "Coca Cola"
-        }
-    },
-    {
-        header = "Done",
-        context = "Register the new order",
-        event = "bs:registerNewOrder",
-        args = {}
-    }
-}
-
-target.addPoint("bsMainMenu", "Register", "fas fa-hamburger", vector3(-1195.634, -893.85, 13.88616), 1, function() end, {
-    {
-        name = 'newOrder',
-        label = 'New Order',
-        onSelect = function(a, b, entityHandle)
-            -- duty check
-            if not isClockedIn("burgershot") then
-                exports.globals:notify("Must be clocked in")
-                return
-            end
-            -- reset new order state
-            resetNewOrderState()
-            -- get ID of player order is for
-            orderTargetPlayerId = lib.inputDialog('Target Person SSN', {'SSN'})
-            if not orderTargetPlayerId then return end
-            orderTargetPlayerId = orderTargetPlayerId[1]
-            -- select items to add to order
-            TriggerEvent('nh-context:createMenu', NEW_ORDER_MENU)
-        end
-    },
-    {
-        name = 'retrieveVehicle',
-        label = 'Retrieve Delivery Vehicle',
-        onSelect = function(a, b, entityHandle)
-            if not isClockedIn("burgershot") then
-                exports.globals:notify("Must be clocked in")
-                return
-            end
-            RequestModel(`nspeedo`)
-            while not HasModelLoaded(`nspeedo`) do
-                Wait(1)
-            end
-            local deliveryVehicle = CreateVehicle(`nspeedo`, -1204.4656982422, -901.98754882812, 13.473096847534, 32.7, true)
-            SetVehicleLivery(deliveryVehicle, 1)
-            local plate = GetVehicleNumberPlateText(deliveryVehicle)
-            TriggerServerEvent("garage:giveKeyWithPlate", false, plate)
-            TriggerServerEvent("fuel:setFuelAmount", plate, 100)
-            TriggerEvent("usa:notify", "Retrieved", "^3INFO: ^0Delivery vehicle retrieved!")
-        end
-    },
-    {
-        name = 'toggleClockIn',
-        label = 'Clock in/out',
-        onSelect = function(a, b, entityHandle)
-            TriggerServerEvent("bs:toggleDuty")
-        end
-    },
-})
-
-target.addPoint("bsOrdersMenu", "Orders", "fas fa-hamburger", vector3(-1195.372, -897.1624, 14.808616), 1, function() end, {
-    {
-        name = 'viewOrders',
-        label = 'View Orders',
-        onSelect = function(a, b, entityHandle)
-            local currentOrders = TriggerServerCallback {
-                eventName = "bs:getOrders",
-                args = {}
-            }
-            local ordersMenu = {
-                {
-                    header = "Select an order to make:"
-                }
-            }
-            for number, items in pairs(currentOrders) do
-                local orderContentsStr = ""
-                for i = 1, #items do
-                    orderContentsStr = orderContentsStr .. "(" .. items[i].quantity .. ") " .. items[i].itemName .. ", "
+for name, info in pairs(CONFIG.RESTAURANTS) do
+    target.addPoint("mainMenu-" .. name, "Register", "fas fa-hamburger", info.REGISTER.COORDS, 1, function() end, {
+        {
+            name = 'newOrder',
+            label = 'New Order',
+            onSelect = function(a, b, entityHandle)
+                -- duty check
+                if not isClockedIn(info.JOB_NAME) then
+                    exports.globals:notify("Must be clocked in")
+                    return
                 end
-                table.insert(ordersMenu, {
-                    header = "Order #" .. number,
-                    context = orderContentsStr,
-                    event = "bs:prepareMeal",
-                    args = {
-                        number
-                    }
-                })
+                -- reset new order state
+                resetNewOrderState()
+                -- get ID of player order is for
+                orderTargetPlayerId = lib.inputDialog('Target Person SSN', {'SSN'})
+                if not orderTargetPlayerId then return end
+                orderTargetPlayerId = orderTargetPlayerId[1]
+                -- select items to add to order
+                TriggerEvent('nh-context:createMenu', info.REGISTER.MENU)
             end
-            TriggerEvent('nh-context:createMenu', ordersMenu)
-        end
-    },
-})
+        },
+        {
+            name = 'retrieveVehicle',
+            label = 'Retrieve Delivery Vehicle',
+            onSelect = function(a, b, entityHandle)
+                if not isClockedIn(info.JOB_NAME) then
+                    exports.globals:notify("Must be clocked in")
+                    return
+                end
+                RequestModel(GetHashKey(info.JOB_VEHICLE.MODEL))
+                while not HasModelLoaded(GetHashKey(info.JOB_VEHICLE.MODEL)) do
+                    Wait(1)
+                end
+                local deliveryVehicle = CreateVehicle(GetHashKey(info.JOB_VEHICLE.MODEL), info.JOB_VEHICLE.SPAWN.X, info.JOB_VEHICLE.SPAWN.Y, info.JOB_VEHICLE.SPAWN.Z, 32.7, true)
+                SetVehicleLivery(deliveryVehicle, 1)
+                local plate = GetVehicleNumberPlateText(deliveryVehicle)
+                TriggerServerEvent("garage:giveKeyWithPlate", false, plate)
+                TriggerServerEvent("fuel:setFuelAmount", plate, 100)
+                TriggerEvent("usa:notify", "Retrieved", "^3INFO: ^0Delivery vehicle retrieved!")
+            end
+        },
+        {
+            name = 'toggleClockIn',
+            label = 'Clock in/out',
+            onSelect = function(a, b, entityHandle)
+                TriggerServerEvent("bs:toggleDuty", info.JOB_NAME)
+            end
+        },
+    })
+end
 
-target.addPoint("bsCounterMenu", "Counter", "fas fa-hamburger", vector3(-1192.118, -893.2803, 13.88616), 1, function() end, {
-    {
-        name = 'claimOrder',
-        label = 'Claim Order',
-        onSelect = function(a, b, entityHandle)
-            if isClockedIn("burgershot") then
-                local orderNumber = lib.inputDialog('Retrieve Order', {'Number'})
-                if not orderNumber then return end
-                orderNumber = orderNumber[1]
-                TriggerServerEvent("bs:claimOrder", orderNumber)
-            else
-                TriggerServerEvent("bs:claimOrder")
+for name, info in pairs(CONFIG.RESTAURANTS) do
+    target.addPoint("ordersMenu-" .. name, "Orders", "fas fa-hamburger", info.COOKING.COORDS, 1, function() end, {
+        {
+            name = 'viewOrders',
+            label = 'View Orders',
+            onSelect = function(a, b, entityHandle)
+                local currentOrders = TriggerServerCallback {
+                    eventName = "bs:getOrders",
+                    args = {
+                        name
+                    }
+                }
+                local ordersMenu = {
+                    {
+                        header = "Select an order to make:"
+                    }
+                }
+                for number, items in pairs(currentOrders) do
+                    local orderContentsStr = ""
+                    for i = 1, #items do
+                        orderContentsStr = orderContentsStr .. "(" .. items[i].quantity .. ") " .. items[i].itemName .. ", "
+                    end
+                    table.insert(ordersMenu, {
+                        header = "Order #" .. number,
+                        context = orderContentsStr,
+                        event = "bs:prepareMeal",
+                        args = {
+                            number,
+                            name
+                        }
+                    })
+                end
+                TriggerEvent('nh-context:createMenu', ordersMenu)
             end
-        end
-    },
-})
+        },
+    })
+end
+
+for name, info in pairs(CONFIG.RESTAURANTS) do
+    target.addPoint("counterMenu-" .. name, "Counter", "fas fa-hamburger", info.COUNTER.COORDS, 1, function() end, {
+        {
+            name = 'claimOrder',
+            label = 'Claim Order',
+            onSelect = function(a, b, entityHandle)
+                if isClockedIn(info.JOB_NAME) then
+                    local orderNumber = lib.inputDialog('Retrieve Order', {'Number'})
+                    if not orderNumber then return end
+                    orderNumber = orderNumber[1]
+                    TriggerServerEvent("bs:claimOrder", orderNumber, name)
+                else
+                    TriggerServerEvent("bs:claimOrder", false, name)
+                end
+            end
+        },
+    })
+end
 
 function resetNewOrderState()
     orderTargetPlayerId = nil
@@ -170,7 +122,7 @@ function isClockedIn(job)
     return charInfo.job == job
 end
 
-RegisterNetEvent("bs:addOrderItem", function(itemName)
+RegisterNetEvent("bs:addOrderItem", function(itemName, restuarantName)
     -- get quantity
     local quantity = lib.inputDialog('Quantity of ' .. itemName, {'Quantity'})
     if not quantity then return end
@@ -178,17 +130,19 @@ RegisterNetEvent("bs:addOrderItem", function(itemName)
     -- add to order
     table.insert(newOrderItems, { itemName = itemName, quantity = quantity })
     -- re open new order menu
-    TriggerEvent('nh-context:createMenu', NEW_ORDER_MENU)
+    TriggerEvent('nh-context:createMenu', CONFIG.RESTAURANTS[restuarantName].REGISTER.MENU)
 end)
 
-RegisterNetEvent("bs:registerNewOrder", function()
-    TriggerServerEvent("bs:registerNewOrder", orderTargetPlayerId, newOrderItems)
+RegisterNetEvent("bs:registerNewOrder", function(restuarantName)
+    TriggerServerEvent("bs:registerNewOrder", orderTargetPlayerId, newOrderItems, restuarantName)
 end)
 
-RegisterNetEvent("bs:prepareMeal", function(number)
+RegisterNetEvent("bs:prepareMeal", function(number, restuarantName)
     local currentOrders = TriggerServerCallback {
         eventName = "bs:getOrders",
-        args = {}
+        args = {
+            restuarantName
+        }
     }
     local orderItems = currentOrders[number]
     local minutesToCook = 0
@@ -212,16 +166,17 @@ RegisterNetEvent("bs:prepareMeal", function(number)
             flag = 11
         },
     }) then
-        TriggerServerEvent("bs:mealPrepared", number)
+        TriggerServerEvent("bs:mealPrepared", number, restuarantName)
     end
 end)
 
-RegisterNetEvent("bs:toggleUniform", function(putOn)
+RegisterNetEvent("bs:toggleUniform", function(putOn, jobName) -- todo: diff uniforms for diff jobs
     if putOn then
+        local OUTFIT = getOutfitFromJobName(jobName)
         local me = PlayerPedId()
         if IsPedModel(me,"mp_f_freemode_01") then
-            SetPedComponentVariation(me, 3, 9, 0, 0) -- arms/hands
-            SetPedComponentVariation(me, 11, 420, 2, 2) -- torso
+            SetPedComponentVariation(me, 3, OUTFIT.FEMALE.ARMS.COMPONENT, OUTFIT.FEMALE.ARMS.TEXTURE, 0) -- arms/hands
+            SetPedComponentVariation(me, 11, OUTFIT.FEMALE.TORSO.COMPONENT, OUTFIT.FEMALE.TORSO.TEXTURE, 2) -- torso
             SetPedComponentVariation(me, 8, 7, 0, 2) -- torso 1
             SetPedComponentVariation(me, 9, 0, 0, 2) -- remove vest
             --SetPedComponentVariation(me, 7, 34,1, 2) -- ties
@@ -229,8 +184,8 @@ RegisterNetEvent("bs:toggleUniform", function(putOn)
             --SetPedComponentVariation(me, 6, 58, 1, 2) -- feet
             --SetPedPropIndex(me, 0, 1, math.random(1, 7), true) -- add headet on head (need to find right prop)
         elseif IsPedModel(me,"mp_m_freemode_01") then -- male
-            SetPedComponentVariation(me, 3, 6, 0, 0) -- arms/hands
-            SetPedComponentVariation(me, 11, 406, 1, 2) -- torso
+            SetPedComponentVariation(me, 3, OUTFIT.MALE.ARMS.COMPONENT, OUTFIT.MALE.ARMS.TEXTURE, 0) -- arms/hands
+            SetPedComponentVariation(me, 11, OUTFIT.MALE.TORSO.COMPONENT, OUTFIT.MALE.TORSO.TEXTURE, 2) -- torso
             SetPedComponentVariation(me, 8, 21, 4, 2) -- accessories
             SetPedComponentVariation(me, 9, 0, 0, 2) -- remove vest
             --SetPedComponentVariation(me, 7, 9,11, 2) -- ties
@@ -253,3 +208,12 @@ RegisterClientCallback {
         return input[1]
     end
 }
+
+function getOutfitFromJobName(jobName)
+    for name, info in pairs(CONFIG.RESTAURANTS) do
+        if info.JOB_NAME == jobName then
+            return info.OUTFIT
+        end
+    end
+    return nil
+end

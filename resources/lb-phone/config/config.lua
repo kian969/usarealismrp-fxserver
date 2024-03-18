@@ -148,6 +148,21 @@ Config.Companies.Services = {
                 y = -877.85235595703
             }
         }
+    },
+    {
+        job = "catcafe",
+        name = "Cat Cafe",
+        icon = "https://r2.fivemanage.com/mGekYUReDw2ozOsYxZm5q/uwucafe.png",
+        canCall = true, -- if true, players can call the company
+        canMessage = true, -- if true, players can message the company
+        bossRanks = {}, -- ranks that can manage the company
+        location = {
+            name = "Cat Cafe",
+            coords = {
+                x = -584.80145263672, 
+                y = -1060.8621826172
+            }
+        }
     }
 }
 
