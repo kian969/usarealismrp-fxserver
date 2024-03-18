@@ -22,7 +22,7 @@ local COORDS = {
     }
 }
 
-local SUPPLY_PICKUP_COORDS = vector3(2832.9826660156, 4571.947265625, 46.952602386475)
+local SUPPLY_PICKUP_COORDS = vector3(886.9033203125, -953.30474853516, 39.213241577148)
 
 local COKE_SUPPLY_WAIT_TIME = 45000
 local COCAINE_PROCESS_WAIT_TIME = 55000
@@ -33,7 +33,7 @@ local INPUT_KEY = 38 -- E
 
 local cocaine = {
     peds = {
-        {x = 2832.9826660156, y = 4571.947265625, z = 46.952602386475, heading = 189.7925567627, name = 'coke_supplies_ped', model = "IG_LESTERCREST"}
+        {x = 886.9033203125, y = -953.30474853516, z = 39.213241577148, heading = 189.7925567627, name = 'coke_supplies_ped', model = "IG_LESTERCREST"}
     },
     requiredItem = "Razor Blade",
     requiredSupplies = 'Uncut Cocaine',
