@@ -8,8 +8,8 @@ local INPUT_KEY = 38 -- E
 
 local meth = {
     peds = {
-        {x = 705.34, y = 4185.25, z = 40.7858, name = "meth_supplies_ped", model = "U_M_O_TAPHILLBILLY"},
-        {x = -1149.1988525391, y = 4938.3979492188, z = 222.26870727539, name = "meth_supplies_ped_quality", model = 'A_M_M_HILLBILLY_01'}
+        {x = -3169.9484863281, y = 1094.1722412109, z = 20.856250762939, name = "meth_supplies_ped", model = "U_M_O_TAPHILLBILLY"},
+        {x = -2174.8139648438, y = 4294.421875, z = 49.051670074463, name = "meth_supplies_ped_quality", model = 'A_M_M_HILLBILLY_01'}
     },
     suppliesProduce = "Pseudoephedrine",
     suppliesProduceQuality = 'Red Phosphorus',
@@ -24,10 +24,10 @@ local meth = {
 
 local peds = {}
 
--- /gotoc 1149.1988525391 4938.3979492188 222.26870727539,
--- /gotoc 738.85601806641 -773.63940429688 25.093187332153
-local BUY_RED_PHOS_COORDS = {x = -1149.1988525391, y = 4938.3979492188, z = 222.26870727539}
-local BUY_PSEUDOPHEDRINE_COORDS = {x = 704.62, y = 4185.3, z = 40.70}
+-- /gotoc -2174.8139648438 4294.421875 49.051670074463,
+-- /gotoc -3169.9484863281 1094.1722412109 20.856250762939
+local BUY_RED_PHOS_COORDS = {x = -2174.8139648438, y = 4294.421875, z = 49.051670074463}
+local BUY_PSEUDOPHEDRINE_COORDS = {x = -3169.9484863281, y = 1094.1722412109, z = 20.856250762939}
 local PACKAGE_COORDS = {x = 2434.78, y = 4964.29, z = 42.34}
 local COOK_COORDS = {x = 738.85601806641, y = -773.63940429688, z = 25.093187332153}
 
